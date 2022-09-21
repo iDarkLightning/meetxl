@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 export const Spinner: React.FC = () => (
   <svg
     className="h-5 w-5 animate-spin text-white"
@@ -20,3 +22,16 @@ export const Spinner: React.FC = () => (
     />
   </svg>
 );
+
+export const LoadingSpinner: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setLoading(false), 250);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  if (loading) return null;
+
+  return <Spinner />;
+};
