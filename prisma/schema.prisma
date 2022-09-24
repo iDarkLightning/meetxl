@@ -44,13 +44,14 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String               @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?              @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    organizations OrganizationMember[]
 }
 
 model VerificationToken {
@@ -59,4 +60,28 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model OrganizationMember {
+    organizationId String
+    userId         String
+    organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    role MemberRole
+
+    @@id([organizationId, userId])
+}
+
+model Organization {
+    id   String @id @default(cuid())
+    name String
+    slug String @unique
+
+    members OrganizationMember[]
+}
+
+enum MemberRole {
+    ADMIN
+    MEMBER
 }

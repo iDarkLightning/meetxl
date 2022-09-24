@@ -14,15 +14,17 @@ type CustomComponent = {
 
 type CustomAppProps = AppProps & CustomComponent;
 
-const AppInner: React.FC<React.PropsWithChildren<CustomComponent>> = ({
+const AppInner = ({
   Component,
   ...props
-}) => {
+}: CustomComponent & { children: React.PropsWithChildren["children"] }) => {
+  const getLayout = Component.getLayout ?? ((page) => page);
+
   if (Component.auth) {
-    return <Auth>{props.children}</Auth>;
+    return getLayout(<Auth>{props.children}</Auth>);
   }
 
-  return <>{props.children}</>;
+  return getLayout(<>{props.children}</>);
 };
 
 const MyApp = ({ Component, pageProps }: CustomAppProps) => {
