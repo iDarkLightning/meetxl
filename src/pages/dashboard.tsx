@@ -3,8 +3,9 @@ import { Button } from "@/shared-components/system/button";
 import { Heading } from "@/shared-components/system/heading";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { CustomNextPage } from "@/types/next-page";
-import { NewOrganizationModal } from "@/ui/org/new";
+import { NewOrganizationModal } from "@/ui/org/new-org";
 import { trpc } from "@/utils/trpc";
+import Link from "next/link";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 
@@ -32,7 +33,11 @@ const Dashboard: CustomNextPage = () => {
         success={({ data }) => (
           <ul>
             {data.map((org) => (
-              <li key={org.id}>{org.name}</li>
+              <li key={org.id}>
+                <Link href={`/${org.name}`} passHref>
+                  <a>{org.name}</a>
+                </Link>
+              </li>
             ))}
           </ul>
         )}
