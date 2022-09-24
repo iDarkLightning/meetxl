@@ -1,13 +1,14 @@
 import { MainLayout } from "@/shared-components/layout/main-layout";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
+import { Tab } from "@/types/tab";
 import { trpc } from "@/utils/trpc";
-import { Organization } from "@prisma/client";
+import { MemberRole, Organization } from "@prisma/client";
 import { useRouter } from "next/router";
 import React, { createContext, useContext } from "react";
 
 const OrgContext = createContext<{ org: Organization | null }>({ org: null });
 
-const tabs = [
+const tabs: Tab[] = [
   {
     name: "Meetings",
     route: "/[org]",
@@ -15,6 +16,7 @@ const tabs = [
   {
     name: "Invites",
     route: "/[org]/invite",
+    adminRequired: true,
   },
 ];
 
@@ -43,11 +45,15 @@ export const OrgShell: React.FC<React.PropsWithChildren> = (props) => {
     <BaseQueryCell
       query={orgQuery}
       success={({ data }) => (
-        <MainLayout heading={data.name} tabs={tabs}>
-          <OrgContext.Provider value={{ org: data }}>
+        <OrgContext.Provider value={{ org: data }}>
+          <MainLayout
+            heading={data.name}
+            tabs={tabs}
+            admin={data.member?.role === MemberRole.ADMIN}
+          >
             {props.children}
-          </OrgContext.Provider>
-        </MainLayout>
+          </MainLayout>
+        </OrgContext.Provider>
       )}
     />
   );

@@ -1,6 +1,8 @@
 import { MemberRole } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { randomBytes } from "crypto";
 import { z } from "zod";
+import { authedProcedure } from "../../procedures/authed-procedure";
 import { orgAdminProcedure } from "../../procedures/org-procedures";
 import { t } from "../../trpc";
 
@@ -61,6 +63,65 @@ export const orgJoinCodeRouter = t.router({
       return ctx.prisma.joinCode.delete({
         where: {
           id: input.id,
+        },
+      });
+    }),
+
+  accept: authedProcedure
+    .input(z.object({ code: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const organization = await ctx.prisma.organization.findFirstOrThrow({
+        where: {
+          joinCodes: {
+            some: {
+              code: input.code,
+            },
+          },
+        },
+        select: {
+          id: true,
+          joinCodes: {
+            where: {
+              code: input.code,
+            },
+            select: {
+              role: true,
+            },
+            take: 1,
+          },
+        },
+      });
+
+      if (!organization.joinCodes[0]) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid join code",
+        });
+      }
+
+      return ctx.prisma.organization.update({
+        where: { id: organization.id },
+        data: {
+          members: {
+            create: {
+              role: organization.joinCodes[0].role,
+              user: {
+                connect: {
+                  id: ctx.session.user.id,
+                },
+              },
+            },
+          },
+          joinCodes: {
+            update: {
+              where: { code: input.code },
+              data: {
+                uses: {
+                  increment: 1,
+                },
+              },
+            },
+          },
         },
       });
     }),

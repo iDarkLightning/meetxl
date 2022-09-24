@@ -1,7 +1,7 @@
 import { Heading } from "@/shared-components/system/heading";
 import { CustomNextPage } from "@/types/next-page";
 import { JoinCodeInvite } from "@/ui/org/invites/join-code";
-import { OrgShell, useOrg } from "@/ui/org/org-shell";
+import { OrgShell } from "@/ui/org/org-shell";
 
 const OrgInvites: CustomNextPage = () => {
   return (

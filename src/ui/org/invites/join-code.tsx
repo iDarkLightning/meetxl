@@ -47,12 +47,17 @@ export const JoinCodeInvite = () => {
               >
                 <div className="flex items-center gap-4">
                   <img
-                    className="hidden h-10 w-10 rounded-full md:visible"
+                    className="hidden h-10 w-10 rounded-full md:block"
                     src={code.issuer.user.image!}
                     alt={code.issuer.user.image!}
                   />
                   <div>
-                    <p>{code.code}</p>
+                    <p
+                      onClick={() => navigator.clipboard.writeText(code.code)}
+                      className="cursor-pointer"
+                    >
+                      {code.code}
+                    </p>
                     <p className="opacity-80">{code.uses} Uses</p>
                   </div>
                 </div>

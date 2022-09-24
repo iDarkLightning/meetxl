@@ -55,7 +55,18 @@ export const organizationRouter = t.router({
     return orgs;
   }),
 
-  get: orgMemberProcedure.query(({ ctx }) => ctx.org),
+  get: orgMemberProcedure.query(async ({ ctx }) => {
+    const member = await ctx.prisma.organizationMember.findUnique({
+      where: {
+        organizationId_userId: {
+          organizationId: ctx.org.id,
+          userId: ctx.session.user.id,
+        },
+      },
+    });
+
+    return { ...ctx.org, member };
+  }),
 
   joinCode: orgJoinCodeRouter,
 });

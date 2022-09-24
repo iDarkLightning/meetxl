@@ -112,7 +112,7 @@ type TError = TRPCClientErrorLike<AppRouter>;
 
 export const BaseQueryCell = createQueryCell<TError>({
   error: (result) => (
-    <div className="absolute z-50 h-screen w-screen bg-background-primary">
+    <div className="absolute top-0 left-0 z-50 h-screen w-screen bg-background-primary">
       <NextError
         title={result.error.message}
         statusCode={result.error.data?.httpStatus ?? 500}

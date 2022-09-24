@@ -9,7 +9,7 @@ import { Heading } from "../system/heading";
 import { ContentWrapper } from "./content-wrapper";
 
 export const MainLayout: React.FC<
-  React.PropsWithChildren<{ heading?: string; tabs?: Tab[] }>
+  React.PropsWithChildren<{ heading?: string; tabs?: Tab[]; admin?: boolean }>
 > = (props) => {
   const router = useRouter();
 
@@ -39,25 +39,30 @@ export const MainLayout: React.FC<
             </Button>
           </div>
           <nav className="absolute bottom-0 flex gap-4">
-            {props.tabs?.map((item) => (
-              <Link
-                href={{ pathname: item.route, query: router.query }}
-                key={item.name}
-                passHref
-              >
-                <a
-                  className={clsx(
-                    "px-4 py-2 leading-none",
-                    router.pathname === item.route &&
-                      "border-b-2 border-accent-primary",
-                    router.pathname !== item.route &&
-                      "opacity-70 hover:border-b-2 hover:border-purple-200 hover:opacity-100"
-                  )}
+            {props.tabs
+              ?.filter(
+                (item) =>
+                  !item.adminRequired || (item.adminRequired && props.admin)
+              )
+              .map((item) => (
+                <Link
+                  href={{ pathname: item.route, query: router.query }}
+                  key={item.name}
+                  passHref
                 >
-                  {item.name}
-                </a>
-              </Link>
-            ))}
+                  <a
+                    className={clsx(
+                      "px-4 py-2 leading-none",
+                      router.pathname === item.route &&
+                        "border-b-2 border-accent-primary",
+                      router.pathname !== item.route &&
+                        "opacity-70 hover:border-b-2 hover:border-purple-200 hover:opacity-100"
+                    )}
+                  >
+                    {item.name}
+                  </a>
+                </Link>
+              ))}
           </nav>
         </ContentWrapper>
       </header>
