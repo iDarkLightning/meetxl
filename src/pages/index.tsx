@@ -6,8 +6,6 @@ import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { CustomNextPage } from "@/types/next-page";
 
 const Home: CustomNextPage = () => {
-  const testQuery = trpc.test.useQuery(undefined);
-
   return (
     <>
       <Head>
@@ -53,10 +51,6 @@ const Home: CustomNextPage = () => {
           />
         </div>
         <AuthShowcase />
-        <BaseQueryCell
-          query={testQuery}
-          success={(data) => <p>{data.data}</p>}
-        />
       </main>
     </>
   );
