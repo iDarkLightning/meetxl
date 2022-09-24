@@ -1,9 +1,10 @@
 import { MemberRole } from "@prisma/client";
 import { z } from "zod";
-import { Context } from "../context";
-import { authedProcedure } from "../procedures/authed-procedure";
-import { orgMemberProcedure } from "../procedures/org-procedures";
-import { t } from "../trpc";
+import { Context } from "../../context";
+import { authedProcedure } from "../../procedures/authed-procedure";
+import { orgMemberProcedure } from "../../procedures/org-procedures";
+import { t } from "../../trpc";
+import { orgJoinCodeRouter } from "./join-code";
 
 const generateOrgSlug = async (name: string, ctx: Context) => {
   const slug = name
@@ -55,4 +56,6 @@ export const organizationRouter = t.router({
   }),
 
   get: orgMemberProcedure.query(({ ctx }) => ctx.org),
+
+  joinCode: orgJoinCodeRouter,
 });

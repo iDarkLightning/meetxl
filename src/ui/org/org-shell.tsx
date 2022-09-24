@@ -13,8 +13,8 @@ const tabs = [
     route: "/[org]",
   },
   {
-    name: "Members",
-    route: "/[org]/members",
+    name: "Invites",
+    route: "/[org]/invite",
   },
 ];
 
