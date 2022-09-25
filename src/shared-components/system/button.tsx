@@ -66,7 +66,7 @@ export interface ButtonProps
 }
 
 const defaultProps = {
-  size: "md",
+  size: "sm",
   variant: "secondary",
   disabled: false,
   loading: false,

@@ -68,8 +68,9 @@ model OrganizationMember {
     organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
     user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    role             MemberRole
-    createdJoinCodes JoinCode[]
+    role               MemberRole
+    createdJoinCodes   JoinCode[]
+    MeetingParticipant MeetingParticipant[]
 
     @@id([organizationId, userId])
 }
@@ -87,6 +88,28 @@ model JoinCode {
     organizationMemberUserId         String
 }
 
+model MeetingParticipant {
+    meetingId            String
+    memberOrganizationId String
+    memberUserId         String
+    member               OrganizationMember @relation(fields: [memberOrganizationId, memberUserId], references: [organizationId, userId])
+    meeting              Meeting            @relation(fields: [meetingId], references: [id])
+
+    @@id([meetingId, memberOrganizationId, memberUserId])
+}
+
+model Meeting {
+    id               String               @id @default(cuid())
+    name             String
+    slug             String
+    maxParticipants  Int?
+    participants     MeetingParticipant[]
+    organizationSlug String
+    organization     Organization         @relation(fields: [organizationSlug], references: [slug])
+
+    @@unique([organizationSlug, slug])
+}
+
 model Organization {
     id   String @id @default(cuid())
     name String
@@ -94,6 +117,7 @@ model Organization {
 
     members   OrganizationMember[]
     joinCodes JoinCode[]
+    meetings  Meeting[]
 }
 
 enum MemberRole {

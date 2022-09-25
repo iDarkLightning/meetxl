@@ -4,8 +4,8 @@ import { Context } from "../../context";
 import { authedProcedure } from "../../procedures/authed-procedure";
 import { orgMemberProcedure } from "../../procedures/org-procedures";
 import { t } from "../../trpc";
-import { orgJoinCodeRouter } from "./join-code";
-import { orgMembersRouter } from "./members";
+import { orgJoinCodeRouter } from "./org-join-code";
+import { orgMembersRouter } from "./org-members";
 
 const generateOrgSlug = async (name: string, ctx: Context) => {
   const slug = name
