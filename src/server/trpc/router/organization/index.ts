@@ -5,6 +5,7 @@ import { authedProcedure } from "../../procedures/authed-procedure";
 import { orgMemberProcedure } from "../../procedures/org-procedures";
 import { t } from "../../trpc";
 import { orgJoinCodeRouter } from "./join-code";
+import { orgMembersRouter } from "./members";
 
 const generateOrgSlug = async (name: string, ctx: Context) => {
   const slug = name
@@ -69,4 +70,5 @@ export const organizationRouter = t.router({
   }),
 
   joinCode: orgJoinCodeRouter,
+  members: orgMembersRouter,
 });

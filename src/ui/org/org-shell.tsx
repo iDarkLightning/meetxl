@@ -18,6 +18,11 @@ const tabs: Tab[] = [
     route: "/[org]/invite",
     adminRequired: true,
   },
+  {
+    name: "Members",
+    route: "/[org]/members",
+    adminRequired: true,
+  },
 ];
 
 export const useOrg = () => {

@@ -40,55 +40,64 @@ export const JoinCodeInvite = () => {
         query={joinCodesQuery}
         success={({ data }) => (
           <div className="mt-4 flex flex-col gap-4">
-            {data.map((code) => (
-              <div
-                key={code.id}
-                className="flex items-center justify-between gap-4 border-b-[0.025rem] border-accent-stroke pb-2"
-              >
-                <div className="flex items-center gap-4">
-                  <img
-                    className="hidden h-10 w-10 rounded-full md:block"
-                    src={code.issuer.user.image!}
-                    alt={code.issuer.user.image!}
-                  />
-                  <div>
-                    <p
-                      onClick={() => navigator.clipboard.writeText(code.code)}
-                      className="cursor-pointer"
+            {data.length === 0 && (
+              <div className="py-4 text-center opacity-75">
+                <Heading level="h4">
+                  This organization currently has no join codes
+                </Heading>
+                <p>Create a join code using the button above</p>
+              </div>
+            )}
+            {data.length > 0 &&
+              data.map((code) => (
+                <div
+                  key={code.id}
+                  className="flex items-center justify-between gap-4 border-b-[0.025rem] border-accent-stroke pb-2"
+                >
+                  <div className="flex items-center gap-4">
+                    <img
+                      className="hidden h-10 w-10 rounded-full md:block"
+                      src={code.issuer.user.image!}
+                      alt={code.issuer.user.image!}
+                    />
+                    <div>
+                      <p
+                        onClick={() => navigator.clipboard.writeText(code.code)}
+                        className="cursor-pointer"
+                      >
+                        {code.code}
+                      </p>
+                      <p className="opacity-80">{code.uses} Uses</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <Select
+                      defaultValue={code.role}
+                      onChange={(evt) => {
+                        changeCodeRole.mutateAsync({
+                          id: code.id,
+                          role: evt.target.value as MemberRole,
+                          orgId: org.id,
+                        });
+                      }}
                     >
-                      {code.code}
-                    </p>
-                    <p className="opacity-80">{code.uses} Uses</p>
+                      <option value={MemberRole.ADMIN}>Admin</option>
+                      <option value={MemberRole.MEMBER}>Member</option>
+                    </Select>
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      onClick={() =>
+                        revokeCode
+                          .mutateAsync({ id: code.id, orgId: org.id })
+                          .then(() => joinCodesQuery.refetch())
+                      }
+                    >
+                      Revoke
+                    </Button>
                   </div>
                 </div>
-                <div className="flex gap-4">
-                  <Select
-                    defaultValue={code.role}
-                    onChange={(evt) => {
-                      changeCodeRole.mutateAsync({
-                        id: code.id,
-                        role: evt.target.value as MemberRole,
-                        orgId: org.id,
-                      });
-                    }}
-                  >
-                    <option value={MemberRole.ADMIN}>Admin</option>
-                    <option value={MemberRole.MEMBER}>Member</option>
-                  </Select>
-                  <Button
-                    size="sm"
-                    variant="danger"
-                    onClick={() =>
-                      revokeCode
-                        .mutateAsync({ id: code.id, orgId: org.id })
-                        .then(() => joinCodesQuery.refetch())
-                    }
-                  >
-                    Revoke
-                  </Button>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         )}
       />
