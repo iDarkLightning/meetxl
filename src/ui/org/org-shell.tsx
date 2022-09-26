@@ -1,12 +1,16 @@
+import { AppRouter } from "@/server/trpc/router";
 import { MainLayout } from "@/shared-components/layout/main-layout";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { Tab } from "@/types/tab";
 import { trpc } from "@/utils/trpc";
 import { MemberRole, Organization } from "@prisma/client";
+import { inferProcedureOutput } from "@trpc/server";
 import { useRouter } from "next/router";
 import React, { createContext, useContext } from "react";
 
-const OrgContext = createContext<{ org: Organization | null }>({ org: null });
+const OrgContext = createContext<{
+  org: inferProcedureOutput<AppRouter["organization"]["get"]> | null;
+}>({ org: null });
 
 const tabs: Tab[] = [
   {

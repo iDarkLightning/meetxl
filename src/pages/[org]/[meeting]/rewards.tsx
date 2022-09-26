@@ -18,9 +18,12 @@ import { AiOutlineClose } from "react-icons/ai";
 const ToggleButton: React.FC<
   React.PropsWithChildren<{ variant: "primary" | "danger" }>
 > = (props) => {
+  const org = useOrg();
   const ctx = trpc.useContext();
   const toggleRewards = trpc.meeting.reward.toggle.useMutation();
   const meeting = useMeeting();
+
+  if (org.member.role !== "ADMIN") return null;
 
   return (
     <Button
@@ -42,13 +45,16 @@ const ToggleButton: React.FC<
 };
 
 const EnableRewards: React.FC = () => {
+  const org = useOrg();
+
   return (
     <Card className="flex min-h-[20rem] flex-col items-center justify-center gap-4 border-dotted bg-background-primary">
       <div className="flex flex-col items-center text-center">
         <Heading level="h4">Rewards are not enabled for this meeting</Heading>
         <p className="text-sm opacity-75">
-          Enabling rewards for this meeting will enable you to modify the
-          user&apos;s attributes on attendance
+          {org.member.role === "ADMIN"
+            ? "Enabling rewards for this meeting will enable you to modify the user's attributes on attendance"
+            : "You will not get any additional rewards for attending this meeting. This meeting might still be mandatory for you."}
         </p>
       </div>
       <ToggleButton variant="primary">Enable</ToggleButton>
@@ -80,7 +86,9 @@ const RewardList: React.FC = () => {
                 <th>Key</th>
                 <th>Value</th>
                 <th>Action</th>
-                <th className="text-right">Remove</th>
+                {org.member.role === "ADMIN" && (
+                  <th className="text-right">Remove</th>
+                )}
               </tr>
             </thead>
             <tbody ref={parent}>
@@ -94,22 +102,24 @@ const RewardList: React.FC = () => {
                   </td>
                   <td>{reward.value}</td>
                   <td>{reward.action}</td>
-                  <td className="flex justify-end text-end">
-                    <Button
-                      onClick={() =>
-                        deleteReward
-                          .mutateAsync({
-                            id: reward.id,
-                            meetingId: meeting.id,
-                            orgId: org.id,
-                          })
-                          .then(() => ctx.meeting.reward.list.invalidate())
-                      }
-                      icon={<AiOutlineClose />}
-                      variant="ghost"
-                      className="hover:bg-background-dark"
-                    />
-                  </td>
+                  {org.member.role === "ADMIN" && (
+                    <td className="flex justify-end text-end">
+                      <Button
+                        onClick={() =>
+                          deleteReward
+                            .mutateAsync({
+                              id: reward.id,
+                              meetingId: meeting.id,
+                              orgId: org.id,
+                            })
+                            .then(() => ctx.meeting.reward.list.invalidate())
+                        }
+                        icon={<AiOutlineClose />}
+                        variant="ghost"
+                        className="hover:bg-background-dark"
+                      />
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -122,6 +132,7 @@ const RewardList: React.FC = () => {
 
 const MeetingRewards: CustomNextPage = () => {
   const meeting = useMeeting();
+  const org = useOrg();
 
   return (
     <SectionWrapper>
@@ -136,7 +147,7 @@ const MeetingRewards: CustomNextPage = () => {
               <ToggleButton variant="danger">Disable</ToggleButton>
             </div>
             <div className="flex-1">
-              <NewReward />
+              {org.member.role === "ADMIN" && <NewReward />}
             </div>
           </div>
         )}

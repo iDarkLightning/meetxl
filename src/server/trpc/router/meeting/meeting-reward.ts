@@ -1,6 +1,9 @@
 import { MeetingRewardAction } from "@prisma/client";
 import { z } from "zod";
-import { meetingAdminProcedure } from "../../procedures/meeting-procedures";
+import {
+  meetingAdminProcedure,
+  meetingMemberProcedure,
+} from "../../procedures/meeting-procedures";
 import { t } from "../../trpc";
 
 export const meetingRewardRouter = t.router({
@@ -34,7 +37,7 @@ export const meetingRewardRouter = t.router({
       });
     }),
 
-  list: meetingAdminProcedure.query(async ({ ctx }) => {
+  list: meetingMemberProcedure.query(async ({ ctx }) => {
     return ctx.prisma.meetingReward.findMany({
       where: {
         meetingId: ctx.meeting.id,
