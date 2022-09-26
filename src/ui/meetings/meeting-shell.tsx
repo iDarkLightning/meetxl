@@ -1,5 +1,9 @@
-import React from "react";
-import { OrgShell } from "../org/org-shell";
+import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
+import { trpc } from "@/utils/trpc";
+import { Meeting } from "@prisma/client";
+import { useRouter } from "next/router";
+import React, { createContext } from "react";
+import { OrgShell, useOrg } from "../org/org-shell";
 
 const tabs = [
   {
@@ -7,11 +11,59 @@ const tabs = [
     route: "/[org]/[meeting]",
   },
   {
+    name: "Rewards",
+    route: "/[org]/[meeting]/rewards",
+  },
+  {
     name: "Participants",
     route: "/[org]/[meeting]/participants",
   },
 ];
 
-export const MeetingShell: React.FC<React.PropsWithChildren> = (props) => (
-  <OrgShell tabs={tabs}>{props.children}</OrgShell>
-);
+const MeetingContext = createContext<{ meeting: Meeting | null }>({
+  meeting: null,
+});
+
+export const useMeeting = () => {
+  const { meeting } = React.useContext(MeetingContext);
+
+  if (!meeting) {
+    throw new Error("No MeetingProvider found");
+  }
+
+  return meeting;
+};
+
+const MeetingInner: React.FC<React.PropsWithChildren> = (props) => {
+  const org = useOrg();
+  const router = useRouter();
+
+  const meetingQuery = trpc.meeting.get.useQuery(
+    {
+      orgId: org.id,
+      slug: router.query.meeting as string,
+    },
+    {
+      enabled: !!router.query.meeting,
+    }
+  );
+
+  return (
+    <BaseQueryCell
+      query={meetingQuery}
+      success={({ data }) => (
+        <MeetingContext.Provider value={{ meeting: data }}>
+          {props.children}
+        </MeetingContext.Provider>
+      )}
+    />
+  );
+};
+
+export const MeetingShell: React.FC<React.PropsWithChildren> = (props) => {
+  return (
+    <OrgShell tabs={tabs}>
+      <MeetingInner>{props.children}</MeetingInner>
+    </OrgShell>
+  );
+};

@@ -18,3 +18,16 @@ body {
 *:focus-visible {
   @apply ring-2  ring-accent-primary ring-opacity-75;
 }
+
+td,
+th {
+  @apply p-2;
+}
+
+td {
+  @apply font-medium;
+}
+
+th {
+  @apply text-sm font-normal text-gray-300;
+}

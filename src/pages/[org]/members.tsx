@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { SectionHeading } from "@/shared-components/layout/section-heading";
+import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
@@ -16,7 +17,7 @@ const OrgMembers: CustomNextPage = () => {
   const kickMember = trpc.organization.members.kick.useMutation();
 
   return (
-    <section className="flex flex-col gap-6">
+    <SectionWrapper>
       <SectionHeading
         heading="Organization Members"
         sub="Manage all the members of your organization"
@@ -59,7 +60,7 @@ const OrgMembers: CustomNextPage = () => {
           </AnimateWrapper>
         )}
       />
-    </section>
+    </SectionWrapper>
   );
 };
 

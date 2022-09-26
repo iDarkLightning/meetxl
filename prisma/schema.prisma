@@ -98,12 +98,25 @@ model MeetingParticipant {
     @@id([meetingId, memberOrganizationId, memberUserId])
 }
 
+model MeetingReward {
+    id        String              @id @default(cuid())
+    key       String
+    value     Float
+    action    MeetingRewardAction
+    meeting   Meeting             @relation(fields: [meetingId], references: [id])
+    meetingId String
+
+    @@unique([meetingId, key])
+}
+
 model Meeting {
     id               String               @id @default(cuid())
     name             String
     slug             String
     maxParticipants  Int?
     participants     MeetingParticipant[]
+    rewardsEnabled   Boolean              @default(false)
+    rewards          MeetingReward[]
     organizationSlug String
     organization     Organization         @relation(fields: [organizationSlug], references: [slug])
 
@@ -118,6 +131,12 @@ model Organization {
     members   OrganizationMember[]
     joinCodes JoinCode[]
     meetings  Meeting[]
+}
+
+enum MeetingRewardAction {
+    INCREMENT
+    DECREMENT
+    SET
 }
 
 enum MemberRole {

@@ -105,7 +105,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             {!loading && icon}
             {loading && <Spinner />}
           </span>
-          <span className={clsx((icon || loading) && rest.children && "ml-2")}>
+          <span
+            className={clsx(
+              (icon || loading) && rest.children && "ml-2",
+              "text-center"
+            )}
+          >
             {props.children}
           </span>
         </button>

@@ -1,4 +1,5 @@
 import { SectionHeading } from "@/shared-components/layout/section-heading";
+import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
@@ -18,7 +19,7 @@ const OrgHome: CustomNextPage = () => {
   const meetingsQuery = trpc.meeting.list.useQuery({ orgId: org.id });
 
   return (
-    <section className="flex flex-col gap-6">
+    <SectionWrapper>
       <div className="flex items-center justify-between">
         <SectionHeading
           heading="Meetings"
@@ -53,7 +54,7 @@ const OrgHome: CustomNextPage = () => {
         )}
       />
       <NewMeetingsModal isOpen={isOpen} setIsOpen={setIsOpen} />
-    </section>
+    </SectionWrapper>
   );
 };
 

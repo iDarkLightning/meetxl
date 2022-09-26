@@ -1,6 +1,6 @@
 // src/server/trpc/router/index.ts
 import { t } from "../trpc";
-import { meetingRouter } from "./meeting-router";
+import { meetingRouter } from "./meeting";
 import { organizationRouter } from "./organization";
 
 export const appRouter = t.router({

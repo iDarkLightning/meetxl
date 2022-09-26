@@ -1,10 +1,11 @@
 import { z } from "zod";
-import { Context } from "../context";
+import { Context } from "../../context";
 import {
   orgAdminProcedure,
   orgMemberProcedure,
-} from "../procedures/org-procedures";
-import { t } from "../trpc";
+} from "../../procedures/org-procedures";
+import { t } from "../../trpc";
+import { meetingRewardRouter } from "./meeting-reward";
 
 const generateMeetingSlug = async (name: string, ctx: Context) => {
   const slug = name
@@ -41,4 +42,19 @@ export const meetingRouter = t.router({
       },
     });
   }),
+
+  get: orgMemberProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.meeting.findUniqueOrThrow({
+        where: {
+          organizationSlug_slug: {
+            organizationSlug: ctx.org.slug,
+            slug: input.slug,
+          },
+        },
+      });
+    }),
+
+  reward: meetingRewardRouter,
 });
