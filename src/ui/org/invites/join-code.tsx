@@ -60,7 +60,7 @@ export const JoinCodeInvite = () => {
                       <img
                         className="hidden h-10 w-10 rounded-full md:block"
                         src={code.issuer.user.image!}
-                        alt={code.issuer.user.image!}
+                        alt={code.issuer.user.name!}
                       />
                       <div>
                         <p

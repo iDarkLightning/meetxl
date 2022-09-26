@@ -52,11 +52,11 @@ export const MainLayout: React.FC<
                 >
                   <a
                     className={clsx(
-                      "px-4 py-2 leading-none",
+                      "tran px-4 py-2 leading-none transition-all",
                       router.pathname === item.route &&
                         "border-b-2 border-accent-primary",
                       router.pathname !== item.route &&
-                        "opacity-70 hover:border-b-2 hover:border-purple-200 hover:opacity-100"
+                        "opacity-70 hover:border-b-2 hover:border-blue-200 hover:opacity-100"
                     )}
                   >
                     {item.name}

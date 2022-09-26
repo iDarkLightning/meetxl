@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
+import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
-import { Heading } from "@/shared-components/system/heading";
 import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { CustomNextPage } from "@/types/next-page";
@@ -17,12 +17,10 @@ const OrgMembers: CustomNextPage = () => {
 
   return (
     <section className="flex flex-col gap-6">
-      <div>
-        <Heading level="h4">Organization Members</Heading>
-        <p className="opacity-75">
-          Manage all of the members of your organization
-        </p>
-      </div>
+      <SectionHeading
+        heading="Organization Members"
+        sub="Manage all the members of your organization"
+      />
       <BaseQueryCell
         query={membersQuery}
         success={({ data }) => (

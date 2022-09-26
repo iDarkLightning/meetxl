@@ -1,3 +1,4 @@
+import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
@@ -7,6 +8,7 @@ import { CustomNextPage } from "@/types/next-page";
 import { NewMeetingsModal } from "@/ui/meetings/new-meetings";
 import { OrgShell, useOrg } from "@/ui/org/org-shell";
 import { trpc } from "@/utils/trpc";
+import Link from "next/link";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 
@@ -18,10 +20,10 @@ const OrgHome: CustomNextPage = () => {
   return (
     <section className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <div>
-          <Heading level="h4">Meetings</Heading>
-          <p className="opacity-75">Manage your organization&apos;s meetings</p>
-        </div>
+        <SectionHeading
+          heading="Meetings"
+          sub={`All of the available meetings for the ${org.name} organization`}
+        />
         <Button
           variant="primary"
           icon={<FaPlus size="0.75rem" />}
@@ -33,11 +35,19 @@ const OrgHome: CustomNextPage = () => {
       <BaseQueryCell
         query={meetingsQuery}
         success={({ data }) => (
-          <AnimateWrapper className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <AnimateWrapper className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {data.map((meeting) => (
-              <Card key={meeting.id}>
-                <Heading level="h3">{meeting.name}</Heading>
-              </Card>
+              <Link
+                key={meeting.id}
+                href={`/${org.slug}/${meeting.slug}`}
+                passHref
+              >
+                <a>
+                  <Card>
+                    <Heading level="h3">{meeting.name}</Heading>
+                  </Card>
+                </a>
+              </Link>
             ))}
           </AnimateWrapper>
         )}
