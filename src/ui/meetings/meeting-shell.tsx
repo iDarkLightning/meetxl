@@ -1,11 +1,12 @@
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
+import { Tab } from "@/types/tab";
 import { trpc } from "@/utils/trpc";
 import { Meeting } from "@prisma/client";
 import { useRouter } from "next/router";
 import React, { createContext } from "react";
 import { OrgShell, useOrg } from "../org/org-shell";
 
-const tabs = [
+const tabs: Tab[] = [
   {
     name: "Overview",
     route: "/[org]/[meeting]",
@@ -17,6 +18,7 @@ const tabs = [
   {
     name: "Participants",
     route: "/[org]/[meeting]/participants",
+    adminRequired: true,
   },
 ];
 

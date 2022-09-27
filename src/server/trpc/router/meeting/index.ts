@@ -5,6 +5,7 @@ import {
   orgMemberProcedure,
 } from "../../procedures/org-procedures";
 import { t } from "../../trpc";
+import { meetingParticipantRouter } from "./meeting-participant";
 import { meetingRewardRouter } from "./meeting-reward";
 
 const generateMeetingSlug = async (name: string, ctx: Context) => {
@@ -36,9 +37,37 @@ export const meetingRouter = t.router({
     }),
 
   list: orgMemberProcedure.query(async ({ ctx }) => {
+    const orgMember = await ctx.prisma.organizationMember.findUniqueOrThrow({
+      where: {
+        organizationId_userId: {
+          organizationId: ctx.org.id,
+          userId: ctx.session.user.id,
+        },
+      },
+    });
+
+    if (orgMember.role === "ADMIN") {
+      return ctx.prisma.meeting.findMany({
+        where: {
+          organizationSlug: ctx.org.slug,
+        },
+      });
+    }
+
     return ctx.prisma.meeting.findMany({
       where: {
-        organizationSlug: ctx.org.slug,
+        OR: [
+          {
+            participants: {
+              some: {
+                memberUserId: ctx.session.user.id,
+              },
+            },
+          },
+          {
+            canRsvp: true,
+          },
+        ],
       },
     });
   }),
@@ -57,4 +86,5 @@ export const meetingRouter = t.router({
     }),
 
   reward: meetingRewardRouter,
+  participant: meetingParticipantRouter,
 });

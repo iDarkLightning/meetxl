@@ -3,7 +3,6 @@ import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
-import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { CustomNextPage } from "@/types/next-page";
 import { MeetingShell, useMeeting } from "@/ui/meetings/meeting-shell";
@@ -27,7 +26,7 @@ const ToggleButton: React.FC<
 
   return (
     <Button
-      className={clsx(props.variant === "danger" && "bg-red-500")}
+      className={clsx(props.variant === "danger" && "w-full")}
       variant={props.variant}
       loading={toggleRewards.isLoading}
       onClick={() =>

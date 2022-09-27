@@ -89,11 +89,12 @@ model JoinCode {
 }
 
 model MeetingParticipant {
+    status               MeetingParticipantStatus
     meetingId            String
     memberOrganizationId String
     memberUserId         String
-    member               OrganizationMember @relation(fields: [memberOrganizationId, memberUserId], references: [organizationId, userId])
-    meeting              Meeting            @relation(fields: [meetingId], references: [id])
+    member               OrganizationMember       @relation(fields: [memberOrganizationId, memberUserId], references: [organizationId, userId])
+    meeting              Meeting                  @relation(fields: [meetingId], references: [id])
 
     @@id([meetingId, memberOrganizationId, memberUserId])
 }
@@ -116,6 +117,7 @@ model Meeting {
     maxParticipants  Int?
     participants     MeetingParticipant[]
     rewardsEnabled   Boolean              @default(false)
+    canRsvp          Boolean              @default(false)
     rewards          MeetingReward[]
     organizationSlug String
     organization     Organization         @relation(fields: [organizationSlug], references: [slug])
@@ -131,6 +133,12 @@ model Organization {
     members   OrganizationMember[]
     joinCodes JoinCode[]
     meetings  Meeting[]
+}
+
+enum MeetingParticipantStatus {
+    RSVPED
+    ASSIGNED
+    ATTENDED
 }
 
 enum MeetingRewardAction {
