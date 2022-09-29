@@ -68,9 +68,9 @@ model OrganizationMember {
     organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
     user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    role               MemberRole
-    createdJoinCodes   JoinCode[]
-    MeetingParticipant MeetingParticipant[]
+    role             MemberRole
+    createdJoinCodes JoinCode[]
+    meetings         MeetingParticipant[]
 
     @@id([organizationId, userId])
 }

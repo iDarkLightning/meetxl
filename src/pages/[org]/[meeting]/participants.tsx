@@ -6,6 +6,7 @@ import { Heading } from "@/shared-components/system/heading";
 import { Input } from "@/shared-components/system/input";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { CustomNextPage } from "@/types/next-page";
+import { EditParticipantsModal } from "@/ui/meetings/edit-participant";
 import { MeetingShell, useMeeting } from "@/ui/meetings/meeting-shell";
 import { trpc } from "@/utils/trpc";
 
@@ -43,8 +44,11 @@ const MeetingParticipants: CustomNextPage = () => {
         </div>
       </Card>
       <div className="flex gap-4">
-        <div>
-          <Heading level="h5">Participants</Heading>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <Heading level="h5">Participants</Heading>
+            <EditParticipantsModal />
+          </div>
           <table className="w-full table-fixed text-left">
             <thead>
               <tr className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">

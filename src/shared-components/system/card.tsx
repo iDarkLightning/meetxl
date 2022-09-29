@@ -9,7 +9,7 @@ export const Card = forwardRef<
     <div
       ref={ref}
       className={clsx(
-        "rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary p-4",
+        "rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary p-4 transition-colors hover:bg-opacity-80",
         props.className
       )}
     >

@@ -27,10 +27,12 @@ export const MainLayout: React.FC<
               <Heading className="flex items-center gap-3" level="h3">
                 <Link href="/dashboard">MeetXL</Link>
                 {props.heading && (
-                  <>
-                    <span className="text-md font-light opacity-30">/</span>
-                    <span>{props.heading}</span>
-                  </>
+                  <Link href={`/${props.heading}`} passHref>
+                    <a className="flex gap-3">
+                      <span className="text-md font-light opacity-30">/</span>
+                      <span>{props.heading}</span>
+                    </a>
+                  </Link>
                 )}
               </Heading>
             </div>
@@ -56,7 +58,7 @@ export const MainLayout: React.FC<
                       router.pathname === item.route &&
                         "border-b-2 border-accent-primary",
                       router.pathname !== item.route &&
-                        "opacity-70 hover:border-b-2 hover:border-blue-200 hover:opacity-100"
+                        "opacity-70 hover:border-b-2 hover:border-purple-400 hover:opacity-100"
                     )}
                   >
                     {item.name}

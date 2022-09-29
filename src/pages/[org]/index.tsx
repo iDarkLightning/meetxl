@@ -36,7 +36,7 @@ const OrgHome: CustomNextPage = () => {
       <BaseQueryCell
         query={meetingsQuery}
         success={({ data }) => (
-          <AnimateWrapper className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <AnimateWrapper className="flex flex-col gap-6">
             {data.map((meeting) => (
               <Link
                 key={meeting.id}
@@ -46,6 +46,13 @@ const OrgHome: CustomNextPage = () => {
                 <a>
                   <Card>
                     <Heading level="h3">{meeting.name}</Heading>
+                    <div className="flex gap-4 opacity-80">
+                      <p>
+                        Rewards Enabled:{" "}
+                        {!!meeting.rewardsEnabled ? "Yes" : "No"}
+                      </p>
+                      <p>Can RSVP: {!!meeting.canRsvp ? "Yes" : "No"}</p>
+                    </div>
                   </Card>
                 </a>
               </Link>
