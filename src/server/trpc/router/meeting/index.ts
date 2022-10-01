@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Context } from "../../context";
+import { meetingAdminProcedure } from "../../procedures/meeting-procedures";
 import {
   orgAdminProcedure,
   orgMemberProcedure,
@@ -84,6 +85,20 @@ export const meetingRouter = t.router({
         },
       });
     }),
+
+  toggleAccess: meetingAdminProcedure.mutation(async ({ ctx }) => {
+    return ctx.prisma.meeting.update({
+      where: {
+        organizationSlug_slug: {
+          organizationSlug: ctx.org.slug,
+          slug: ctx.meeting.slug,
+        },
+      },
+      data: {
+        isPublic: !ctx.meeting.isPublic,
+      },
+    });
+  }),
 
   reward: meetingRewardRouter,
   participant: meetingParticipantRouter,
