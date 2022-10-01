@@ -48,7 +48,7 @@ export const EditParticipantsModal: React.FC = (props) => {
                     <input
                       type="checkbox"
                       defaultChecked={member.meetings.length > 0}
-                      onChange={(evt) => {
+                      onChange={() => {
                         if (buffer.includes(member.userId))
                           return updateBuffer((buffer) =>
                             buffer.filter((id) => id !== member.userId)

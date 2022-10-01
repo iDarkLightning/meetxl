@@ -1,12 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
+import { Avatar } from "@/shared-components/system/avatar";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { CustomNextPage } from "@/types/next-page";
 import { OrgShell, useOrg } from "@/ui/org/org-shell";
+import { getAvatarFallback } from "@/utils/get-avatar-fallback";
 import { trpc } from "@/utils/trpc";
 
 const OrgMembers: CustomNextPage = () => {
@@ -29,10 +31,11 @@ const OrgMembers: CustomNextPage = () => {
             {data.map((member) => (
               <Card key={member.userId} className="flex justify-between">
                 <div className="flex items-center gap-4">
-                  <img
-                    className="h-10 w-10 rounded-full"
-                    src={member.user.image!}
-                    alt={member.user.name!}
+                  <Avatar
+                    imageProps={{ src: member.user.image as string }}
+                    fallbackProps={{
+                      children: getAvatarFallback(member.user.name),
+                    }}
                   />
                   <div>
                     <p>{member.user.name}</p>

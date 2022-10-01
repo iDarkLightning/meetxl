@@ -1,10 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
+import { Avatar } from "@/shared-components/system/avatar";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
 import { Select } from "@/shared-components/system/select";
 import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
+import { getAvatarFallback } from "@/utils/get-avatar-fallback";
 import { trpc } from "@/utils/trpc";
 import { MemberRole } from "@prisma/client";
 import { FaPlus } from "react-icons/fa";
@@ -57,10 +59,11 @@ export const JoinCodeInvite = () => {
                     className="flex items-center justify-between gap-4 border-b-[0.025rem] border-accent-stroke pb-2"
                   >
                     <div className="flex items-center gap-4">
-                      <img
-                        className="hidden h-10 w-10 rounded-full md:block"
-                        src={code.issuer.user.image!}
-                        alt={code.issuer.user.name!}
+                      <Avatar
+                        imageProps={{ src: code.issuer.user.image as string }}
+                        fallbackProps={{
+                          children: getAvatarFallback(code.issuer.user.name),
+                        }}
                       />
                       <div>
                         <p
