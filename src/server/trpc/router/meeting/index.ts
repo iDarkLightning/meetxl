@@ -65,7 +65,7 @@ export const meetingRouter = t.router({
             },
           },
           {
-            canRsvp: true,
+            isPublic: true,
           },
         ],
       },

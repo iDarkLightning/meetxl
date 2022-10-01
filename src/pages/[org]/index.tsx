@@ -1,22 +1,78 @@
 import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
-import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
 import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { CustomNextPage } from "@/types/next-page";
+import { MeetingCard } from "@/ui/meetings/meeting-card";
 import { NewMeetingsModal } from "@/ui/meetings/new-meetings";
 import { OrgShell, useOrg } from "@/ui/org/org-shell";
 import { trpc } from "@/utils/trpc";
-import Link from "next/link";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
+
+const MemberListing: React.FC = () => {
+  const org = useOrg();
+  const meetingsQuery = trpc.meeting.list.useQuery({ orgId: org.id });
+
+  return (
+    <BaseQueryCell
+      query={meetingsQuery}
+      success={({ data }) => {
+        const publicMeetings = data.filter((meeting) => meeting.isPublic);
+        const privateMeetings = data.filter((meeting) => !meeting.isPublic);
+
+        return (
+          <div className="flex flex-col gap-4">
+            {privateMeetings.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <Heading level="h4">Registered Meetings</Heading>
+                <AnimateWrapper className="flex flex-col gap-3">
+                  {privateMeetings.map((meeting) => (
+                    <MeetingCard meeting={meeting} key={meeting.id} />
+                  ))}
+                </AnimateWrapper>
+              </div>
+            )}
+            {publicMeetings.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <Heading level="h4">Public Meetings</Heading>
+                <AnimateWrapper className="flex flex-col gap-3">
+                  {publicMeetings.map((meeting) => (
+                    <MeetingCard meeting={meeting} key={meeting.id} />
+                  ))}
+                </AnimateWrapper>
+              </div>
+            )}
+          </div>
+        );
+      }}
+    />
+  );
+};
+
+const AdminListing: React.FC = () => {
+  const org = useOrg();
+  const meetingsQuery = trpc.meeting.list.useQuery({ orgId: org.id });
+
+  return (
+    <BaseQueryCell
+      query={meetingsQuery}
+      success={({ data }) => (
+        <AnimateWrapper className="flex flex-col gap-3">
+          {data.map((meeting) => (
+            <MeetingCard meeting={meeting} key={meeting.id} />
+          ))}
+        </AnimateWrapper>
+      )}
+    />
+  );
+};
 
 const OrgHome: CustomNextPage = () => {
   const org = useOrg();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const meetingsQuery = trpc.meeting.list.useQuery({ orgId: org.id });
 
   return (
     <SectionWrapper>
@@ -33,33 +89,7 @@ const OrgHome: CustomNextPage = () => {
           New
         </Button>
       </div>
-      <BaseQueryCell
-        query={meetingsQuery}
-        success={({ data }) => (
-          <AnimateWrapper className="flex flex-col gap-6">
-            {data.map((meeting) => (
-              <Link
-                key={meeting.id}
-                href={`/${org.slug}/${meeting.slug}`}
-                passHref
-              >
-                <a>
-                  <Card>
-                    <Heading level="h3">{meeting.name}</Heading>
-                    <div className="flex gap-4 opacity-80">
-                      <p>
-                        Rewards Enabled:{" "}
-                        {!!meeting.rewardsEnabled ? "Yes" : "No"}
-                      </p>
-                      <p>Can RSVP: {!!meeting.canRsvp ? "Yes" : "No"}</p>
-                    </div>
-                  </Card>
-                </a>
-              </Link>
-            ))}
-          </AnimateWrapper>
-        )}
-      />
+      {org.member.role === "ADMIN" ? <AdminListing /> : <MemberListing />}
       <NewMeetingsModal isOpen={isOpen} setIsOpen={setIsOpen} />
     </SectionWrapper>
   );

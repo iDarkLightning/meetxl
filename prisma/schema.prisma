@@ -114,13 +114,15 @@ model Meeting {
     id               String               @id @default(cuid())
     name             String
     slug             String
-    maxParticipants  Int?
-    participants     MeetingParticipant[]
-    rewardsEnabled   Boolean              @default(false)
-    canRsvp          Boolean              @default(false)
-    rewards          MeetingReward[]
     organizationSlug String
+    rewardsEnabled   Boolean              @default(false)
+    isPublic         Boolean              @default(false)
+    participants     MeetingParticipant[]
+    rewards          MeetingReward[]
     organization     Organization         @relation(fields: [organizationSlug], references: [slug])
+
+    // for public meetings
+    maxParticipants Int?
 
     @@unique([organizationSlug, slug])
 }
@@ -136,8 +138,7 @@ model Organization {
 }
 
 enum MeetingParticipantStatus {
-    RSVPED
-    ASSIGNED
+    REGISTERED
     ATTENDED
 }
 

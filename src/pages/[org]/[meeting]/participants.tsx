@@ -35,7 +35,7 @@ const MeetingParticipants: CustomNextPage = () => {
             <p className="font-medium">Enable RSVP</p>
             <Button>Enable</Button>
           </div>
-          {meeting.canRsvp && (
+          {meeting.isPublic && (
             <div className="flex items-center justify-between">
               <p className="font-medium">Maximum Participants</p>
               <Input type="number" className="w-min" />

@@ -56,7 +56,7 @@ export const meetingParticipantRouter = t.router({
                 meetingId: ctx.meeting.id,
                 memberUserId: memberId,
                 memberOrganizationId: ctx.org.id,
-                status: "ASSIGNED",
+                status: "REGISTERED",
               },
             });
           }
