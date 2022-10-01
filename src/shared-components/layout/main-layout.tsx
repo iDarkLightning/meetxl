@@ -17,7 +17,7 @@ export const MainLayout: React.FC<
     <main>
       <header
         className={clsx(
-          "border-b-[1px] border-accent-stroke bg-background-secondary",
+          "border-b-[1px] border-accent-stroke",
           props.tabs && "h-28"
         )}
       >
