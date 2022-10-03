@@ -19,9 +19,9 @@ export const MainLayout: React.FC<
   return (
     <main>
       <header className="border-b-[1px] border-accent-stroke">
-        <ContentWrapper className="relative flex h-full flex-col gap-6 pb-1 md:py-5">
+        <ContentWrapper className="relative flex h-full flex-col gap-6 pb-1 lg:py-5">
           <nav className="flex items-center justify-between">
-            <div className="flex w-full flex-col gap-4 md:flex-row md:items-center md:gap-8">
+            <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
               <div className="flex w-full items-center justify-between gap-4 md:w-min">
                 <Heading className="flex items-center gap-3" level="h3">
                   <Link href="/dashboard" passHref>
