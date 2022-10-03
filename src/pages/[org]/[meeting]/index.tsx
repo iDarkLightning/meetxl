@@ -45,7 +45,17 @@ const ParticipantIndex: React.FC = () => {
 };
 
 const MeetingIndex: CustomNextPage = () => {
-  return <ParticipantIndex />;
+  const org = useOrg();
+
+  if (org.member.role === "MEMBER") {
+    return <ParticipantIndex />;
+  }
+
+  return (
+    <div>
+      <h1>Monsieur, tu es un Admin</h1>
+    </div>
+  );
 };
 
 MeetingIndex.auth = true;
