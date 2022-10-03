@@ -25,7 +25,11 @@ export const MainLayout: React.FC<
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Heading className="flex items-center gap-3" level="h3">
-                <Link href="/dashboard">MeetXL</Link>
+                <Link href="/dashboard" passHref>
+                  <a className="flex items-center gap-2">
+                    <Heading level="h3">MeetXL</Heading>
+                  </a>
+                </Link>
                 {props.heading && (
                   <Link href={`/${props.heading}`} passHref>
                     <a className="flex gap-3">

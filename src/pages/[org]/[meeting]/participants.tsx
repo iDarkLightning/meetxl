@@ -56,13 +56,13 @@ const MeetingParticipants: CustomNextPage = () => {
           )}
         </div>
       </Card>
-      <div className="flex gap-4">
-        <div className="flex flex-col gap-4">
+      <div className="flex w-full gap-4">
+        <div className="flex w-full flex-col gap-4">
           <div className="flex items-center justify-between">
             <Heading level="h5">Participants</Heading>
             <EditParticipantsModal />
           </div>
-          <table className="w-full table-fixed text-left">
+          <table className="w-full text-left">
             <thead>
               <tr className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
                 <th>Name</th>

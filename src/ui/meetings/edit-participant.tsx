@@ -5,11 +5,11 @@ import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { trpc } from "@/utils/trpc";
 import { Dialog } from "@headlessui/react";
 import { useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import { useOrg } from "../org/org-shell";
 import { useMeeting } from "./meeting-shell";
 
-export const EditParticipantsModal: React.FC = (props) => {
+export const EditParticipantsModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const org = useOrg();
   const meeting = useMeeting();
@@ -23,7 +23,7 @@ export const EditParticipantsModal: React.FC = (props) => {
 
   return (
     <>
-      <Button icon={<FaPlus size="0.75rem" />} onClick={() => setIsOpen(true)}>
+      <Button icon={<FaEdit size="0.75rem" />} onClick={() => setIsOpen(true)}>
         Edit Participants
       </Button>
       <DialogWrapper

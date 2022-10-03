@@ -96,7 +96,7 @@ const RewardList: React.FC = () => {
                   key={reward.id}
                   className="transition-colors hover:bg-accent-secondary"
                 >
-                  <td className="font-mono font-medium text-blue-400">
+                  <td className="font-mono font-medium text-green-400">
                     {reward.key}
                   </td>
                   <td>{reward.value}</td>
