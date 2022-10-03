@@ -1,5 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
+import { Avatar } from "@/shared-components/system/avatar";
 import { Heading } from "@/shared-components/system/heading";
+import { getAvatarFallback } from "@/utils/get-avatar-fallback";
 import { useSession } from "next-auth/react";
 
 interface Props {
@@ -26,10 +28,13 @@ export const MeetingTicket: React.FC<Props> = (props) => {
           </div>
           <div className="flex h-[24rem] flex-[4] flex-col items-center justify-center gap-8">
             <div className="flex flex-col items-center">
-              <img
-                src={session.data?.user?.image as string}
-                alt={session.data?.user?.name as string}
-                className="rounded-full"
+              <Avatar
+                imageProps={{ src: session.data?.user?.image as string }}
+                fallbackProps={{
+                  children: getAvatarFallback(
+                    session.data?.user?.name as string
+                  ),
+                }}
               />
               <Heading className="mt-2 text-4xl font-bold">
                 {session.data?.user?.name}

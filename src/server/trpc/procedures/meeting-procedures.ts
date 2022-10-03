@@ -19,7 +19,35 @@ export const meetingMemberProcedure = orgMemberProcedure
   .use(async ({ ctx, input, next }) => {
     const meeting = await ctx.prisma.meeting.findFirstOrThrow({
       where: {
-        OR: [{ id: input.meetingId }, { slug: input.meetingId }],
+        AND: [
+          {
+            OR: [{ id: input.meetingId }, { slug: input.meetingId }],
+          },
+          {
+            OR: [
+              {
+                participants: {
+                  some: {
+                    memberUserId: ctx.session.user.id,
+                  },
+                },
+              },
+              {
+                organization: {
+                  members: {
+                    some: {
+                      userId: ctx.session.user.id,
+                      role: "ADMIN",
+                    },
+                  },
+                },
+              },
+              {
+                isPublic: true,
+              },
+            ],
+          },
+        ],
         organizationSlug: ctx.org.slug,
       },
     });

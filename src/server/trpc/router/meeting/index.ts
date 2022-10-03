@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { Context } from "../../context";
-import { meetingAdminProcedure } from "../../procedures/meeting-procedures";
+import {
+  meetingAdminProcedure,
+  meetingMemberProcedure,
+} from "../../procedures/meeting-procedures";
 import {
   orgAdminProcedure,
   orgMemberProcedure,
@@ -73,18 +76,22 @@ export const meetingRouter = t.router({
     });
   }),
 
-  get: orgMemberProcedure
-    .input(z.object({ slug: z.string() }))
-    .query(async ({ ctx, input }) => {
-      return ctx.prisma.meeting.findUniqueOrThrow({
-        where: {
-          organizationSlug_slug: {
-            organizationSlug: ctx.org.slug,
-            slug: input.slug,
-          },
+  get: meetingMemberProcedure.query(async ({ ctx }) => {
+    const participant = await ctx.prisma.meetingParticipant.findUnique({
+      where: {
+        meetingId_memberOrganizationId_memberUserId: {
+          meetingId: ctx.meeting.id,
+          memberOrganizationId: ctx.org.id,
+          memberUserId: ctx.session.user.id,
         },
-      });
-    }),
+      },
+    });
+
+    if (ctx.meeting.isPublic && !participant)
+      return { ...ctx.meeting, participant: null };
+
+    return { ...ctx.meeting, participant };
+  }),
 
   toggleAccess: meetingAdminProcedure.mutation(async ({ ctx }) => {
     return ctx.prisma.meeting.update({

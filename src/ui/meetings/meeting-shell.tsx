@@ -1,7 +1,9 @@
+import { AppRouter } from "@/server/trpc/router";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { Tab } from "@/types/tab";
 import { trpc } from "@/utils/trpc";
 import { Meeting } from "@prisma/client";
+import { inferProcedureOutput } from "@trpc/server";
 import { useRouter } from "next/router";
 import React, { createContext } from "react";
 import { OrgShell, useOrg } from "../org/org-shell";
@@ -22,7 +24,9 @@ const tabs: Tab[] = [
   },
 ];
 
-const MeetingContext = createContext<{ meeting: Meeting | null }>({
+const MeetingContext = createContext<{
+  meeting: inferProcedureOutput<AppRouter["meeting"]["get"]> | null;
+}>({
   meeting: null,
 });
 
@@ -43,7 +47,7 @@ const MeetingInner: React.FC<React.PropsWithChildren> = (props) => {
   const meetingQuery = trpc.meeting.get.useQuery(
     {
       orgId: org.id,
-      slug: router.query.meeting as string,
+      meetingId: router.query.meeting as string,
     },
     {
       enabled: !!router.query.meeting,

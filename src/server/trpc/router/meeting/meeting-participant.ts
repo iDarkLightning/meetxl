@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { meetingAdminProcedure } from "../../procedures/meeting-procedures";
+import {
+  meetingAdminProcedure,
+  meetingMemberProcedure,
+} from "../../procedures/meeting-procedures";
 import { t } from "../../trpc";
 
 export const meetingParticipantRouter = t.router({
@@ -73,4 +76,15 @@ export const meetingParticipantRouter = t.router({
         })
       );
     }),
+
+  register: meetingMemberProcedure.mutation(async ({ ctx }) => {
+    return ctx.prisma.meetingParticipant.create({
+      data: {
+        meetingId: ctx.meeting.id,
+        memberUserId: ctx.session.user.id,
+        memberOrganizationId: ctx.org.id,
+        status: "REGISTERED",
+      },
+    });
+  }),
 });
