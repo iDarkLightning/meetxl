@@ -2,8 +2,7 @@ import { AppRouter } from "@/server/trpc/router";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { Tab } from "@/types/tab";
 import { trpc } from "@/utils/trpc";
-import { Meeting } from "@prisma/client";
-import { inferProcedureOutput, router } from "@trpc/server";
+import { inferProcedureOutput } from "@trpc/server";
 import { useRouter } from "next/router";
 import React, { createContext } from "react";
 import { OrgShell, useOrg } from "../org/org-shell";
@@ -20,6 +19,11 @@ const tabs: Tab[] = [
   {
     name: "Participants",
     route: "/[org]/[meeting]/participants",
+    adminRequired: true,
+  },
+  {
+    name: "Attendance",
+    route: "/[org]/[meeting]/attendance",
     adminRequired: true,
   },
 ];
