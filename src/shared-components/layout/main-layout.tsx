@@ -57,7 +57,7 @@ export const MainLayout: React.FC<
                   Log Out
                 </Button>
               </div>
-              <ul className="flex gap-4">
+              <ul className="flex flex-wrap gap-4">
                 {props.tabs
                   ?.filter(
                     (item) =>
