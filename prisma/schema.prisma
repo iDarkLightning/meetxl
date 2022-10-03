@@ -96,6 +96,11 @@ model MeetingParticipant {
     member               OrganizationMember       @relation(fields: [memberOrganizationId, memberUserId], references: [organizationId, userId])
     meeting              Meeting                  @relation(fields: [meetingId], references: [id])
 
+    checkedIn    Boolean   @default(false)
+    checkedOut   Boolean   @default(false)
+    checkInTime  DateTime?
+    checkOutTime DateTime?
+
     @@id([meetingId, memberOrganizationId, memberUserId])
 }
 
@@ -123,6 +128,9 @@ model Meeting {
 
     // for public meetings
     maxParticipants Int?
+
+    requireCheckIn  Boolean @default(false)
+    requireCheckOut Boolean @default(false)
 
     @@unique([organizationSlug, slug])
 }
