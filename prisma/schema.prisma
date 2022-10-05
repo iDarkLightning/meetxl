@@ -88,8 +88,19 @@ model JoinCode {
     organizationMemberUserId         String
 }
 
+model AttendanceLink {
+    id        String               @id @default(cuid())
+    code      String
+    action    AttendanceLinkAction
+    meeting   Meeting              @relation(fields: [meetingId], references: [id])
+    meetingId String
+
+    @@unique([meetingId, code])
+}
+
 model MeetingParticipant {
     status               MeetingParticipantStatus
+    code                 String
     meetingId            String
     memberOrganizationId String
     memberUserId         String
@@ -102,6 +113,7 @@ model MeetingParticipant {
     checkOutTime DateTime?
 
     @@id([meetingId, memberOrganizationId, memberUserId])
+    @@unique([meetingId, code])
 }
 
 model MeetingReward {
@@ -129,8 +141,9 @@ model Meeting {
     // for public meetings
     maxParticipants Int?
 
-    requireCheckIn  Boolean @default(false)
-    requireCheckOut Boolean @default(false)
+    requireCheckIn  Boolean          @default(false)
+    requireCheckOut Boolean          @default(false)
+    attendanceLinks AttendanceLink[]
 
     @@unique([organizationSlug, slug])
 }
@@ -159,4 +172,9 @@ enum MeetingRewardAction {
 enum MemberRole {
     ADMIN
     MEMBER
+}
+
+enum AttendanceLinkAction {
+    CHECKIN
+    CHECKOUT
 }

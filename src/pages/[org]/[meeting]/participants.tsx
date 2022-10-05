@@ -4,18 +4,15 @@ import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
 import { Input } from "@/shared-components/system/input";
-import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { CustomNextPage } from "@/types/next-page";
 import { EditParticipantsModal } from "@/ui/meetings/edit-participant";
 import { MeetingShell, useMeeting } from "@/ui/meetings/meeting-shell";
+import { ParticipantList } from "@/ui/meetings/participant-list";
 import { trpc } from "@/utils/trpc";
 
 const MeetingParticipants: CustomNextPage = () => {
   const meeting = useMeeting();
-  const participantsQuery = trpc.meeting.participant.list.useQuery({
-    meetingId: meeting.id,
-    orgId: meeting.organizationSlug,
-  });
+
   const ctx = trpc.useContext();
   const toggleAccess = trpc.meeting.toggleAccess.useMutation();
 
@@ -62,34 +59,7 @@ const MeetingParticipants: CustomNextPage = () => {
             <Heading level="h5">Participants</Heading>
             <EditParticipantsModal />
           </div>
-          <table className="w-full text-left">
-            <thead>
-              <tr className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
-                <th>Name</th>
-                <th>Email</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <BaseQueryCell
-                query={participantsQuery}
-                success={({ data }) => (
-                  <>
-                    {data.map((p) => (
-                      <tr
-                        key={p.memberUserId}
-                        className="transition-colors hover:bg-accent-secondary"
-                      >
-                        <td>{p.member.user.name}</td>
-                        <td>{p.member.user.email}</td>
-                        <td>{p.status}</td>
-                      </tr>
-                    ))}
-                  </>
-                )}
-              />
-            </tbody>
-          </table>
+          <ParticipantList />
         </div>
       </div>
     </SectionWrapper>

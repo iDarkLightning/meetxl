@@ -23,7 +23,7 @@ const tabs: Tab[] = [
   },
   {
     name: "Attendance",
-    route: "/[org]/[meeting]/attendance",
+    route: "/[org]/[meeting]/attendance/*",
     adminRequired: true,
   },
 ];

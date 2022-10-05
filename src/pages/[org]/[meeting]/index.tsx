@@ -37,7 +37,7 @@ const ParticipantIndex: React.FC = () => {
           ticketNumber="00001"
           eventHost={org.name}
           eventName={meeting.name}
-          confirmationCode="123456"
+          confirmationCode={meeting.participant.code}
         />
       </div>
     </div>

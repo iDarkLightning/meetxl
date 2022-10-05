@@ -9,6 +9,7 @@ import {
   orgMemberProcedure,
 } from "../../procedures/org-procedures";
 import { t } from "../../trpc";
+import { meetingAttendanceRouter } from "./meeting-attendance";
 import { meetingParticipantRouter } from "./meeting-participant";
 import { meetingRewardRouter } from "./meeting-reward";
 
@@ -109,4 +110,5 @@ export const meetingRouter = t.router({
 
   reward: meetingRewardRouter,
   participant: meetingParticipantRouter,
+  attendance: meetingAttendanceRouter,
 });

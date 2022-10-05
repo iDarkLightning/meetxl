@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto";
 import { z } from "zod";
 import {
   meetingAdminProcedure,
@@ -56,6 +57,7 @@ export const meetingParticipantRouter = t.router({
           if (!participants.includes(memberId)) {
             return ctx.prisma.meetingParticipant.create({
               data: {
+                code: randomBytes(3).toString("hex"),
                 meetingId: ctx.meeting.id,
                 memberUserId: memberId,
                 memberOrganizationId: ctx.org.id,
@@ -80,6 +82,7 @@ export const meetingParticipantRouter = t.router({
   register: meetingMemberProcedure.mutation(async ({ ctx }) => {
     return ctx.prisma.meetingParticipant.create({
       data: {
+        code: randomBytes(3).toString("hex"),
         meetingId: ctx.meeting.id,
         memberUserId: ctx.session.user.id,
         memberOrganizationId: ctx.org.id,
