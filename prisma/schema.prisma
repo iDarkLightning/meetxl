@@ -71,6 +71,7 @@ model OrganizationMember {
     role             MemberRole
     createdJoinCodes JoinCode[]
     meetings         MeetingParticipant[]
+    AttendanceLink   AttendanceLink[]
 
     @@id([organizationId, userId])
 }
@@ -89,13 +90,30 @@ model JoinCode {
 }
 
 model AttendanceLink {
-    id        String               @id @default(cuid())
-    code      String
-    action    AttendanceLinkAction
-    meeting   Meeting              @relation(fields: [meetingId], references: [id])
-    meetingId String
+    id                               String                 @id @default(cuid())
+    code                             String
+    action                           AttendanceLinkAction
+    meeting                          Meeting                @relation(fields: [meetingId], references: [id])
+    meetingId                        String
+    issuer                           OrganizationMember     @relation(fields: [organizationMemberOrganizationId, organizationMemberUserId], references: [organizationId, userId])
+    organizationMemberOrganizationId String
+    organizationMemberUserId         String
+    redeemedBy                       AttendanceLinkRedeem[]
 
     @@unique([meetingId, code])
+}
+
+model AttendanceLinkRedeem {
+    link                                   AttendanceLink     @relation(fields: [linkId], references: [id])
+    linkId                                 String
+    participant                            MeetingParticipant @relation(fields: [meetingParticipantMeetingId, meetingParticipantMemberOrganizationId, meetingParticipantMemberUserId], references: [meetingId, memberOrganizationId, memberUserId])
+    meetingParticipantMeetingId            String
+    meetingParticipantMemberOrganizationId String
+    meetingParticipantMemberUserId         String
+
+    redeemedAt DateTime @default(now())
+
+    @@id([linkId, meetingParticipantMeetingId, meetingParticipantMemberOrganizationId, meetingParticipantMemberUserId])
 }
 
 model MeetingParticipant {
@@ -107,10 +125,11 @@ model MeetingParticipant {
     member               OrganizationMember       @relation(fields: [memberOrganizationId, memberUserId], references: [organizationId, userId])
     meeting              Meeting                  @relation(fields: [meetingId], references: [id])
 
-    checkedIn    Boolean   @default(false)
-    checkedOut   Boolean   @default(false)
-    checkInTime  DateTime?
-    checkOutTime DateTime?
+    checkedIn     Boolean                @default(false)
+    checkedOut    Boolean                @default(false)
+    checkInTime   DateTime?
+    checkOutTime  DateTime?
+    redeemedLinks AttendanceLinkRedeem[]
 
     @@id([meetingId, memberOrganizationId, memberUserId])
     @@unique([meetingId, code])

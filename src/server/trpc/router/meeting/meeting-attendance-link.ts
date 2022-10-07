@@ -20,6 +20,42 @@ export const meetingAttendanceLinkRouter = t.router({
       });
     }),
 
+  get: meetingMemberProcedure
+    .input(
+      z.object({ type: z.nativeEnum(AttendanceLinkAction), code: z.string() })
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.attendanceLink.findFirstOrThrow({
+        where: {
+          meetingId: ctx.meeting.id,
+          action: input.type,
+          code: input.code,
+        },
+      });
+    }),
+
+  listRedeem: meetingAdminProcedure
+    .input(z.object({ id: z.string().cuid() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.attendanceLinkRedeem.findMany({
+        where: {
+          linkId: input.id,
+        },
+        select: {
+          redeemedAt: true,
+          participant: {
+            include: {
+              member: {
+                select: {
+                  user: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    }),
+
   create: meetingAdminProcedure
     .input(z.object({ action: z.nativeEnum(AttendanceLinkAction) }))
     .mutation(async ({ ctx, input }) => {
@@ -37,7 +73,19 @@ export const meetingAttendanceLinkRouter = t.router({
 
       return ctx.prisma.attendanceLink.create({
         data: {
-          meetingId: ctx.meeting.id,
+          issuer: {
+            connect: {
+              organizationId_userId: {
+                organizationId: ctx.org.id,
+                userId: ctx.session.user.id,
+              },
+            },
+          },
+          meeting: {
+            connect: {
+              id: ctx.meeting.id,
+            },
+          },
           code: randomBytes(3).toString("hex"),
           action: input.action,
         },
@@ -56,8 +104,20 @@ export const meetingAttendanceLinkRouter = t.router({
         },
       });
 
+      const participant = await ctx.prisma.meetingParticipant.findUniqueOrThrow(
+        {
+          where: {
+            meetingId_memberOrganizationId_memberUserId: {
+              meetingId: ctx.meeting.id,
+              memberOrganizationId: ctx.org.id,
+              memberUserId: ctx.session.user.id,
+            },
+          },
+        }
+      );
+
       if (link.action === "CHECKIN") {
-        return ctx.prisma.meetingParticipant.update({
+        await ctx.prisma.meetingParticipant.update({
           where: {
             meetingId_memberOrganizationId_memberUserId: {
               meetingId: ctx.meeting.id,
@@ -72,7 +132,49 @@ export const meetingAttendanceLinkRouter = t.router({
           },
         });
       } else if (link.action === "CHECKOUT") {
+        if (ctx.meeting.requireCheckIn && !participant.checkedIn) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Check-in is required before check-out.",
+          });
+        }
+
+        await ctx.prisma.meetingParticipant.update({
+          where: {
+            meetingId_memberOrganizationId_memberUserId: {
+              meetingId: ctx.meeting.id,
+              memberOrganizationId: ctx.org.id,
+              memberUserId: ctx.session.user.id,
+            },
+          },
+          data: {
+            status: "ATTENDED",
+            checkedOut: true,
+            checkOutTime: new Date(),
+          },
+        });
       }
+
+      await ctx.prisma.attendanceLink.update({
+        where: {
+          id: link.id,
+        },
+        data: {
+          redeemedBy: {
+            create: {
+              participant: {
+                connect: {
+                  meetingId_memberOrganizationId_memberUserId: {
+                    meetingId: ctx.meeting.id,
+                    memberOrganizationId: ctx.org.id,
+                    memberUserId: ctx.session.user.id,
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
     }),
 
   delete: meetingAdminProcedure

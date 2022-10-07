@@ -36,10 +36,7 @@ export const meetingAttendanceRouter = t.router({
         });
       }
 
-      const status =
-        ctx.meeting.requireCheckIn && !ctx.meeting.requireCheckOut
-          ? "ATTENDED"
-          : "REGISTERED";
+      const status = !ctx.meeting.requireCheckOut ? "ATTENDED" : "REGISTERED";
 
       return ctx.prisma.meetingParticipant.update({
         where: {

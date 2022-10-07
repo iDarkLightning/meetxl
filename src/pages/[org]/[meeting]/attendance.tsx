@@ -14,9 +14,10 @@ import { trpc } from "@/utils/trpc";
 import { Tab } from "@headlessui/react";
 import { AttendanceLinkAction } from "@prisma/client";
 import clsx from "clsx";
-import { AiOutlineClose } from "react-icons/ai";
+import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
 import { z } from "zod";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 const CheckInForm: React.FC<{ action: AttendanceLinkAction }> = (props) => {
   const meeting = useMeeting();
@@ -89,7 +90,6 @@ const CheckInLinks: React.FC<{ action: AttendanceLinkAction }> = (props) => {
     action: props.action,
   });
   const newLink = trpc.meeting.attendance.links.create.useMutation();
-  const deleteLink = trpc.meeting.attendance.links.delete.useMutation();
 
   return (
     <div>
@@ -118,25 +118,21 @@ const CheckInLinks: React.FC<{ action: AttendanceLinkAction }> = (props) => {
         success={({ data }) => (
           <AnimateWrapper className="mt-4 flex flex-col gap-4">
             {data.map((link) => (
-              <Card
+              <Link
                 key={link.id}
-                className="flex items-center justify-between gap-4 px-6 py-2"
+                href={`/${meeting.organizationSlug}/${
+                  meeting.slug
+                }/attendance/check-${
+                  props.action === "CHECKIN" ? "in" : "out"
+                }/${link.code}`}
               >
-                <p className="font-mono text-green-400">{link.code}</p>
-                <Button
-                  icon={<AiOutlineClose />}
-                  variant="ghost"
-                  onClick={() =>
-                    deleteLink
-                      .mutateAsync({
-                        id: link.id,
-                        meetingId: meeting.id,
-                        orgId: meeting.organizationSlug,
-                      })
-                      .then(() => checkInLinks.refetch())
-                  }
-                />
-              </Card>
+                <a>
+                  <Card className="flex cursor-pointer items-center justify-between gap-4 px-6 py-2">
+                    <p className="font-mono text-green-400">{link.code}</p>
+                    <FaExternalLinkAlt size="0.75rem" />
+                  </Card>
+                </a>
+              </Link>
             ))}
           </AnimateWrapper>
         )}
@@ -192,6 +188,8 @@ const AttendanceCheckIn: React.FC<{ action: AttendanceLinkAction }> = (
 };
 
 const MeetingAttendance: CustomNextPage = () => {
+  const meeting = useMeeting();
+
   return (
     <SectionWrapper>
       <SectionHeading
@@ -199,14 +197,21 @@ const MeetingAttendance: CustomNextPage = () => {
         sub="Manage attendance for this meeting's participants"
       />
       <Card>
-        <Tab.Group>
+        <Tab.Group
+          defaultIndex={
+            meeting.requireCheckIn ||
+            (!meeting.requireCheckIn && !meeting.requireCheckOut)
+              ? 0
+              : 1
+          }
+        >
           <Tab.List className="flex gap-4">
             {["Check In", "Check Out"].map((item, idx) => (
               <Tab
                 key={idx}
                 className={({ selected }) =>
                   clsx(
-                    "flex-1 py-3",
+                    "flex-1 py-3 transition-colors",
                     selected &&
                       "rounded-md border-[0.0125rem] border-accent-stroke bg-accent-secondary",
                     !selected && "rounded-md border-2 border-accent-secondary"
