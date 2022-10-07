@@ -19,7 +19,7 @@ import { FaPlus } from "react-icons/fa";
 import { z } from "zod";
 import { FaExternalLinkAlt } from "react-icons/fa";
 
-const CheckInForm: React.FC<{ action: AttendanceLinkAction }> = (props) => {
+const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (props) => {
   const meeting = useMeeting();
   const checkIn = trpc.meeting.attendance.checkIn.useMutation();
   const checkOut = trpc.meeting.attendance.checkOut.useMutation();
@@ -82,9 +82,9 @@ const CheckInForm: React.FC<{ action: AttendanceLinkAction }> = (props) => {
   );
 };
 
-const CheckInLinks: React.FC<{ action: AttendanceLinkAction }> = (props) => {
+const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (props) => {
   const meeting = useMeeting();
-  const checkInLinks = trpc.meeting.attendance.links.list.useQuery({
+  const checkingLinks = trpc.meeting.attendance.links.list.useQuery({
     meetingId: meeting.id,
     orgId: meeting.organizationSlug,
     action: props.action,
@@ -107,14 +107,14 @@ const CheckInLinks: React.FC<{ action: AttendanceLinkAction }> = (props) => {
                 meetingId: meeting.id,
                 orgId: meeting.organizationSlug,
               })
-              .then(() => checkInLinks.refetch())
+              .then(() => checkingLinks.refetch())
           }
         >
           New
         </Button>
       </div>
       <BaseQueryCell
-        query={checkInLinks}
+        query={checkingLinks}
         success={({ data }) => (
           <AnimateWrapper className="mt-4 flex flex-col gap-4">
             {data.map((link) => (
@@ -141,12 +141,12 @@ const CheckInLinks: React.FC<{ action: AttendanceLinkAction }> = (props) => {
   );
 };
 
-const AttendanceCheckIn: React.FC<{ action: AttendanceLinkAction }> = (
+const AttendanceChecking: React.FC<{ action: AttendanceLinkAction }> = (
   props
 ) => {
   const ctx = trpc.useContext();
   const meeting = useMeeting();
-  const toggleCheckIn = trpc.meeting.attendance.toggleChecking.useMutation();
+  const toggleChecking = trpc.meeting.attendance.toggleChecking.useMutation();
 
   const enabled =
     (props.action === "CHECKIN" && meeting.requireCheckIn) ||
@@ -162,9 +162,9 @@ const AttendanceCheckIn: React.FC<{ action: AttendanceLinkAction }> = (
         </div>
         <Button
           variant={enabled ? "danger" : "primary"}
-          loading={toggleCheckIn.isLoading}
+          loading={toggleChecking.isLoading}
           onClick={() =>
-            toggleCheckIn
+            toggleChecking
               .mutateAsync({
                 meetingId: meeting.id,
                 orgId: meeting.organizationSlug,
@@ -178,9 +178,9 @@ const AttendanceCheckIn: React.FC<{ action: AttendanceLinkAction }> = (
       </div>
       {enabled && (
         <>
-          <CheckInForm action={props.action} />
+          <CheckingForm action={props.action} />
           <hr className="border-accent-stroke" />
-          <CheckInLinks action={props.action} />
+          <CheckingLinks action={props.action} />
         </>
       )}
     </>
@@ -224,10 +224,10 @@ const MeetingAttendance: CustomNextPage = () => {
           </Tab.List>
           <Tab.Panels className="mt-4">
             <Tab.Panel className="flex flex-col gap-4">
-              <AttendanceCheckIn action="CHECKIN" />
+              <AttendanceChecking action="CHECKIN" />
             </Tab.Panel>
             <Tab.Panel className="flex flex-col gap-4">
-              <AttendanceCheckIn action="CHECKOUT" />
+              <AttendanceChecking action="CHECKOUT" />
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
