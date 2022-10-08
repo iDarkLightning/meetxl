@@ -44,14 +44,14 @@ export const ParticipantList: React.FC<{
                     {meeting.requireCheckIn && showCheckIn && (
                       <td>
                         {p.checkedIn
-                          ? p.checkInTime?.toLocaleDateString()
+                          ? p.checkInTime?.toLocaleString()
                           : "Not Checked In"}
                       </td>
                     )}
                     {meeting.requireCheckOut && showCheckOut && (
                       <td>
                         {p.checkedOut
-                          ? p.checkOutTime?.toLocaleDateString()
+                          ? p.checkOutTime?.toLocaleString()
                           : "Not Checked Out"}
                       </td>
                     )}

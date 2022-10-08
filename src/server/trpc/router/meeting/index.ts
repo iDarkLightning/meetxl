@@ -61,6 +61,9 @@ export const meetingRouter = t.router({
 
     return ctx.prisma.meeting.findMany({
       where: {
+        organization: {
+          id: ctx.org.id,
+        },
         OR: [
           {
             participants: {

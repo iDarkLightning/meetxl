@@ -104,9 +104,9 @@ model AttendanceLink {
 }
 
 model AttendanceLinkRedeem {
-    link                                   AttendanceLink     @relation(fields: [linkId], references: [id])
+    link                                   AttendanceLink     @relation(fields: [linkId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     linkId                                 String
-    participant                            MeetingParticipant @relation(fields: [meetingParticipantMeetingId, meetingParticipantMemberOrganizationId, meetingParticipantMemberUserId], references: [meetingId, memberOrganizationId, memberUserId])
+    participant                            MeetingParticipant @relation(fields: [meetingParticipantMeetingId, meetingParticipantMemberOrganizationId, meetingParticipantMemberUserId], references: [meetingId, memberOrganizationId, memberUserId], onDelete: Cascade, onUpdate: Cascade)
     meetingParticipantMeetingId            String
     meetingParticipantMemberOrganizationId String
     meetingParticipantMemberUserId         String

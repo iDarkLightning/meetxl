@@ -25,6 +25,18 @@ export const meetingAttendanceLinkRouter = t.router({
       z.object({ type: z.nativeEnum(AttendanceLinkAction), code: z.string() })
     )
     .query(async ({ ctx, input }) => {
+      if (
+        (input.type === AttendanceLinkAction.CHECKIN &&
+          !ctx.meeting.requireCheckIn) ||
+        (input.type === AttendanceLinkAction.CHECKOUT &&
+          !ctx.meeting.requireCheckOut)
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "This meeting does not have" + input.type + " enabled",
+        });
+      }
+
       return ctx.prisma.attendanceLink.findFirstOrThrow({
         where: {
           meetingId: ctx.meeting.id,
