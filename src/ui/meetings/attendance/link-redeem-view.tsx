@@ -1,18 +1,152 @@
+import { ContentWrapper } from "@/shared-components/layout/content-wrapper";
 import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
-import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { useOrg } from "@/ui/org/org-shell";
 import { trpc } from "@/utils/trpc";
-import { AttendanceLinkAction } from "@prisma/client";
+import { AttendanceLink, AttendanceLinkAction } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaTrash } from "react-icons/fa";
 import { useMeeting } from "../meeting-shell";
 import { CheckingQRCode } from "./checking-qr-code";
+import { CodeDisplay } from "./code-display";
 import { LinkRedeemList } from "./link-redeem-list";
+import { motion, useAnimationControls } from "framer-motion";
+
+const AdminView: React.FC<{ link: AttendanceLink }> = (props) => {
+  const org = useOrg();
+  const meeting = useMeeting();
+  const router = useRouter();
+  const deleteLink = trpc.meeting.attendance.links.delete.useMutation();
+
+  const heading = props.link.action === "CHECKIN" ? "Check In" : "Check Out";
+
+  return (
+    <>
+      <div className="flex items-center justify-between">
+        <SectionHeading
+          heading={heading}
+          sub={`${heading} Via Code: ${props.link.code}`}
+        />
+        <div className="flex items-center gap-4">
+          <Button
+            variant="danger"
+            icon={<FaTrash />}
+            onClick={() =>
+              deleteLink
+                .mutateAsync({
+                  id: props.link.id,
+                  orgId: org.id,
+                  meetingId: meeting.id,
+                })
+                .then(() =>
+                  router.push(`/${org.slug}/${meeting.slug}/attendance`)
+                )
+            }
+          >
+            Delete
+          </Button>
+          <CheckingQRCode />
+        </div>
+      </div>
+      <LinkRedeemList id={props.link.id} />
+    </>
+  );
+};
+
+const MemberView: React.FC<{ link: AttendanceLink }> = (props) => {
+  const org = useOrg();
+  const meeting = useMeeting();
+  const router = useRouter();
+  const applyLink = trpc.meeting.attendance.links.apply.useMutation();
+  const ctx = trpc.useContext();
+  const controls = useAnimationControls();
+
+  const heading = props.link.action === "CHECKIN" ? "Check In" : "Check Out";
+
+  return (
+    <ContentWrapper className="h-screen">
+      <div className="flex h-full flex-col items-center justify-center gap-16">
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col gap-4">
+            <motion.div
+              initial={{ y: -10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+            >
+              <SectionHeading
+                heading={heading}
+                sub={`${meeting.name} hosted by ${org.name}`}
+              />
+            </motion.div>
+            {!meeting.participant && (
+              <div className="text-xl font-medium">
+                Please{" "}
+                <Link href={`/${org.slug}/${meeting.slug}`}>
+                  <a className="text-purple-500">register</a>
+                </Link>{" "}
+                to check in
+              </div>
+            )}
+            {meeting.participant && (
+              <>
+                <CodeDisplay code={props.link.code} />
+                {((!meeting.participant?.checkedIn &&
+                  props.link.action === "CHECKIN") ||
+                  (!meeting.participant?.checkedOut &&
+                    props.link.action === "CHECKOUT")) && (
+                  <motion.div animate={controls}>
+                    <div className="flex gap-2">
+                      <Button
+                        size="md"
+                        className="w-min"
+                        variant="primary"
+                        onClick={() =>
+                          applyLink
+                            .mutateAsync({
+                              code: router.query.code as string,
+                              meetingId: meeting.id,
+                              orgId: org.id,
+                            })
+                            .then(() => ctx.meeting.get.invalidate())
+                            .then(() => controls.start({ opacity: 1 }))
+                        }
+                      >
+                        {heading}
+                      </Button>
+                      <Button size="md" href={`/${org.slug}/${meeting.slug}`}>
+                        Cancel
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+              </>
+            )}
+          </div>
+          {((meeting.participant?.checkedIn &&
+            props.link.action === "CHECKIN") ||
+            (meeting.participant?.checkedOut &&
+              props.link.action === "CHECKOUT")) && (
+            <motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+              <p className="text-green-300 lg:text-lg">
+                {`You checked ${
+                  props.link.action === "CHECKIN" ? "in to" : "out of"
+                } this meeting at ${meeting.participant[
+                  props.link.action === "CHECKIN"
+                    ? "checkInTime"
+                    : "checkOutTime"
+                ]?.toLocaleString()}`}
+              </p>
+            </motion.div>
+          )}
+        </div>
+      </div>
+    </ContentWrapper>
+  );
+};
 
 export const LinkRedeemView: React.FC<{ action: AttendanceLinkAction }> = (
   props
@@ -20,18 +154,12 @@ export const LinkRedeemView: React.FC<{ action: AttendanceLinkAction }> = (
   const org = useOrg();
   const meeting = useMeeting();
   const router = useRouter();
-  const ctx = trpc.useContext();
-  const applyLink = trpc.meeting.attendance.links.apply.useMutation();
   const codeQuery = trpc.meeting.attendance.links.get.useQuery({
     orgId: org.id,
     meetingId: meeting.id,
     code: router.query.code as string,
     type: props.action,
   });
-  const deleteLink = trpc.meeting.attendance.links.delete.useMutation();
-  const session = useSession();
-
-  const heading = props.action === "CHECKIN" ? "Check In" : "Check Out";
 
   return (
     <SectionWrapper>
@@ -39,84 +167,8 @@ export const LinkRedeemView: React.FC<{ action: AttendanceLinkAction }> = (
         query={codeQuery}
         success={({ data }) => (
           <>
-            <div className="flex items-center justify-between">
-              <SectionHeading
-                heading={heading}
-                sub={`${heading} Via Code: ${router.query.code}`}
-              />
-              {org.member.role === "ADMIN" && (
-                <div className="flex items-center gap-4">
-                  <Button
-                    variant="danger"
-                    icon={<FaTrash />}
-                    onClick={() =>
-                      deleteLink
-                        .mutateAsync({
-                          id: data.id,
-                          orgId: org.id,
-                          meetingId: meeting.id,
-                        })
-                        .then(() =>
-                          router.push(`/${org.slug}/${meeting.slug}/attendance`)
-                        )
-                    }
-                  >
-                    Delete
-                  </Button>
-                  <CheckingQRCode />
-                </div>
-              )}
-            </div>
-            {org.member.role === "ADMIN" && <LinkRedeemList id={data.id} />}
-            {org.member.role === "MEMBER" && !meeting.participant && (
-              <p>Please go register for this meeting</p>
-            )}
-            {org.member.role === "MEMBER" && meeting.participant && (
-              <div className="flex h-96 items-center justify-center">
-                <div className="flex flex-col items-center justify-center gap-4 text-center">
-                  <div className="flex flex-col gap-2">
-                    <Heading className="text-4xl">Code: {data.code}</Heading>
-                    <p className="text-lg opacity-80">
-                      {heading} as {session.data?.user?.email}
-                    </p>
-                  </div>
-                  {((!meeting.participant?.checkedIn &&
-                    props.action === "CHECKIN") ||
-                    (!meeting.participant?.checkedOut &&
-                      props.action === "CHECKOUT")) && (
-                    <Button
-                      size="lg"
-                      variant="primary"
-                      onClick={() =>
-                        applyLink
-                          .mutateAsync({
-                            code: router.query.code as string,
-                            meetingId: meeting.id,
-                            orgId: org.id,
-                          })
-                          .then(() => ctx.meeting.get.invalidate())
-                      }
-                    >
-                      {heading}
-                    </Button>
-                  )}
-                  {((meeting.participant?.checkedIn &&
-                    props.action === "CHECKIN") ||
-                    (meeting.participant?.checkedOut &&
-                      props.action === "CHECKOUT")) && (
-                    <p>
-                      {`You checked ${
-                        props.action === "CHECKIN" ? "in to" : "out of"
-                      } this meeting at ${meeting.participant[
-                        props.action === "CHECKIN"
-                          ? "checkInTime"
-                          : "checkOutTime"
-                      ]?.toLocaleDateString()}`}
-                    </p>
-                  )}
-                </div>
-              </div>
-            )}
+            {org.member.role === "ADMIN" && <AdminView link={data} />}
+            {org.member.role === "MEMBER" && <MemberView link={data} />}
           </>
         )}
       />

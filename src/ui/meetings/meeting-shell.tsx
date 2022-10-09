@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import React, { createContext } from "react";
 import { OrgShell, useOrg } from "../org/org-shell";
 
-const tabs: Tab[] = [
+export const meetingTabs: Tab[] = [
   {
     name: "Overview",
     route: "/[org]/[meeting]",
@@ -44,7 +44,7 @@ export const useMeeting = () => {
   return meeting;
 };
 
-const MeetingInner: React.FC<React.PropsWithChildren> = (props) => {
+export const MeetingProvider: React.FC<React.PropsWithChildren> = (props) => {
   const org = useOrg();
   const router = useRouter();
 
@@ -72,8 +72,8 @@ const MeetingInner: React.FC<React.PropsWithChildren> = (props) => {
 
 export const MeetingShell: React.FC<React.PropsWithChildren> = (props) => {
   return (
-    <OrgShell tabs={tabs}>
-      <MeetingInner>{props.children}</MeetingInner>
+    <OrgShell tabs={meetingTabs}>
+      <MeetingProvider>{props.children}</MeetingProvider>
     </OrgShell>
   );
 };

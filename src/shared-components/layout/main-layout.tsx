@@ -1,4 +1,5 @@
 import { Tab } from "@/types/tab";
+import { useOrg } from "@/ui/org/org-shell";
 import clsx from "clsx";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
@@ -20,10 +21,10 @@ const isSelected = (tab: Tab, path: string) => {
 export const MainLayout: React.FC<
   React.PropsWithChildren<{
     tabs?: Tab[];
-    admin?: boolean;
   }>
 > = (props) => {
   const router = useRouter();
+  const org = useOrg();
 
   return (
     <main>
@@ -70,13 +71,27 @@ export const MainLayout: React.FC<
                 {props.tabs
                   ?.filter(
                     (item) =>
-                      !item.adminRequired || (item.adminRequired && props.admin)
+                      !item.adminRequired ||
+                      (item.adminRequired && org.member.role === "ADMIN")
                   )
                   .map((item) => (
                     <Link
                       href={{
                         pathname: item.route.replace("*", ""),
-                        query: router.query,
+                        query: (() => {
+                          if (router.query.org) {
+                            if (router.query.meeting) {
+                              return {
+                                org: router.query.org,
+                                meeting: router.query.meeting,
+                              };
+                            }
+
+                            return { org: router.query.org };
+                          }
+
+                          return router.query;
+                        })(),
                       }}
                       key={item.name}
                       passHref

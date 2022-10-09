@@ -1,6 +1,6 @@
 import { CustomNextPage } from "@/types/next-page";
 import { LinkRedeemView } from "@/ui/meetings/attendance/link-redeem-view";
-import { MeetingShell } from "@/ui/meetings/meeting-shell";
+import { RedeemLayout } from "@/ui/meetings/attendance/redeem-layout";
 
 const MeetingCheckOut: CustomNextPage = () => {
   return <LinkRedeemView action="CHECKOUT" />;
@@ -8,6 +8,6 @@ const MeetingCheckOut: CustomNextPage = () => {
 
 MeetingCheckOut.auth = true;
 
-MeetingCheckOut.getLayout = (page) => <MeetingShell>{page}</MeetingShell>;
+MeetingCheckOut.getLayout = (page) => <RedeemLayout>{page}</RedeemLayout>;
 
 export default MeetingCheckOut;

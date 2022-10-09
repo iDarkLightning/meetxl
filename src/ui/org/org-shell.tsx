@@ -39,9 +39,7 @@ export const useOrg = () => {
   return org;
 };
 
-export const OrgShell: React.FC<
-  React.PropsWithChildren<{ tabs?: Tab[]; meeting?: string }>
-> = (props) => {
+export const OrgProvider: React.FC<React.PropsWithChildren> = (props) => {
   const router = useRouter();
   const orgQuery = trpc.organization.get.useQuery(
     {
@@ -57,14 +55,19 @@ export const OrgShell: React.FC<
       query={orgQuery}
       success={({ data }) => (
         <OrgContext.Provider value={{ org: data }}>
-          <MainLayout
-            tabs={props.tabs || tabs}
-            admin={data.member?.role === MemberRole.ADMIN}
-          >
-            {props.children}
-          </MainLayout>
+          {props.children}
         </OrgContext.Provider>
       )}
     />
+  );
+};
+
+export const OrgShell: React.FC<React.PropsWithChildren<{ tabs?: Tab[] }>> = (
+  props
+) => {
+  return (
+    <OrgProvider>
+      <MainLayout tabs={props.tabs || tabs}>{props.children}</MainLayout>
+    </OrgProvider>
   );
 };
