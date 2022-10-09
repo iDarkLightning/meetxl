@@ -10,7 +10,7 @@ import { AttendanceLink, AttendanceLinkAction } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FaTrash } from "react-icons/fa";
+import { FaChevronLeft, FaTrash } from "react-icons/fa";
 import { useMeeting } from "../meeting-shell";
 import { CheckingQRCode } from "./checking-qr-code";
 import { CodeDisplay } from "./code-display";
@@ -130,7 +130,11 @@ const MemberView: React.FC<{ link: AttendanceLink }> = (props) => {
             props.link.action === "CHECKIN") ||
             (meeting.participant?.checkedOut &&
               props.link.action === "CHECKOUT")) && (
-            <motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+            <motion.div
+              animate={{ opacity: 1 }}
+              initial={{ opacity: 0 }}
+              className="flex flex-col gap-2"
+            >
               <p className="text-green-300 lg:text-lg">
                 {`You checked ${
                   props.link.action === "CHECKIN" ? "in to" : "out of"
@@ -140,6 +144,14 @@ const MemberView: React.FC<{ link: AttendanceLink }> = (props) => {
                     : "checkOutTime"
                 ]?.toLocaleString()}`}
               </p>
+              <Button
+                variant="ghost"
+                className="w-min"
+                icon={<FaChevronLeft size="0.75rem" />}
+                href={`/${org.slug}/${meeting.slug}`}
+              >
+                Return to Overview
+              </Button>
             </motion.div>
           )}
         </div>
