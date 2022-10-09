@@ -2,12 +2,11 @@ import { ContentWrapper } from "@/shared-components/layout/content-wrapper";
 import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
-import { Heading } from "@/shared-components/system/heading";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { useOrg } from "@/ui/org/org-shell";
 import { trpc } from "@/utils/trpc";
 import { AttendanceLink, AttendanceLinkAction } from "@prisma/client";
-import { useSession } from "next-auth/react";
+import { motion, useAnimationControls } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaChevronLeft, FaTrash } from "react-icons/fa";
@@ -15,7 +14,6 @@ import { useMeeting } from "../meeting-shell";
 import { CheckingQRCode } from "./checking-qr-code";
 import { CodeDisplay } from "./code-display";
 import { LinkRedeemList } from "./link-redeem-list";
-import { motion, useAnimationControls } from "framer-motion";
 
 const AdminView: React.FC<{ link: AttendanceLink }> = (props) => {
   const org = useOrg();
