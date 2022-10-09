@@ -116,6 +116,16 @@ model AttendanceLinkRedeem {
     @@id([linkId, meetingParticipantMeetingId, meetingParticipantMemberOrganizationId, meetingParticipantMemberUserId])
 }
 
+model ParticipantAttribute {
+    id                                     String              @id @default(cuid())
+    name                                   String
+    value                                  Int
+    participant                            MeetingParticipant? @relation(fields: [meetingParticipantMeetingId, meetingParticipantMemberOrganizationId, meetingParticipantMemberUserId], references: [meetingId, memberOrganizationId, memberUserId])
+    meetingParticipantMeetingId            String?
+    meetingParticipantMemberOrganizationId String?
+    meetingParticipantMemberUserId         String?
+}
+
 model MeetingParticipant {
     status               MeetingParticipantStatus
     code                 String
@@ -130,6 +140,7 @@ model MeetingParticipant {
     checkInTime   DateTime?
     checkOutTime  DateTime?
     redeemedLinks AttendanceLinkRedeem[]
+    attributes    ParticipantAttribute[]
 
     @@id([meetingId, memberOrganizationId, memberUserId])
     @@unique([meetingId, code])
