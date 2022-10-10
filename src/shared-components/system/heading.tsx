@@ -13,7 +13,7 @@ const levels = {
 interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   /**
    * The heading level.
-   * @default "h1"
+   * @default "h2"
    */
   level?: keyof typeof levels;
 }
