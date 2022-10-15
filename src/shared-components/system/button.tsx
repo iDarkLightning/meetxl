@@ -13,13 +13,14 @@ const sizes = {
 const variants = {
   primary: "bg-accent-primary hover:bg-opacity-80",
   secondary:
-    "border-solid border-2 border-accent-stroke bg-accent-secondary text-white hover:bg-opacity-60",
+    "border-solid border-[0.0125rem] border-accent-stroke bg-accent-secondary text-white hover:bg-opacity-60",
   "outline-primary":
-    "border-solid border-2 border-accent-primary hover:bg-accent-primary hover:text-background-primary",
+    "border-solid border-[0.0125rem] border-accent-primary hover:bg-accent-primary hover:text-background-primary",
   "outline-secondary":
-    "border-solid border-2 border-accent-stroke hover:bg-accent-secondary hover:text-white",
+    "border-solid border-[0.0125rem] border-accent-stroke hover:bg-accent-secondary hover:text-white",
   ghost: "",
-  danger: "bg-accent-danger text-background-primary hover:bg-opacity-80",
+  danger:
+    "bg-accent-secondary text-accent-danger border-[0.0125rem] border-accent-stroke hover:bg-opacity-80",
   unstyled: "",
 };
 

@@ -62,7 +62,7 @@ const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (props) => {
           Registration Code
         </label>
         <div>
-          <div className="flex items-center gap-4">
+          <div className="flex gap-2">
             <Input
               {...methods.register("code")}
               placeholder="Participant's Registration Code"
@@ -127,7 +127,7 @@ const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (props) => {
                 }/${link.code}`}
               >
                 <a>
-                  <Card className="flex cursor-pointer items-center justify-between gap-4 px-6 py-2">
+                  <Card className="flex cursor-pointer items-center justify-between gap-4 border-none py-2">
                     <p className="font-mono text-green-400">{link.code}</p>
                     <FaExternalLinkAlt size="0.75rem" />
                   </Card>
@@ -179,7 +179,7 @@ const AttendanceChecking: React.FC<{ action: AttendanceLinkAction }> = (
       {enabled && (
         <>
           <CheckingForm action={props.action} />
-          <hr className="border-accent-stroke" />
+          {/* <hr className="border-accent-stroke" /> */}
           <CheckingLinks action={props.action} />
         </>
       )}

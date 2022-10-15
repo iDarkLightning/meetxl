@@ -19,10 +19,10 @@ export const DialogWrapper: React.FC<
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm" />
+        <div className="fixed inset-0 z-20 bg-black bg-opacity-50 backdrop-blur-sm" />
       </Transition.Child>
 
-      <div className="fixed inset-0 overflow-y-auto">
+      <div className="fixed inset-0 z-30 overflow-y-auto">
         <div className="flex min-h-full items-center justify-center ">
           <Transition.Child as={Fragment} {...transitionClasses}>
             <Dialog.Panel className="my-8 rounded-lg border-2 border-accent-stroke bg-background-secondary p-6">

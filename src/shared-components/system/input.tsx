@@ -2,7 +2,8 @@ import clsx from "clsx";
 import { forwardRef } from "react";
 
 const variants = {
-  filled: "w-full rounded-md px-2 py-4 h-10",
+  filled:
+    "w-full rounded-md px-2 py-4 h-10 bg-accent-secondary border-[0.0125rem] border-accent-stroke",
 };
 
 export interface InputProps

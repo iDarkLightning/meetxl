@@ -1,13 +1,14 @@
 import { Tab } from "@/types/tab";
-import { useOrg } from "@/ui/org/org-shell";
+import { OrgContext } from "@/ui/org/org-shell";
 import clsx from "clsx";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useContext } from "react";
 import { Button } from "../system/button";
 import { Heading } from "../system/heading";
 import { ContentWrapper } from "./content-wrapper";
+import Image from "next/image";
 
 const isSelected = (tab: Tab, path: string) => {
   if (tab.route.endsWith("/*")) {
@@ -24,19 +25,19 @@ export const MainLayout: React.FC<
   }>
 > = (props) => {
   const router = useRouter();
-  const org = useOrg();
+  const org = useContext(OrgContext);
 
   return (
     <main>
-      <header className="sticky top-0 z-10 border-b-[1px] border-accent-stroke bg-background-primary">
+      <header className="sticky top-0 z-10 bg-background-primary">
         <ContentWrapper className="relative flex h-full flex-col gap-6 pb-1 lg:py-5">
           <nav className="sticky flex items-center justify-between">
             <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
               <div className="flex w-full items-center justify-between gap-4 md:w-min">
-                <Heading className="flex items-center gap-3" level="h3">
+                <Heading className="flex items-center gap-5" level="h3">
                   <Link href="/dashboard" passHref>
-                    <a className="flex items-center gap-2">
-                      <Heading level="h3">MeetXL</Heading>
+                    <a className="flex h-8 w-8 items-center">
+                      <img src="/symbol-alt-2.svg" alt="logo" />
                     </a>
                   </Link>
                   {router.query.org && (
@@ -72,7 +73,7 @@ export const MainLayout: React.FC<
                   ?.filter(
                     (item) =>
                       !item.adminRequired ||
-                      (item.adminRequired && org.member.role === "ADMIN")
+                      (item.adminRequired && org?.org?.member?.role === "ADMIN")
                   )
                   .map((item) => (
                     <Link
