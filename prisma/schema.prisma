@@ -116,14 +116,23 @@ model AttendanceLinkRedeem {
     @@id([linkId, meetingParticipantMeetingId, meetingParticipantMemberOrganizationId, meetingParticipantMemberUserId])
 }
 
+model OrganizationAttribute {
+    name           String
+    organization   Organization    @relation(fields: [organizationId], references: [id])
+    organizationId String
+    rewards        MeetingReward[]
+
+    @@unique([name, organizationId])
+}
+
 model ParticipantAttribute {
-    id                                     String              @id @default(cuid())
+    id                                     String             @id @default(cuid())
     name                                   String
     value                                  Int
-    participant                            MeetingParticipant? @relation(fields: [meetingParticipantMeetingId, meetingParticipantMemberOrganizationId, meetingParticipantMemberUserId], references: [meetingId, memberOrganizationId, memberUserId])
-    meetingParticipantMeetingId            String?
-    meetingParticipantMemberOrganizationId String?
-    meetingParticipantMemberUserId         String?
+    participant                            MeetingParticipant @relation(fields: [meetingParticipantMeetingId, meetingParticipantMemberOrganizationId, meetingParticipantMemberUserId], references: [meetingId, memberOrganizationId, memberUserId])
+    meetingParticipantMeetingId            String
+    meetingParticipantMemberOrganizationId String
+    meetingParticipantMemberUserId         String
 }
 
 model MeetingParticipant {
@@ -147,14 +156,14 @@ model MeetingParticipant {
 }
 
 model MeetingReward {
-    id        String              @id @default(cuid())
-    key       String
-    value     Float
-    action    MeetingRewardAction
-    meeting   Meeting             @relation(fields: [meetingId], references: [id])
-    meetingId String
-
-    @@unique([meetingId, key])
+    id             String                @id @default(cuid())
+    value          Float
+    action         MeetingRewardAction
+    meeting        Meeting               @relation(fields: [meetingId], references: [id])
+    meetingId      String
+    attribute      OrganizationAttribute @relation(fields: [attributeName, attributeOrgId], references: [name, organizationId])
+    attributeName  String
+    attributeOrgId String
 }
 
 model Meeting {
@@ -183,9 +192,10 @@ model Organization {
     name String
     slug String @unique
 
-    members   OrganizationMember[]
-    joinCodes JoinCode[]
-    meetings  Meeting[]
+    members    OrganizationMember[]
+    joinCodes  JoinCode[]
+    meetings   Meeting[]
+    attributes OrganizationAttribute[]
 }
 
 enum MeetingParticipantStatus {
