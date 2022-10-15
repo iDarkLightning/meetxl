@@ -1,3 +1,4 @@
+import { grantRewards } from "@/server/common/grant-rewards";
 import { AttendanceLinkAction } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { randomBytes } from "crypto";
@@ -129,6 +130,12 @@ export const meetingAttendanceLinkRouter = t.router({
       );
 
       if (link.action === "CHECKIN") {
+        const status = ctx.meeting.requireCheckOut ? "REGISTERED" : "ATTENDED";
+
+        if (status === "ATTENDED") {
+          grantRewards(ctx);
+        }
+
         await ctx.prisma.meetingParticipant.update({
           where: {
             meetingId_memberOrganizationId_memberUserId: {
@@ -138,7 +145,7 @@ export const meetingAttendanceLinkRouter = t.router({
             },
           },
           data: {
-            status: ctx.meeting.requireCheckOut ? "REGISTERED" : "ATTENDED",
+            status,
             checkedIn: true,
             checkInTime: new Date(),
           },
@@ -151,6 +158,7 @@ export const meetingAttendanceLinkRouter = t.router({
           });
         }
 
+        grantRewards(ctx);
         await ctx.prisma.meetingParticipant.update({
           where: {
             meetingId_memberOrganizationId_memberUserId: {

@@ -1,3 +1,4 @@
+import { grantRewards } from "@/server/common/grant-rewards";
 import { AttendanceLinkAction } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -37,6 +38,10 @@ export const meetingAttendanceRouter = t.router({
       }
 
       const status = !ctx.meeting.requireCheckOut ? "ATTENDED" : "REGISTERED";
+
+      if (status === "ATTENDED") {
+        grantRewards(ctx);
+      }
 
       return ctx.prisma.meetingParticipant.update({
         where: {
@@ -80,6 +85,8 @@ export const meetingAttendanceRouter = t.router({
           message: "Check-in is required before check-out.",
         });
       }
+
+      grantRewards(ctx);
 
       return ctx.prisma.meetingParticipant.update({
         where: {

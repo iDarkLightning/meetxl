@@ -29,10 +29,21 @@ export const meetingRewardRouter = t.router({
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.meetingReward.create({
         data: {
-          key: input.key,
+          attribute: {
+            connect: {
+              name_organizationId: {
+                name: input.key,
+                organizationId: ctx.org.id,
+              },
+            },
+          },
+          meeting: {
+            connect: {
+              id: ctx.meeting.id,
+            },
+          },
           value: input.value,
           action: input.action,
-          meetingId: ctx.meeting.id,
         },
       });
     }),

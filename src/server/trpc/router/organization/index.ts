@@ -4,6 +4,7 @@ import { Context } from "../../context";
 import { authedProcedure } from "../../procedures/authed-procedure";
 import { orgMemberProcedure } from "../../procedures/org-procedures";
 import { t } from "../../trpc";
+import { orgAttributeRouter } from "./org-attribute";
 import { orgJoinCodeRouter } from "./org-join-code";
 import { orgMembersRouter } from "./org-members";
 
@@ -71,4 +72,5 @@ export const organizationRouter = t.router({
 
   joinCode: orgJoinCodeRouter,
   members: orgMembersRouter,
+  attribute: orgAttributeRouter,
 });
