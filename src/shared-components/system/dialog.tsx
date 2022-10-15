@@ -25,7 +25,7 @@ export const DialogWrapper: React.FC<
       <div className="fixed inset-0 z-30 overflow-y-auto">
         <div className="flex min-h-full items-center justify-center ">
           <Transition.Child as={Fragment} {...transitionClasses}>
-            <Dialog.Panel className="my-8 rounded-lg border-2 border-accent-stroke bg-background-secondary p-6">
+            <Dialog.Panel className="my-8 rounded-lg border-[0.0125rem] border-accent-stroke bg-background-secondary p-6">
               {props.children}
             </Dialog.Panel>
           </Transition.Child>

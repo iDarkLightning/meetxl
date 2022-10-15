@@ -35,7 +35,7 @@ const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (props) => {
   });
 
   return (
-    <div className="">
+    <div>
       <form
         className="flex flex-col gap-2"
         autoComplete="off"
@@ -58,7 +58,7 @@ const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (props) => {
           methods.reset();
         })}
       >
-        <label htmlFor="name" className="text-gray-400">
+        <label htmlFor="name" className="opacity-75">
           Registration Code
         </label>
         <div>
@@ -67,12 +67,9 @@ const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (props) => {
               {...methods.register("code")}
               placeholder="Participant's Registration Code"
             />
-            <Button type="submit" loading={checkIn.isLoading}>
-              Check {props.action === "CHECKIN" ? "In" : "Out"}
-            </Button>
           </div>
           {methods.formState.errors.code?.message && (
-            <p className="text-red-500">
+            <p className="text-accent-danger">
               {methods.formState.errors.code?.message}
             </p>
           )}
@@ -127,7 +124,7 @@ const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (props) => {
                 }/${link.code}`}
               >
                 <a>
-                  <Card className="flex cursor-pointer items-center justify-between gap-4 border-none py-2">
+                  <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-background-dark">
                     <p className="font-mono text-green-400">{link.code}</p>
                     <FaExternalLinkAlt size="0.75rem" />
                   </Card>
@@ -154,34 +151,35 @@ const AttendanceChecking: React.FC<{ action: AttendanceLinkAction }> = (
 
   return (
     <>
-      <div className="flex items-center justify-between">
-        <div>
-          <Heading level="h4">
-            Check {props.action === "CHECKIN" ? "In" : "Out"} Options
-          </Heading>
+      <Card className="hover:bg-opacity-100">
+        <div className="flex items-center justify-between">
+          <div>
+            <Heading level="h4">
+              Check {props.action === "CHECKIN" ? "In" : "Out"} Options
+            </Heading>
+          </div>
+          <Button
+            variant={enabled ? "danger" : "primary"}
+            loading={toggleChecking.isLoading}
+            onClick={() =>
+              toggleChecking
+                .mutateAsync({
+                  meetingId: meeting.id,
+                  orgId: meeting.organizationSlug,
+                  action: props.action,
+                })
+                .then(() => ctx.meeting.get.invalidate())
+            }
+          >
+            {enabled ? "Disable" : "Enable"}
+          </Button>
         </div>
-        <Button
-          variant={enabled ? "danger" : "primary"}
-          loading={toggleChecking.isLoading}
-          onClick={() =>
-            toggleChecking
-              .mutateAsync({
-                meetingId: meeting.id,
-                orgId: meeting.organizationSlug,
-                action: props.action,
-              })
-              .then(() => ctx.meeting.get.invalidate())
-          }
-        >
-          {enabled ? "Disable" : "Enable"}
-        </Button>
-      </div>
+        {enabled && <CheckingForm action={props.action} />}
+      </Card>
       {enabled && (
-        <>
-          <CheckingForm action={props.action} />
-          {/* <hr className="border-accent-stroke" /> */}
+        <Card className="hover:bg-opacity-100">
           <CheckingLinks action={props.action} />
-        </>
+        </Card>
       )}
     </>
   );
@@ -196,42 +194,40 @@ const MeetingAttendance: CustomNextPage = () => {
         heading="Attendance"
         sub="Manage attendance for this meeting's participants"
       />
-      <Card>
-        <Tab.Group
-          defaultIndex={
-            meeting.requireCheckIn ||
-            (!meeting.requireCheckIn && !meeting.requireCheckOut)
-              ? 0
-              : 1
-          }
-        >
-          <Tab.List className="flex gap-4">
-            {["Check In", "Check Out"].map((item, idx) => (
-              <Tab
-                key={idx}
-                className={({ selected }) =>
-                  clsx(
-                    "flex-1 py-3 transition-colors",
-                    selected &&
-                      "rounded-md border-[0.0125rem] border-accent-stroke bg-accent-secondary",
-                    !selected && "rounded-md border-2 border-accent-secondary"
-                  )
-                }
-              >
-                {item}
-              </Tab>
-            ))}
-          </Tab.List>
-          <Tab.Panels className="mt-4">
-            <Tab.Panel className="flex flex-col gap-4">
-              <AttendanceChecking action="CHECKIN" />
-            </Tab.Panel>
-            <Tab.Panel className="flex flex-col gap-4">
-              <AttendanceChecking action="CHECKOUT" />
-            </Tab.Panel>
-          </Tab.Panels>
-        </Tab.Group>
-      </Card>
+      <Tab.Group
+        defaultIndex={
+          meeting.requireCheckIn ||
+          (!meeting.requireCheckIn && !meeting.requireCheckOut)
+            ? 0
+            : 1
+        }
+      >
+        <Tab.List className="flex gap-4">
+          {["Check In", "Check Out"].map((item, idx) => (
+            <Tab
+              key={idx}
+              className={({ selected }) =>
+                clsx(
+                  "flex-1 py-3 transition-colors",
+                  selected &&
+                    "rounded-md border-[0.0125rem] border-accent-stroke bg-accent-secondary",
+                  !selected && "rounded-md border-2 border-accent-secondary"
+                )
+              }
+            >
+              {item}
+            </Tab>
+          ))}
+        </Tab.List>
+        <Tab.Panels>
+          <Tab.Panel className="flex flex-col gap-4">
+            <AttendanceChecking action="CHECKIN" />
+          </Tab.Panel>
+          <Tab.Panel className="flex flex-col gap-4">
+            <AttendanceChecking action="CHECKOUT" />
+          </Tab.Panel>
+        </Tab.Panels>
+      </Tab.Group>
       <ParticipantList showCheckIn showCheckOut />
     </SectionWrapper>
   );
