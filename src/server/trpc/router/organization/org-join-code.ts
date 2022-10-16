@@ -89,6 +89,7 @@ export const orgJoinCodeRouter = t.router({
             },
             take: 1,
           },
+          attributes: true,
         },
       });
 
@@ -108,6 +109,14 @@ export const orgJoinCodeRouter = t.router({
               user: {
                 connect: {
                   id: ctx.session.user.id,
+                },
+              },
+              attributes: {
+                createMany: {
+                  data: organization.attributes.map((attribute) => ({
+                    organizationAttributeName: attribute.name,
+                    value: 0,
+                  })),
                 },
               },
             },

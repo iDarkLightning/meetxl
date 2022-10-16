@@ -39,11 +39,7 @@ export const meetingAttendanceRouter = t.router({
 
       const status = !ctx.meeting.requireCheckOut ? "ATTENDED" : "REGISTERED";
 
-      if (status === "ATTENDED") {
-        grantRewards(ctx);
-      }
-
-      return ctx.prisma.meetingParticipant.update({
+      const result = await ctx.prisma.meetingParticipant.update({
         where: {
           meetingId_code: {
             meetingId: ctx.meeting.id,
@@ -56,6 +52,12 @@ export const meetingAttendanceRouter = t.router({
           checkInTime: new Date(),
         },
       });
+
+      if (status === "ATTENDED") {
+        grantRewards(ctx, result.memberUserId);
+      }
+
+      return result;
     }),
 
   checkOut: meetingAdminProcedure
@@ -86,9 +88,7 @@ export const meetingAttendanceRouter = t.router({
         });
       }
 
-      grantRewards(ctx);
-
-      return ctx.prisma.meetingParticipant.update({
+      const result = await ctx.prisma.meetingParticipant.update({
         where: {
           meetingId_code: {
             meetingId: ctx.meeting.id,
@@ -101,6 +101,10 @@ export const meetingAttendanceRouter = t.router({
           checkOutTime: new Date(),
         },
       });
+
+      grantRewards(ctx, result.memberUserId);
+
+      return result;
     }),
 
   links: meetingAttendanceLinkRouter,

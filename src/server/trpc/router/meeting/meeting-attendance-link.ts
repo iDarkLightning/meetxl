@@ -133,7 +133,7 @@ export const meetingAttendanceLinkRouter = t.router({
         const status = ctx.meeting.requireCheckOut ? "REGISTERED" : "ATTENDED";
 
         if (status === "ATTENDED") {
-          grantRewards(ctx);
+          grantRewards(ctx, participant.memberUserId);
         }
 
         await ctx.prisma.meetingParticipant.update({
@@ -158,7 +158,7 @@ export const meetingAttendanceLinkRouter = t.router({
           });
         }
 
-        grantRewards(ctx);
+        grantRewards(ctx, participant.memberUserId);
         await ctx.prisma.meetingParticipant.update({
           where: {
             meetingId_memberOrganizationId_memberUserId: {

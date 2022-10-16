@@ -208,10 +208,10 @@ const MeetingAttendance: CustomNextPage = () => {
               key={idx}
               className={({ selected }) =>
                 clsx(
-                  "flex-1 py-3 transition-colors",
+                  "flex-1 rounded-md py-3 transition-colors",
                   selected &&
-                    "rounded-md border-[0.0125rem] border-accent-stroke bg-accent-secondary",
-                  !selected && "rounded-md border-2 border-accent-secondary"
+                    "border-[0.0125rem] border-accent-stroke bg-accent-secondary",
+                  !selected && "border-2 border-accent-secondary"
                 )
               }
             >

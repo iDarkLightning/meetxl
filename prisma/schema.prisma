@@ -71,7 +71,8 @@ model OrganizationMember {
     role             MemberRole
     createdJoinCodes JoinCode[]
     meetings         MeetingParticipant[]
-    AttendanceLink   AttendanceLink[]
+    attributes       MemberAttribute[]
+    issuedLinks      AttendanceLink[]
 
     @@id([organizationId, userId])
 }
@@ -117,22 +118,25 @@ model AttendanceLinkRedeem {
 }
 
 model OrganizationAttribute {
-    name           String
-    organization   Organization    @relation(fields: [organizationId], references: [id])
-    organizationId String
-    rewards        MeetingReward[]
+    name             String
+    organization     Organization      @relation(fields: [organizationId], references: [id])
+    organizationId   String
+    rewards          MeetingReward[]
+    memberAttributes MemberAttribute[]
 
     @@unique([name, organizationId])
 }
 
-model ParticipantAttribute {
-    id                                     String             @id @default(cuid())
-    name                                   String
-    value                                  Int
-    participant                            MeetingParticipant @relation(fields: [meetingParticipantMeetingId, meetingParticipantMemberOrganizationId, meetingParticipantMemberUserId], references: [meetingId, memberOrganizationId, memberUserId])
-    meetingParticipantMeetingId            String
-    meetingParticipantMemberOrganizationId String
-    meetingParticipantMemberUserId         String
+model MemberAttribute {
+    id                        String                @id @default(cuid())
+    attribute                 OrganizationAttribute @relation(fields: [organizationAttributeName, orgId], references: [name, organizationId], onDelete: Cascade, onUpdate: Cascade)
+    value                     Int
+    organizationAttributeName String
+    orgMember                 OrganizationMember    @relation(fields: [orgId, userId], references: [organizationId, userId], onDelete: Cascade, onUpdate: Cascade)
+    orgId                     String
+    userId                    String
+
+    @@unique([organizationAttributeName, orgId])
 }
 
 model MeetingParticipant {
@@ -141,7 +145,7 @@ model MeetingParticipant {
     meetingId            String
     memberOrganizationId String
     memberUserId         String
-    member               OrganizationMember       @relation(fields: [memberOrganizationId, memberUserId], references: [organizationId, userId])
+    member               OrganizationMember       @relation(fields: [memberOrganizationId, memberUserId], references: [organizationId, userId], onDelete: Cascade, onUpdate: Cascade)
     meeting              Meeting                  @relation(fields: [meetingId], references: [id])
 
     checkedIn     Boolean                @default(false)
@@ -149,7 +153,6 @@ model MeetingParticipant {
     checkInTime   DateTime?
     checkOutTime  DateTime?
     redeemedLinks AttendanceLinkRedeem[]
-    attributes    ParticipantAttribute[]
 
     @@id([meetingId, memberOrganizationId, memberUserId])
     @@unique([meetingId, code])
@@ -161,7 +164,7 @@ model MeetingReward {
     action         MeetingRewardAction
     meeting        Meeting               @relation(fields: [meetingId], references: [id])
     meetingId      String
-    attribute      OrganizationAttribute @relation(fields: [attributeName, attributeOrgId], references: [name, organizationId])
+    attribute      OrganizationAttribute @relation(fields: [attributeName, attributeOrgId], references: [name, organizationId], onDelete: Cascade, onUpdate: Cascade)
     attributeName  String
     attributeOrgId String
 }
