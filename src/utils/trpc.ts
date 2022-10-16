@@ -1,9 +1,15 @@
 // src/utils/trpc.ts
-import { httpBatchLink, loggerLink, TRPCClientErrorLike } from "@trpc/client";
+import {
+  httpBatchLink,
+  loggerLink,
+  TRPCClientError,
+  TRPCClientErrorLike,
+} from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
-import type { AppRouter } from "../server/trpc/router";
-import superjson from "superjson";
 import { Maybe } from "@trpc/server";
+import { toast } from "react-toastify";
+import superjson from "superjson";
+import type { AppRouter } from "../server/trpc/router";
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
@@ -27,6 +33,11 @@ export const trpc = createTRPCNext<AppRouter>({
       ],
       queryClientConfig: {
         defaultOptions: {
+          mutations: {
+            onError(err) {
+              toast.error((err as TRPCClientError<AppRouter>).message);
+            },
+          },
           queries: {
             staleTime: 1000,
             retry(failureCount, _err) {

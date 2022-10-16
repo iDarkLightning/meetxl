@@ -32,6 +32,7 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
                   .mutateAsync({ name: data.name, orgId: org.id })
                   .then(() => ctx.organization.attribute.get.invalidate())
                   .then(() => ctx.organization.attribute.list.invalidate())
+                  .catch(() => 0)
               }
             >
               Delete

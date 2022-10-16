@@ -44,6 +44,7 @@ const AdminView: React.FC<{ link: AttendanceLink }> = (props) => {
                 .then(() =>
                   router.push(`/${org.slug}/${meeting.slug}/attendance`)
                 )
+                .catch(() => 0)
             }
           >
             Delete
@@ -111,6 +112,7 @@ const MemberView: React.FC<{ link: AttendanceLink }> = (props) => {
                             })
                             .then(() => ctx.meeting.get.invalidate())
                             .then(() => controls.start({ opacity: 1 }))
+                            .catch(() => 0)
                         }
                       >
                         {heading}

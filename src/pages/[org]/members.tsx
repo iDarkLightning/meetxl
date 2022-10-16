@@ -53,6 +53,7 @@ const OrgMembers: CustomNextPage = () => {
                           orgId: org.id,
                         })
                         .then(() => membersQuery.refetch())
+                        .catch(() => 0)
                     }
                   >
                     Kick

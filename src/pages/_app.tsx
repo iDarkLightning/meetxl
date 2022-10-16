@@ -7,6 +7,8 @@ import { AppProps } from "next/app";
 import { CustomNextPage } from "@/types/next-page";
 import { Auth } from "@/shared-components/util/auth";
 import React from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
 
 type CustomComponent = {
   Component: CustomNextPage;
@@ -29,11 +31,26 @@ const AppInner = ({
 
 const MyApp = ({ Component, pageProps }: CustomAppProps) => {
   return (
-    <SessionProvider session={pageProps.session}>
-      <AppInner Component={Component}>
-        <Component {...pageProps} />
-      </AppInner>
-    </SessionProvider>
+    <>
+      <SessionProvider session={pageProps.session}>
+        <AppInner Component={Component}>
+          <Component {...pageProps} />
+        </AppInner>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+          toastClassName="bg-red-200"
+        />
+      </SessionProvider>
+    </>
   );
 };
 

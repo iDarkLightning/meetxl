@@ -60,13 +60,15 @@ export const NewReward: React.FC = () => {
                     className="flex flex-col items-end gap-2"
                     autoComplete="off"
                     onSubmit={methods.handleSubmit(async (values) => {
-                      await createMeeting.mutateAsync({
-                        orgId: org.id,
-                        meetingId: meeting.id,
-                        value: parseInt(values.value),
-                        key: values.key,
-                        action: values.action,
-                      });
+                      await createMeeting
+                        .mutateAsync({
+                          orgId: org.id,
+                          meetingId: meeting.id,
+                          value: parseInt(values.value),
+                          key: values.key,
+                          action: values.action,
+                        })
+                        .catch(() => 0);
                       ctx.meeting.reward.list.invalidate();
                       setIsOpen(false);
                     })}

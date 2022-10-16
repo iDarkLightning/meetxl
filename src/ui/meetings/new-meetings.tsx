@@ -39,7 +39,9 @@ export const NewMeetingsModal: React.FC<{
         <form
           autoComplete="off"
           onSubmit={methods.handleSubmit(async (values) => {
-            await create.mutateAsync({ orgId: org.id, ...values });
+            await create
+              .mutateAsync({ orgId: org.id, ...values })
+              .catch(() => 0);
             ctx.meeting.list.invalidate();
             props.setIsOpen(false);
           })}

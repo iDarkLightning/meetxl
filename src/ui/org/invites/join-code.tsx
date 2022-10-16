@@ -33,7 +33,8 @@ export const JoinCodeInvite = () => {
           onClick={() => {
             createCode
               .mutateAsync({ orgId: org.id })
-              .then(() => joinCodesQuery.refetch());
+              .then(() => joinCodesQuery.refetch())
+              .catch(() => 0);
           }}
         >
           New
@@ -81,11 +82,13 @@ export const JoinCodeInvite = () => {
                       <Select
                         defaultValue={code.role}
                         onChange={(evt) => {
-                          changeCodeRole.mutateAsync({
-                            id: code.id,
-                            role: evt.target.value as MemberRole,
-                            orgId: org.id,
-                          });
+                          changeCodeRole
+                            .mutateAsync({
+                              id: code.id,
+                              role: evt.target.value as MemberRole,
+                              orgId: org.id,
+                            })
+                            .catch(() => 0);
                         }}
                       >
                         <option value={MemberRole.ADMIN}>Admin</option>
@@ -98,6 +101,7 @@ export const JoinCodeInvite = () => {
                           revokeCode
                             .mutateAsync({ id: code.id, orgId: org.id })
                             .then(() => joinCodesQuery.refetch())
+                            .catch(() => 0)
                         }
                       >
                         Revoke

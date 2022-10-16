@@ -25,6 +25,7 @@ const ParticipantIndex: React.FC = () => {
               register
                 .mutateAsync({ meetingId: meeting.id, orgId: org.id })
                 .then(() => ctx.meeting.get.invalidate())
+                .catch(() => 0)
             }
           >
             Register

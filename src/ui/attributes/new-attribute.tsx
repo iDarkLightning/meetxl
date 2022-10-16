@@ -47,7 +47,9 @@ export const NewAttributeModal: React.FC = () => {
           <form
             autoComplete="off"
             onSubmit={methods.handleSubmit(async (values) => {
-              await create.mutateAsync({ orgId: org.id, ...values });
+              await create
+                .mutateAsync({ orgId: org.id, ...values })
+                .catch(() => 0);
               ctx.organization.attribute.list.invalidate();
               setIsOpen(false);
             })}

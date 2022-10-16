@@ -28,7 +28,7 @@ const CreateOrganization: React.FC = () => {
       <form
         autoComplete="off"
         onSubmit={methods.handleSubmit(async (values) => {
-          await create.mutateAsync(values);
+          await create.mutateAsync(values).catch(() => 0);
           ctx.organization.list.invalidate();
         })}
       >
@@ -72,7 +72,7 @@ const JoinOrganization: React.FC = () => {
       <form
         autoComplete="off"
         onSubmit={methods.handleSubmit(async (values) => {
-          await join.mutateAsync(values);
+          await join.mutateAsync(values).catch(() => 0);
           ctx.organization.list.invalidate();
         })}
       >

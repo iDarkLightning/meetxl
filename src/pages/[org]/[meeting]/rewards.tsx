@@ -36,6 +36,7 @@ const ToggleButton: React.FC<
             orgId: meeting.organizationSlug,
           })
           .then(() => ctx.meeting.get.invalidate())
+          .catch(() => 0)
       }
     >
       {props.children}
@@ -112,6 +113,7 @@ const RewardList: React.FC = () => {
                               orgId: org.id,
                             })
                             .then(() => ctx.meeting.reward.list.invalidate())
+                            .catch(() => 0)
                         }
                         icon={<AiOutlineClose />}
                         variant="ghost"

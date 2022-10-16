@@ -39,17 +39,21 @@ const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (props) => {
         autoComplete="off"
         onSubmit={methods.handleSubmit(async (values) => {
           if (props.action === "CHECKIN") {
-            await checkIn.mutateAsync({
-              code: values.code,
-              meetingId: meeting.id,
-              orgId: meeting.organizationSlug,
-            });
+            await checkIn
+              .mutateAsync({
+                code: values.code,
+                meetingId: meeting.id,
+                orgId: meeting.organizationSlug,
+              })
+              .catch(() => 0);
           } else {
-            await checkOut.mutateAsync({
-              code: values.code,
-              meetingId: meeting.id,
-              orgId: meeting.organizationSlug,
-            });
+            await checkOut
+              .mutateAsync({
+                code: values.code,
+                meetingId: meeting.id,
+                orgId: meeting.organizationSlug,
+              })
+              .catch(() => 0);
           }
 
           await ctx.meeting.participant.list.invalidate();
@@ -103,6 +107,7 @@ const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (props) => {
                 orgId: meeting.organizationSlug,
               })
               .then(() => checkingLinks.refetch())
+              .catch(() => 0)
           }
         >
           New
@@ -167,6 +172,7 @@ const AttendanceChecking: React.FC<{ action: AttendanceLinkAction }> = (
                   action: props.action,
                 })
                 .then(() => ctx.meeting.get.invalidate())
+                .catch(() => 0)
             }
           >
             {enabled ? "Disable" : "Enable"}

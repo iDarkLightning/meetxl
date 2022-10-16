@@ -29,11 +29,13 @@ const LimitForm: React.FC = () => {
       className="flex w-full flex-col gap-2"
       autoComplete="off"
       onSubmit={methods.handleSubmit(async (values) => {
-        await updateLimit.mutateAsync({
-          limit: parseInt(values.value),
-          meetingId: meeting.id,
-          orgId: meeting.organizationSlug,
-        });
+        await updateLimit
+          .mutateAsync({
+            limit: parseInt(values.value),
+            meetingId: meeting.id,
+            orgId: meeting.organizationSlug,
+          })
+          .catch(() => 0);
 
         await ctx.meeting.get.invalidate();
         methods.reset(values);
@@ -78,6 +80,7 @@ const MeetingParticipants: CustomNextPage = () => {
                   orgId: meeting.organizationSlug,
                 })
                 .then(() => ctx.meeting.get.invalidate())
+                .catch(() => 0)
             }
           >
             Make {meeting.isPublic ? "Private" : "Public"}
@@ -101,6 +104,7 @@ const MeetingParticipants: CustomNextPage = () => {
                     orgId: meeting.organizationSlug,
                   })
                   .then(() => ctx.meeting.get.invalidate())
+                  .catch(() => 0)
               }
             >
               {meeting.limitParticipants ? "Disable" : "Enable"}
