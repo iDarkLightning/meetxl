@@ -5,9 +5,12 @@ import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
 import { Input } from "@/shared-components/system/input";
 import { CustomNextPage } from "@/types/next-page";
+import { AttendanceChecking } from "@/ui/meetings/attendance/checking-options";
 import { useMeeting } from "@/ui/meetings/meeting-shell";
 import { ParticipantShell } from "@/ui/meetings/participant-shell";
 import { trpc } from "@/utils/trpc";
+import { Tab } from "@headlessui/react";
+import clsx from "clsx";
 import { z } from "zod";
 
 const LimitForm: React.FC = () => {
@@ -55,6 +58,47 @@ const LimitForm: React.FC = () => {
         )}
       </div>
     </form>
+  );
+};
+
+const MeetingAttendance = () => {
+  const meeting = useMeeting();
+
+  return (
+    <Tab.Group
+      defaultIndex={
+        meeting.requireCheckIn ||
+        (!meeting.requireCheckIn && !meeting.requireCheckOut)
+          ? 0
+          : 1
+      }
+    >
+      <Tab.List className="flex gap-4">
+        {["Check In", "Check Out"].map((item, idx) => (
+          <Tab
+            key={idx}
+            className={({ selected }) =>
+              clsx(
+                "flex-1 rounded-md py-3 transition-colors",
+                selected &&
+                  "border-[0.0125rem] border-accent-stroke bg-accent-secondary",
+                !selected && "border-2 border-accent-secondary"
+              )
+            }
+          >
+            {item}
+          </Tab>
+        ))}
+      </Tab.List>
+      <Tab.Panels>
+        <Tab.Panel className="flex flex-col gap-4">
+          <AttendanceChecking action="CHECKIN" />
+        </Tab.Panel>
+        <Tab.Panel className="flex flex-col gap-4">
+          <AttendanceChecking action="CHECKOUT" />
+        </Tab.Panel>
+      </Tab.Panels>
+    </Tab.Group>
   );
 };
 
@@ -119,6 +163,7 @@ const MeetingParticipants: CustomNextPage = () => {
           )}
         </Card>
       )}
+      <MeetingAttendance />
     </SectionWrapper>
   );
 };

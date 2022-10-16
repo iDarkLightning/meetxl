@@ -1,23 +1,20 @@
 import { useZodForm } from "@/lib/hooks/use-zod-form";
-import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
 import { Input } from "@/shared-components/system/input";
 import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
-import { CustomNextPage } from "@/types/next-page";
 import { useMeeting } from "@/ui/meetings/meeting-shell";
-import { ParticipantShell } from "@/ui/meetings/participant-shell";
 import { trpc } from "@/utils/trpc";
-import { Tab } from "@headlessui/react";
 import { AttendanceLinkAction } from "@prisma/client";
-import clsx from "clsx";
 import Link from "next/link";
 import { FaExternalLinkAlt, FaPlus } from "react-icons/fa";
 import { z } from "zod";
 
-const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (props) => {
+export const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (
+  props
+) => {
   const meeting = useMeeting();
   const checkIn = trpc.meeting.attendance.checkIn.useMutation();
   const checkOut = trpc.meeting.attendance.checkOut.useMutation();
@@ -81,7 +78,9 @@ const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (props) => {
   );
 };
 
-const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (props) => {
+export const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (
+  props
+) => {
   const meeting = useMeeting();
   const checkingLinks = trpc.meeting.attendance.links.list.useQuery({
     meetingId: meeting.id,
@@ -141,7 +140,7 @@ const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (props) => {
   );
 };
 
-const AttendanceChecking: React.FC<{ action: AttendanceLinkAction }> = (
+export const AttendanceChecking: React.FC<{ action: AttendanceLinkAction }> = (
   props
 ) => {
   const ctx = trpc.useContext();
@@ -188,59 +187,3 @@ const AttendanceChecking: React.FC<{ action: AttendanceLinkAction }> = (
     </>
   );
 };
-
-const MeetingAttendance: CustomNextPage = () => {
-  const meeting = useMeeting();
-
-  return (
-    <SectionWrapper>
-      <Tab.Group
-        defaultIndex={
-          meeting.requireCheckIn ||
-          (!meeting.requireCheckIn && !meeting.requireCheckOut)
-            ? 0
-            : 1
-        }
-      >
-        <Tab.List className="flex gap-4">
-          {["Check In", "Check Out"].map((item, idx) => (
-            <Tab
-              key={idx}
-              className={({ selected }) =>
-                clsx(
-                  "flex-1 rounded-md py-3 transition-colors",
-                  selected &&
-                    "border-[0.0125rem] border-accent-stroke bg-accent-secondary",
-                  !selected && "border-2 border-accent-secondary"
-                )
-              }
-            >
-              {item}
-            </Tab>
-          ))}
-        </Tab.List>
-        <Tab.Panels>
-          <Tab.Panel className="flex flex-col gap-4">
-            <AttendanceChecking action="CHECKIN" />
-          </Tab.Panel>
-          <Tab.Panel className="flex flex-col gap-4">
-            <AttendanceChecking action="CHECKOUT" />
-          </Tab.Panel>
-        </Tab.Panels>
-      </Tab.Group>
-    </SectionWrapper>
-  );
-};
-
-MeetingAttendance.auth = true;
-
-MeetingAttendance.getLayout = (page) => (
-  <ParticipantShell
-    heading="Attendance"
-    sub="Manage attendance for this meeting's participants"
-  >
-    {page}
-  </ParticipantShell>
-);
-
-export default MeetingAttendance;

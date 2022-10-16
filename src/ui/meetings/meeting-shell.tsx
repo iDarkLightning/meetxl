@@ -21,11 +21,6 @@ export const meetingTabs: Tab[] = [
     route: "/[org]/[meeting]/participants",
     adminRequired: true,
   },
-  {
-    name: "Attendance",
-    route: "/[org]/[meeting]/attendance/*",
-    adminRequired: true,
-  },
 ];
 
 const MeetingContext = createContext<{
