@@ -9,7 +9,7 @@ import { trpc } from "@/utils/trpc";
 import { Tab } from "@headlessui/react";
 import clsx from "clsx";
 
-const OrgAttributes: CustomNextPage = () => {
+const AdminView: React.FC = () => {
   const org = useOrg();
   const attributes = trpc.organization.attribute.list.useQuery({
     orgId: org.id,
@@ -59,6 +59,51 @@ const OrgAttributes: CustomNextPage = () => {
       />
     </SectionWrapper>
   );
+};
+
+const MemberView: React.FC = () => {
+  const org = useOrg();
+  const statistics = trpc.organization.attribute.mine.useQuery({
+    orgId: org.id,
+  });
+
+  return (
+    <SectionWrapper>
+      <SectionHeading
+        heading="Attributes"
+        sub="View your statistics for this organization"
+      />
+      <BaseQueryCell
+        query={statistics}
+        success={({ data }) => (
+          <table className="w-full text-left">
+            <thead>
+              <tr className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
+                <th>Name</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((attribute) => (
+                <tr key={attribute.id}>
+                  <td>{attribute.organizationAttributeName}</td>
+                  <td>{attribute.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      />
+    </SectionWrapper>
+  );
+};
+
+const OrgAttributes: CustomNextPage = () => {
+  const org = useOrg();
+
+  if (org.member.role === "ADMIN") return <AdminView />;
+
+  return <MemberView />;
 };
 
 OrgAttributes.auth = true;

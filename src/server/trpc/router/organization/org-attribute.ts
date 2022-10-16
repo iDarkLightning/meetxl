@@ -1,6 +1,9 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { orgAdminProcedure } from "../../procedures/org-procedures";
+import {
+  orgAdminProcedure,
+  orgMemberProcedure,
+} from "../../procedures/org-procedures";
 import { t } from "../../trpc";
 
 export const orgAttributeRouter = t.router({
@@ -98,6 +101,15 @@ export const orgAttributeRouter = t.router({
         },
       });
     }),
+
+  mine: orgMemberProcedure.query(({ ctx }) => {
+    return ctx.prisma.memberAttribute.findMany({
+      where: {
+        orgId: ctx.org.id,
+        userId: ctx.session.user.id,
+      },
+    });
+  }),
 
   delete: orgAdminProcedure
     .input(z.object({ name: z.string() }))
