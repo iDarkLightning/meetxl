@@ -136,7 +136,7 @@ model MemberAttribute {
     orgId                     String
     userId                    String
 
-    @@unique([organizationAttributeName, orgId])
+    @@unique([organizationAttributeName, orgId, userId])
 }
 
 model MeetingParticipant {

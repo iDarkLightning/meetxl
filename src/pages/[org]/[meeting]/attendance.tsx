@@ -1,5 +1,4 @@
 import { useZodForm } from "@/lib/hooks/use-zod-form";
-import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
@@ -8,17 +7,15 @@ import { Input } from "@/shared-components/system/input";
 import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { CustomNextPage } from "@/types/next-page";
-import { MeetingShell, useMeeting } from "@/ui/meetings/meeting-shell";
-import { ParticipantList } from "@/ui/meetings/participant-list";
+import { useMeeting } from "@/ui/meetings/meeting-shell";
+import { ParticipantShell } from "@/ui/meetings/participant-shell";
 import { trpc } from "@/utils/trpc";
 import { Tab } from "@headlessui/react";
 import { AttendanceLinkAction } from "@prisma/client";
 import clsx from "clsx";
 import Link from "next/link";
-import { FaPlus } from "react-icons/fa";
+import { FaExternalLinkAlt, FaPlus } from "react-icons/fa";
 import { z } from "zod";
-import { FaExternalLinkAlt } from "react-icons/fa";
-import { ParticipantShell } from "@/ui/meetings/participant-shell";
 
 const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (props) => {
   const meeting = useMeeting();

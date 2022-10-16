@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { randomBytes } from "crypto";
 import { z } from "zod";
 import {
@@ -80,6 +81,22 @@ export const meetingParticipantRouter = t.router({
     }),
 
   register: meetingMemberProcedure.mutation(async ({ ctx }) => {
+    const participantCount = await ctx.prisma.meetingParticipant.count({
+      where: {
+        meetingId: ctx.meeting.id,
+      },
+    });
+
+    if (
+      ctx.meeting.maxParticipants &&
+      participantCount >= ctx.meeting.maxParticipants
+    ) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "Maximum number of participants reached",
+      });
+    }
+
     return ctx.prisma.meetingParticipant.create({
       data: {
         code: randomBytes(3).toString("hex"),
@@ -90,4 +107,50 @@ export const meetingParticipantRouter = t.router({
       },
     });
   }),
+
+  toggleLimit: meetingAdminProcedure.mutation(async ({ ctx }) => {
+    const participantCount = await ctx.prisma.meetingParticipant.count({
+      where: {
+        meetingId: ctx.meeting.id,
+      },
+    });
+
+    return ctx.prisma.meeting.update({
+      where: {
+        id: ctx.meeting.id,
+      },
+      data: {
+        limitParticipants: !ctx.meeting.limitParticipants,
+        maxParticipants: ctx.meeting.limitParticipants
+          ? null
+          : participantCount,
+      },
+    });
+  }),
+
+  updateLimit: meetingAdminProcedure
+    .input(z.object({ limit: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const participantCount = await ctx.prisma.meetingParticipant.count({
+        where: {
+          meetingId: ctx.meeting.id,
+        },
+      });
+
+      if (input.limit < participantCount) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Cannot set limit lower than current participant count",
+        });
+      }
+
+      return ctx.prisma.meeting.update({
+        where: {
+          id: ctx.meeting.id,
+        },
+        data: {
+          maxParticipants: input.limit,
+        },
+      });
+    }),
 });
