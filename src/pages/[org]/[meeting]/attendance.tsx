@@ -18,6 +18,7 @@ import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
 import { z } from "zod";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { ParticipantShell } from "@/ui/meetings/participant-shell";
 
 const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (props) => {
   const meeting = useMeeting();
@@ -190,10 +191,6 @@ const MeetingAttendance: CustomNextPage = () => {
 
   return (
     <SectionWrapper>
-      <SectionHeading
-        heading="Attendance"
-        sub="Manage attendance for this meeting's participants"
-      />
       <Tab.Group
         defaultIndex={
           meeting.requireCheckIn ||
@@ -228,13 +225,19 @@ const MeetingAttendance: CustomNextPage = () => {
           </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>
-      <ParticipantList showCheckIn showCheckOut />
     </SectionWrapper>
   );
 };
 
 MeetingAttendance.auth = true;
 
-MeetingAttendance.getLayout = (page) => <MeetingShell>{page}</MeetingShell>;
+MeetingAttendance.getLayout = (page) => (
+  <ParticipantShell
+    heading="Attendance"
+    sub="Manage attendance for this meeting's participants"
+  >
+    {page}
+  </ParticipantShell>
+);
 
 export default MeetingAttendance;

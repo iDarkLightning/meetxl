@@ -8,6 +8,7 @@ import { CustomNextPage } from "@/types/next-page";
 import { EditParticipantsModal } from "@/ui/meetings/edit-participant";
 import { MeetingShell, useMeeting } from "@/ui/meetings/meeting-shell";
 import { ParticipantList } from "@/ui/meetings/participant-list";
+import { ParticipantShell } from "@/ui/meetings/participant-shell";
 import { trpc } from "@/utils/trpc";
 
 const MeetingParticipants: CustomNextPage = () => {
@@ -18,10 +19,6 @@ const MeetingParticipants: CustomNextPage = () => {
 
   return (
     <SectionWrapper>
-      <SectionHeading
-        heading="Participants"
-        sub="Manage member access to this meeting and add/remove participants."
-      />
       <Card className="flex flex-col gap-4">
         <div>
           <Heading level="h4">Participant Options</Heading>
@@ -53,21 +50,19 @@ const MeetingParticipants: CustomNextPage = () => {
           )}
         </div>
       </Card>
-      <div className="flex w-full gap-4">
-        <div className="flex w-full flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <Heading level="h5">Participants</Heading>
-            <EditParticipantsModal />
-          </div>
-          <ParticipantList />
-        </div>
-      </div>
     </SectionWrapper>
   );
 };
 
 MeetingParticipants.auth = true;
 
-MeetingParticipants.getLayout = (page) => <MeetingShell>{page}</MeetingShell>;
+MeetingParticipants.getLayout = (page) => (
+  <ParticipantShell
+    heading="Participants"
+    sub="Manage participant options for this meeting"
+  >
+    {page}
+  </ParticipantShell>
+);
 
 export default MeetingParticipants;

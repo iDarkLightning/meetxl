@@ -1,4 +1,8 @@
+import { SectionHeading } from "@/shared-components/layout/section-heading";
+import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
+import { Card } from "@/shared-components/system/card";
+import { Heading } from "@/shared-components/system/heading";
 import { CustomNextPage } from "@/types/next-page";
 import { MeetingShell, useMeeting } from "@/ui/meetings/meeting-shell";
 import { MeetingTicket } from "@/ui/meetings/ticket";
@@ -46,15 +50,22 @@ const ParticipantIndex: React.FC = () => {
 
 const MeetingIndex: CustomNextPage = () => {
   const org = useOrg();
+  const meeting = useMeeting();
 
   if (org.member.role === "MEMBER") {
     return <ParticipantIndex />;
   }
 
   return (
-    <div>
-      <h1>Monsieur, tu es un Admin</h1>
-    </div>
+    <SectionWrapper>
+      <SectionHeading
+        heading={meeting.name}
+        sub="Manage settings for this meeting"
+      />
+      <Card>
+        <Heading level="h4">Meeting Details</Heading>
+      </Card>
+    </SectionWrapper>
   );
 };
 

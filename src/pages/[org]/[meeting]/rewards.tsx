@@ -138,7 +138,9 @@ const MeetingRewards: CustomNextPage = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <SectionHeading
           heading="Rewards"
-          sub="Manage rewards for attending this meeting"
+          sub={`${
+            org.member.role === "ADMIN" ? "Manage" : "View"
+          } rewards for attending this meeting`}
         />
         {meeting.rewardsEnabled && (
           <div className="mt-2 flex gap-4">

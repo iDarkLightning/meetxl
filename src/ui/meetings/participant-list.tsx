@@ -2,10 +2,7 @@ import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { trpc } from "@/utils/trpc";
 import { useMeeting } from "./meeting-shell";
 
-export const ParticipantList: React.FC<{
-  showCheckIn?: boolean;
-  showCheckOut?: boolean;
-}> = ({ showCheckIn = false, showCheckOut = false }) => {
+export const ParticipantList: React.FC = () => {
   const meeting = useMeeting();
   const participantsQuery = trpc.meeting.participant.list.useQuery({
     meetingId: meeting.id,
@@ -21,10 +18,8 @@ export const ParticipantList: React.FC<{
             <th>Email</th>
             <th>Confirmation Code</th>
             <th>Status</th>
-            {meeting.requireCheckIn && showCheckIn && <th>Checked In Time</th>}
-            {meeting.requireCheckOut && showCheckOut && (
-              <th>Checked Out Time</th>
-            )}
+            {meeting.requireCheckIn && <th>Check In Time</th>}
+            {meeting.requireCheckOut && <th>Check Out Time</th>}
           </tr>
         </thead>
         <tbody>
@@ -41,18 +36,14 @@ export const ParticipantList: React.FC<{
                     <td>{p.member.user.email}</td>
                     <td>{p.code}</td>
                     <td>{p.status}</td>
-                    {meeting.requireCheckIn && showCheckIn && (
+                    {meeting.requireCheckIn && (
                       <td>
-                        {p.checkedIn
-                          ? p.checkInTime?.toLocaleString()
-                          : "Not Checked In"}
+                        {p.checkedIn ? p.checkInTime?.toLocaleString() : "-"}
                       </td>
                     )}
-                    {meeting.requireCheckOut && showCheckOut && (
+                    {meeting.requireCheckOut && (
                       <td>
-                        {p.checkedOut
-                          ? p.checkOutTime?.toLocaleString()
-                          : "Not Checked Out"}
+                        {p.checkedOut ? p.checkOutTime?.toLocaleString() : "-"}
                       </td>
                     )}
                   </tr>

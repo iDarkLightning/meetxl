@@ -181,7 +181,8 @@ model Meeting {
     organization     Organization         @relation(fields: [organizationSlug], references: [slug])
 
     // for public meetings
-    maxParticipants Int?
+    limitParticipants Boolean @default(false)
+    maxParticipants   Int?
 
     requireCheckIn  Boolean          @default(false)
     requireCheckOut Boolean          @default(false)
