@@ -11,12 +11,12 @@ import {
   UseQueryResult,
 } from "@tanstack/react-query";
 import { TRPCClientErrorLike } from "@trpc/client";
+import { ErrorDisplay } from "./error-display";
 import { LoadingSpinner } from "./spinner";
-import NextError from "next/error";
 
 type JSXElementOrNull = JSX.Element | null;
 
-type ErrorResult<TData, TError> =
+export type ErrorResult<TData, TError> =
   | QueryObserverLoadingErrorResult<TData, TError>
   | QueryObserverRefetchErrorResult<TData, TError>;
 
@@ -111,13 +111,6 @@ export function createQueryCell<TError>(
 type TError = TRPCClientErrorLike<AppRouter>;
 
 export const BaseQueryCell = createQueryCell<TError>({
-  error: (result) => (
-    <div className="absolute top-0 left-0 z-50 h-screen w-screen bg-background-primary">
-      <NextError
-        title={result.error.message}
-        statusCode={result.error.data?.httpStatus ?? 500}
-      />
-    </div>
-  ),
+  error: (result) => <ErrorDisplay result={result} />,
   loading: () => <LoadingSpinner />,
 });
