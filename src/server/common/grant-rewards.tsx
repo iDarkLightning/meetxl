@@ -24,9 +24,10 @@ export const grantRewards = async (
           attributes: {
             update: {
               where: {
-                organizationAttributeName_orgId: {
+                organizationAttributeName_orgId_userId: {
                   organizationAttributeName: reward.attributeName,
                   orgId: ctx.org.id,
+                  userId,
                 },
               },
               data: {
