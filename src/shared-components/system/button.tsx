@@ -20,7 +20,7 @@ const variants = {
     "border-solid border-[0.0125rem] border-accent-stroke hover:bg-accent-secondary hover:text-white",
   ghost: "",
   danger:
-    "bg-accent-secondary text-accent-danger border-[0.0125rem] hover:bg-opacity-80 border-accent-danger",
+    "bg-accent-secondary text-accent-danger border-[0.0125rem] hover:bg-accent-danger hover:text-accent-secondary border-accent-danger",
   unstyled: "",
 };
 
@@ -91,7 +91,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         <button
           ref={ref}
           className={clsx(
-            `flex items-center justify-center truncate font-medium transition-all`,
+            `flex items-center justify-center truncate font-medium transition-colors`,
             sizes[size],
             variants[variant],
             !disabled && !loading && `${variantHover[variant]} active:scale-95`,

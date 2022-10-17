@@ -19,9 +19,11 @@ export const NewMeetingsModal: React.FC<{
   const methods = useZodForm({
     schema: z.object({
       name: z.string().min(1),
+      startTime: z.string(),
     }),
     defaultValues: {
       name: "",
+      startTime: "",
     },
   });
 
@@ -53,6 +55,19 @@ export const NewMeetingsModal: React.FC<{
           {methods.formState.errors.name?.message && (
             <p className="text-red-500">
               {methods.formState.errors.name?.message}
+            </p>
+          )}
+          <label htmlFor="startTime" className="text-gray-400">
+            Start Time
+          </label>
+          <Input
+            {...methods.register("startTime")}
+            className="mt-2"
+            type="date"
+          />
+          {methods.formState.errors.startTime?.message && (
+            <p className="text-red-500">
+              {methods.formState.errors.startTime?.message}
             </p>
           )}
           <Button type="submit" className="mt-4" loading={create.isLoading}>

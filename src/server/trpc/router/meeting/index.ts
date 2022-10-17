@@ -30,13 +30,21 @@ const generateMeetingSlug = async (name: string, ctx: Context) => {
 
 export const meetingRouter = t.router({
   create: orgAdminProcedure
-    .input(z.object({ name: z.string() }))
+    .input(
+      z.object({
+        name: z.string(),
+        startTime: z.string().transform((d) => new Date(d)),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
+      console.log(input.startTime);
+
       return ctx.prisma.meeting.create({
         data: {
           name: input.name,
           slug: await generateMeetingSlug(input.name, ctx),
           organizationSlug: ctx.org.slug,
+          startTime: input.startTime,
         },
       });
     }),

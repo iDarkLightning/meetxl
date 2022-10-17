@@ -27,7 +27,6 @@ export const JoinCodeInvite = () => {
         <Heading level="h4">Join Code</Heading>
         <Button
           loading={createCode.isLoading}
-          size="sm"
           className="h-10"
           icon={<FaPlus />}
           onClick={() => {
