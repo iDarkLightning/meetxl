@@ -123,4 +123,27 @@ export const orgAttributeRouter = t.router({
         },
       });
     }),
+
+  set: orgAdminProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        attributeName: z.string(),
+        value: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.memberAttribute.update({
+        where: {
+          organizationAttributeName_orgId_userId: {
+            organizationAttributeName: input.attributeName,
+            orgId: ctx.org.id,
+            userId: input.userId,
+          },
+        },
+        data: {
+          value: input.value,
+        },
+      });
+    }),
 });

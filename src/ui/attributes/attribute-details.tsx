@@ -4,8 +4,42 @@ import { Heading } from "@/shared-components/system/heading";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { trpc } from "@/utils/trpc";
 import Link from "next/link";
+import { useRef } from "react";
+import ContentEditable, { ContentEditableEvent } from "react-contenteditable";
 import { FaTrash } from "react-icons/fa";
+import { toast } from "react-toastify";
 import { useOrg } from "../org/org-shell";
+
+const ValueEditable: React.FC<{
+  initialValue: string;
+  handleSubmit: (text: string) => void | Promise<void>;
+}> = (props) => {
+  const text = useRef(props.initialValue);
+
+  const handleChange = (evt: ContentEditableEvent) => {
+    text.current = evt.target.value;
+  };
+
+  const handleBlur = () => {
+    if (text.current !== props.initialValue) {
+      props.handleSubmit(text.current);
+    }
+  };
+
+  return (
+    <ContentEditable
+      html={text.current}
+      onBlur={handleBlur}
+      onChange={handleChange}
+      onKeyDown={(evt) => {
+        if (evt.key === "Enter") {
+          evt.preventDefault();
+          props.handleSubmit(text.current);
+        }
+      }}
+    />
+  );
+};
 
 export const AttributeDetails: React.FC<{ name: string }> = (props) => {
   const org = useOrg();
@@ -15,6 +49,7 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
   });
   const deleteAttr = trpc.organization.attribute.delete.useMutation();
   const ctx = trpc.useContext();
+  const editValue = trpc.organization.attribute.set.useMutation();
 
   return (
     <BaseQueryCell
@@ -95,7 +130,25 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
                   <tr key={memberAttribute.id}>
                     <td>{memberAttribute.orgMember.user.name}</td>
                     <td>{memberAttribute.orgMember.user.email}</td>
-                    <td>{memberAttribute.value}</td>
+                    <td>
+                      <ValueEditable
+                        handleSubmit={(text) => {
+                          editValue
+                            .mutateAsync({
+                              attributeName:
+                                memberAttribute.organizationAttributeName,
+                              orgId: org.id,
+                              value: parseInt(text),
+                              userId: memberAttribute.orgMember.user.id,
+                            })
+                            .then(() =>
+                              ctx.organization.attribute.get.invalidate()
+                            )
+                            .catch(() => 0);
+                        }}
+                        initialValue={memberAttribute.value.toString()}
+                      />
+                    </td>
                   </tr>
                 ))}
               </tbody>
