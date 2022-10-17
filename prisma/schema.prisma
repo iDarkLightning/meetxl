@@ -173,6 +173,9 @@ model Meeting {
     id               String               @id @default(cuid())
     name             String
     slug             String
+    startTime        DateTime
+    endTime          DateTime?
+    location         String?
     organizationSlug String
     rewardsEnabled   Boolean              @default(false)
     isPublic         Boolean              @default(false)
