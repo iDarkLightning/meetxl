@@ -18,7 +18,7 @@ const tabs: Tab[] = [
   },
   {
     name: "Attributes",
-    route: "/[org]/attributes",
+    route: "/[org]/attributes/*",
   },
   {
     name: "Invites",

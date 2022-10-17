@@ -5,15 +5,16 @@ import { Heading } from "@/shared-components/system/heading";
 import { Input } from "@/shared-components/system/input";
 import { trpc } from "@/utils/trpc";
 import { Dialog } from "@headlessui/react";
-import { useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import React from "react";
 import { z } from "zod";
 import { useOrg } from "../org/org-shell";
 
-export const NewAttributeModal: React.FC = () => {
+export const NewAttributeModal: React.FC<{
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}> = (props) => {
   const org = useOrg();
   const ctx = trpc.useContext();
-  const [isOpen, setIsOpen] = useState(false);
   const create = trpc.organization.attribute.create.useMutation();
 
   const methods = useZodForm({
@@ -27,17 +28,10 @@ export const NewAttributeModal: React.FC = () => {
 
   return (
     <>
-      <Button
-        icon={<FaPlus size="0.75rem" />}
-        variant="primary"
-        onClick={() => setIsOpen(true)}
-      >
-        New
-      </Button>
       <DialogWrapper
-        isOpen={isOpen}
+        isOpen={props.isOpen}
         onClose={() => {
-          setIsOpen(false);
+          props.setIsOpen(false);
         }}
       >
         <Dialog.Title as={Heading} level="h3">
@@ -51,7 +45,7 @@ export const NewAttributeModal: React.FC = () => {
                 .mutateAsync({ orgId: org.id, ...values })
                 .catch(() => 0);
               ctx.organization.attribute.list.invalidate();
-              setIsOpen(false);
+              props.setIsOpen(false);
             })}
           >
             <label htmlFor="name" className="text-gray-400">

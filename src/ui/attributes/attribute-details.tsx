@@ -1,13 +1,13 @@
 import { Button } from "@/shared-components/system/button";
-import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
+import { EmptyContent } from "@/shared-components/util/empty-content";
 import { trpc } from "@/utils/trpc";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useRef } from "react";
 import ContentEditable, { ContentEditableEvent } from "react-contenteditable";
 import { FaTrash } from "react-icons/fa";
-import { toast } from "react-toastify";
 import { useOrg } from "../org/org-shell";
 
 const ValueEditable: React.FC<{
@@ -50,6 +50,7 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
   const deleteAttr = trpc.organization.attribute.delete.useMutation();
   const ctx = trpc.useContext();
   const editValue = trpc.organization.attribute.set.useMutation();
+  const router = useRouter();
 
   return (
     <BaseQueryCell
@@ -67,6 +68,7 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
                   .mutateAsync({ name: data.name, orgId: org.id })
                   .then(() => ctx.organization.attribute.get.invalidate())
                   .then(() => ctx.organization.attribute.list.invalidate())
+                  .then(() => router.push(`/${org.slug}/attributes`))
                   .catch(() => 0)
               }
             >
@@ -76,15 +78,10 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
           <div className="flex flex-col gap-2">
             <Heading level="h4">Referenced Meetings</Heading>
             {data.rewards.length === 0 && (
-              <Card className="flex min-h-[15rem] flex-col items-center justify-center border-dotted bg-opacity-0 hover:bg-opacity-0">
-                <Heading level="h4">
-                  No meetings reference this attribute
-                </Heading>
-                <p className="text-sm opacity-75">
-                  Create a reward for this attribute in a meeting to see it
-                  here!
-                </p>
-              </Card>
+              <EmptyContent
+                heading="No meetings reference this attribute"
+                sub="Create a reward for this attribute in a meeting to see it here!"
+              />
             )}
             {data.rewards.length > 0 && (
               <table className="w-full text-left">
