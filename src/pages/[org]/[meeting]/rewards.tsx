@@ -4,6 +4,7 @@ import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
+import { EmptyContent } from "@/shared-components/util/empty-content";
 import { CustomNextPage } from "@/types/next-page";
 import { MeetingShell, useMeeting } from "@/ui/meetings/meeting-shell";
 import { NewReward } from "@/ui/meetings/new-reward";
@@ -48,17 +49,16 @@ const EnableRewards: React.FC = () => {
   const org = useOrg();
 
   return (
-    <Card className="flex min-h-[20rem] flex-col items-center justify-center gap-4 border-dotted bg-background-primary">
-      <div className="flex flex-col items-center text-center">
-        <Heading level="h4">Rewards are not enabled for this meeting</Heading>
-        <p className="text-sm opacity-75">
-          {org.member.role === "ADMIN"
-            ? "Enabling rewards for this meeting will enable you to modify the user's attributes on attendance"
-            : "You will not get any additional rewards for attending this meeting. This meeting might still be mandatory for you."}
-        </p>
-      </div>
+    <EmptyContent
+      heading="Rewards are not enabled for this meeting"
+      sub={
+        org.member.role === "ADMIN"
+          ? "Enabling rewards for this meeting will enable you to modify the user's attributes on attendance"
+          : "You will not get any additional rewards for attending this meeting. This meeting might still be mandatory for you."
+      }
+    >
       <ToggleButton variant="primary">Enable</ToggleButton>
-    </Card>
+    </EmptyContent>
   );
 };
 

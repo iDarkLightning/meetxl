@@ -13,7 +13,7 @@ export const ParticipantList: React.FC = () => {
     <div className="overflow-auto">
       <table className="w-full text-left">
         <thead>
-          <tr className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
+          <tr className="bg-background-secondary">
             <th>Name</th>
             <th>Email</th>
             <th>Confirmation Code</th>

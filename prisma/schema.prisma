@@ -63,16 +63,17 @@ model VerificationToken {
 }
 
 model OrganizationMember {
-    organizationId String
-    userId         String
-    organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-    user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    role             MemberRole
-    createdJoinCodes JoinCode[]
-    meetings         MeetingParticipant[]
-    attributes       MemberAttribute[]
-    issuedLinks      AttendanceLink[]
+    organizationId         String
+    userId                 String
+    organization           Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    user                   User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+    role                   MemberRole
+    createdJoinCodes       JoinCode[]
+    meetings               MeetingParticipant[]
+    attributes             MemberAttribute[]
+    issuedAttendanceLinks  AttendanceLink[]
+    issuedAttributeLinks   AttributeLink[]
+    redeemedAttributeLinks AttributeLinkRedeem[]
 
     @@id([organizationId, userId])
 }
@@ -123,6 +124,7 @@ model OrganizationAttribute {
     organizationId   String
     rewards          MeetingReward[]
     memberAttributes MemberAttribute[]
+    links            AttributeLink[]
 
     @@unique([name, organizationId])
 }
@@ -137,6 +139,34 @@ model MemberAttribute {
     userId                    String
 
     @@unique([organizationAttributeName, orgId, userId])
+}
+
+model AttributeLink {
+    id                        String                  @id @default(cuid())
+    organizationAttribute     OrganizationAttribute   @relation(fields: [organizationAttributeName, orgId], references: [name, organizationId])
+    organizationAttributeName String
+    orgId                     String
+    code                      String
+    value                     Int
+    name                      String
+    action                    AttributeModifierAction
+    issuer                    OrganizationMember      @relation(fields: [orgId, organizationMemberUserId], references: [organizationId, userId])
+    organizationMemberUserId  String
+    redeemedBy                AttributeLinkRedeem[]
+
+    @@unique([organizationAttributeName, orgId, code])
+}
+
+model AttributeLinkRedeem {
+    link                 AttributeLink      @relation(fields: [linkId], references: [id])
+    linkId               String
+    member               OrganizationMember @relation(fields: [memberOrganizationId, memberUserId], references: [organizationId, userId])
+    memberOrganizationId String
+    memberUserId         String
+
+    redeemedAt DateTime @default(now())
+
+    @@id([linkId, memberOrganizationId, memberUserId])
 }
 
 model MeetingParticipant {
@@ -159,12 +189,12 @@ model MeetingParticipant {
 }
 
 model MeetingReward {
-    id             String                @id @default(cuid())
+    id             String                  @id @default(cuid())
     value          Float
-    action         MeetingRewardAction
-    meeting        Meeting               @relation(fields: [meetingId], references: [id])
+    action         AttributeModifierAction
+    meeting        Meeting                 @relation(fields: [meetingId], references: [id])
     meetingId      String
-    attribute      OrganizationAttribute @relation(fields: [attributeName, attributeOrgId], references: [name, organizationId], onDelete: Cascade, onUpdate: Cascade)
+    attribute      OrganizationAttribute   @relation(fields: [attributeName, attributeOrgId], references: [name, organizationId], onDelete: Cascade, onUpdate: Cascade)
     attributeName  String
     attributeOrgId String
 }
@@ -210,7 +240,7 @@ enum MeetingParticipantStatus {
     ATTENDED
 }
 
-enum MeetingRewardAction {
+enum AttributeModifierAction {
     INCREMENT
     DECREMENT
     SET

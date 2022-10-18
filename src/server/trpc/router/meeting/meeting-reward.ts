@@ -1,4 +1,4 @@
-import { MeetingRewardAction } from "@prisma/client";
+import { AttributeModifierAction } from "@prisma/client";
 import { z } from "zod";
 import {
   meetingAdminProcedure,
@@ -23,7 +23,7 @@ export const meetingRewardRouter = t.router({
       z.object({
         key: z.string(),
         value: z.number(),
-        action: z.nativeEnum(MeetingRewardAction),
+        action: z.nativeEnum(AttributeModifierAction),
       })
     )
     .mutation(async ({ ctx, input }) => {

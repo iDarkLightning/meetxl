@@ -7,7 +7,7 @@ export const EmptyContent: React.FC<
 > = (props) => {
   return (
     <Card className="flex min-h-[15rem] flex-col items-center justify-center gap-4 border-dotted bg-opacity-0 hover:bg-opacity-0">
-      <div>
+      <div className="text-center">
         <Heading level="h4">{props.heading}</Heading>
         <p className="text-sm opacity-75">{props.sub}</p>
       </div>

@@ -1,5 +1,6 @@
 import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
+import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
 import React from "react";
 import { EditParticipantsModal } from "./edit-participant";
@@ -11,11 +12,11 @@ const ShellInner: React.FC<React.PropsWithChildren> = (props) => {
     <div className="flex flex-col gap-6 xl:flex-row">
       <div className="flex-1 md:flex-[0.75]">{props.children}</div>
       <div className="flex-1">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-6">
+          <Card className="flex items-center justify-between">
             <Heading level="h5">Participants</Heading>
             <EditParticipantsModal />
-          </div>
+          </Card>
           <ParticipantList />
         </div>
       </div>

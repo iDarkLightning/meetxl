@@ -19,15 +19,33 @@ body {
   @apply ring-2  ring-accent-primary ring-opacity-75;
 }
 
-td,
-th {
-  @apply p-2;
+table {
+  border-collapse: separate !important;
+  border-spacing: 0;
 }
 
 td {
-  @apply font-medium;
+  padding: theme("padding.2");
+  font-weight: theme("fontWeight.medium");
 }
 
 th {
-  @apply text-sm font-normal text-gray-300;
+  padding: theme("padding.2");
+  font-weight: theme("fontWeight.normal");
+  color: theme("colors.gray.300");
+  border-color: theme("colors.accent.stroke");
+  border-top-width: 0.0125rem;
+  border-bottom-width: 0.0125rem;
+}
+
+th:first-child {
+  border-left-width: 0.0125rem;
+  border-top-left-radius: theme("borderRadius.md");
+  border-bottom-left-radius: theme("borderRadius.md");
+}
+
+th:last-child {
+  border-right-width: 0.0125rem;
+  border-top-right-radius: theme("borderRadius.md");
+  border-bottom-right-radius: theme("borderRadius.md");
 }

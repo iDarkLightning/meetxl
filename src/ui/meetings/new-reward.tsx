@@ -7,7 +7,7 @@ import { Select } from "@/shared-components/system/select";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { trpc } from "@/utils/trpc";
 import { Dialog } from "@headlessui/react";
-import { MeetingRewardAction } from "@prisma/client";
+import { AttributeModifierAction } from "@prisma/client";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { z } from "zod";
@@ -24,12 +24,12 @@ export const NewReward: React.FC = () => {
     schema: z.object({
       key: z.string().min(1),
       value: z.string(),
-      action: z.nativeEnum(MeetingRewardAction),
+      action: z.nativeEnum(AttributeModifierAction),
     }),
     defaultValues: {
       key: "",
       value: "0",
-      action: MeetingRewardAction.INCREMENT,
+      action: AttributeModifierAction.INCREMENT,
     },
   });
   const attributes = trpc.organization.attribute.list.useQuery({
@@ -100,13 +100,13 @@ export const NewReward: React.FC = () => {
                         Action
                       </label>
                       <Select {...methods.register("action")} className="mt-2">
-                        <option value={MeetingRewardAction.INCREMENT}>
+                        <option value={AttributeModifierAction.INCREMENT}>
                           Increment
                         </option>
-                        <option value={MeetingRewardAction.DECREMENT}>
+                        <option value={AttributeModifierAction.DECREMENT}>
                           Decrement
                         </option>
-                        <option value={MeetingRewardAction.SET}>Set</option>
+                        <option value={AttributeModifierAction.SET}>Set</option>
                       </Select>
                     </div>
                     <Button type="submit" className="mt-4">
