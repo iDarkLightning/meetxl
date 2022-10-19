@@ -45,22 +45,25 @@ export const orgAttributeLinkRouter = t.router({
       });
     }),
 
-  list: orgAdminProcedure.query(async ({ ctx }) => {
-    return ctx.prisma.attributeLink.findMany({
-      where: {
-        organizationAttribute: {
-          organizationId: ctx.org.id,
-        },
-      },
-      include: {
-        issuer: {
-          include: {
-            user: true,
+  list: orgAdminProcedure
+    .input(z.object({ name: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.attributeLink.findMany({
+        where: {
+          organizationAttribute: {
+            organizationId: ctx.org.id,
+            name: input.name,
           },
         },
-      },
-    });
-  }),
+        include: {
+          issuer: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      });
+    }),
 
   getDetailed: orgAdminProcedure
     .input(z.object({ code: z.string(), attributeName: z.string() }))

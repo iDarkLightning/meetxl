@@ -50,11 +50,12 @@ const AttributeLinks: React.FC = () => {
   const router = useRouter();
   const links = trpc.organization.attribute.links.list.useQuery({
     orgId: org.id,
+    name: router.query.name as string,
   });
 
   return (
     <div>
-      <Card>
+      <Card className="hover:bg-opacity-100">
         <div className="flex items-center justify-between">
           <Heading level="h4">Links</Heading>
           <NewAttributeLink />
@@ -63,23 +64,33 @@ const AttributeLinks: React.FC = () => {
           query={links}
           success={({ data }) => (
             <AnimateWrapper className="mt-4 flex flex-col gap-4">
-              {data.map((link) => (
-                <Link
-                  key={link.id}
-                  href={`/${org.slug}/attributes/${router.query.name}/redeem/${link.code}`}
-                  passHref
-                >
-                  <a>
-                    <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-background-dark">
-                      <div>
-                        <p className="font-medium">{link.name}</p>
-                        <p className="font-mono text-green-400">{link.code}</p>
-                      </div>
-                      <FaExternalLinkAlt size="0.75rem" />
-                    </Card>
-                  </a>
-                </Link>
-              ))}
+              {data.length === 0 && (
+                <EmptyContent
+                  className="border-none"
+                  heading="This attribute has no links"
+                  sub="Create a new link to share with members"
+                />
+              )}
+              {data.length > 0 &&
+                data.map((link) => (
+                  <Link
+                    key={link.id}
+                    href={`/${org.slug}/attributes/${router.query.name}/redeem/${link.code}`}
+                    passHref
+                  >
+                    <a>
+                      <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-background-dark">
+                        <div>
+                          <p className="font-medium">{link.name}</p>
+                          <p className="font-mono text-green-400">
+                            {link.code}
+                          </p>
+                        </div>
+                        <FaExternalLinkAlt size="0.75rem" />
+                      </Card>
+                    </a>
+                  </Link>
+                ))}
             </AnimateWrapper>
           )}
         />
@@ -104,9 +115,9 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
       query={attribute}
       success={({ data }) => (
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-6 lg:flex-row">
-            <div className="flex flex-1 flex-col gap-4">
-              <Card className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
+            <div className="flex flex-1 flex-col gap-4 lg:gap-6">
+              <Card className="flex items-center justify-between hover:bg-opacity-100">
                 <Heading level="h3">{data.name}</Heading>
                 <Button
                   variant="danger"
@@ -127,42 +138,38 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
               <AttributeLinks />
             </div>
             <div className="flex flex-1 flex-col gap-4">
-              <div className="flex flex-col gap-3">
-                <Heading level="h4">Referenced Meetings</Heading>
-                {data.rewards.length === 0 && (
-                  <EmptyContent
-                    heading="No meetings reference this attribute"
-                    sub="Create a reward for this attribute in a meeting to see it here!"
-                  />
-                )}
-                {data.rewards.length > 0 && (
-                  <table className="w-full table-fixed text-left">
-                    <thead>
-                      <tr className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
-                        <th>Meeting Name</th>
-                        <th>Action</th>
-                        <th>Value</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.rewards.map((reward) => (
-                        <Link
-                          key={reward.id}
-                          href={`/${org.slug}/${reward.meeting.slug}/rewards`}
-                          passHref
-                          className="cursor-pointer"
-                        >
-                          <tr>
-                            <td>{reward.meeting.name}</td>
-                            <td>{reward.action}</td>
-                            <td>{reward.value}</td>
-                          </tr>
-                        </Link>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
+              {data.rewards.length > 0 && (
+                <>
+                  <div className="flex flex-col gap-3">
+                    <Heading level="h4">Referenced Meetings</Heading>
+                    <table className="w-full table-fixed text-left">
+                      <thead>
+                        <tr className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
+                          <th>Meeting Name</th>
+                          <th>Action</th>
+                          <th>Value</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.rewards.map((reward) => (
+                          <Link
+                            key={reward.id}
+                            href={`/${org.slug}/${reward.meeting.slug}/rewards`}
+                            passHref
+                            className="cursor-pointer"
+                          >
+                            <tr>
+                              <td>{reward.meeting.name}</td>
+                              <td>{reward.action}</td>
+                              <td>{reward.value}</td>
+                            </tr>
+                          </Link>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              )}
               <div className="flex flex-col gap-3">
                 <Heading level="h4">Statistics</Heading>
                 <table className="w-full table-fixed text-left">
