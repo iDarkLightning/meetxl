@@ -36,14 +36,8 @@ const AdminView: React.FC<React.PropsWithChildren> = (props) => {
                   <Menu as="div" className="relative inline-block text-left">
                     <Menu.Button
                       as={Button}
-                      variant="outline-secondary"
                       size="sm"
-                      icon={
-                        <FaChevronDown
-                          className="text-gray-400"
-                          size="0.75rem"
-                        />
-                      }
+                      icon={<FaChevronDown size="0.75rem" />}
                       className="flex-row-reverse gap-3"
                     >
                       {data.find((a) => a.name === router.query.name)?.name}

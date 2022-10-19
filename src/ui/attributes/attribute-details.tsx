@@ -53,36 +53,38 @@ const AttributeLinks: React.FC = () => {
   });
 
   return (
-    <Card className="hover:bg-opacity-100">
-      <div className="flex items-center justify-between">
-        <Heading level="h4">Links</Heading>
-        <NewAttributeLink />
-      </div>
-      <BaseQueryCell
-        query={links}
-        success={({ data }) => (
-          <AnimateWrapper className="mt-4 flex flex-col gap-4">
-            {data.map((link) => (
-              <Link
-                key={link.id}
-                href={`/${org.slug}/attributes/${router.query.name}/redeem/${link.code}`}
-                passHref
-              >
-                <a>
-                  <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-background-dark">
-                    <div>
-                      <p className="font-medium">{link.name}</p>
-                      <p className="font-mono text-green-400">{link.code}</p>
-                    </div>
-                    <FaExternalLinkAlt size="0.75rem" />
-                  </Card>
-                </a>
-              </Link>
-            ))}
-          </AnimateWrapper>
-        )}
-      />
-    </Card>
+    <div>
+      <Card>
+        <div className="flex items-center justify-between">
+          <Heading level="h4">Links</Heading>
+          <NewAttributeLink />
+        </div>
+        <BaseQueryCell
+          query={links}
+          success={({ data }) => (
+            <AnimateWrapper className="mt-4 flex flex-col gap-4">
+              {data.map((link) => (
+                <Link
+                  key={link.id}
+                  href={`/${org.slug}/attributes/${router.query.name}/redeem/${link.code}`}
+                  passHref
+                >
+                  <a>
+                    <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-background-dark">
+                      <div>
+                        <p className="font-medium">{link.name}</p>
+                        <p className="font-mono text-green-400">{link.code}</p>
+                      </div>
+                      <FaExternalLinkAlt size="0.75rem" />
+                    </Card>
+                  </a>
+                </Link>
+              ))}
+            </AnimateWrapper>
+          )}
+        />
+      </Card>
+    </div>
   );
 };
 
@@ -102,100 +104,105 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
       query={attribute}
       success={({ data }) => (
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <Heading>{data.name}</Heading>
-            <Button
-              variant="danger"
-              icon={<FaTrash />}
-              loading={deleteAttr.isLoading}
-              onClick={() =>
-                deleteAttr
-                  .mutateAsync({ name: data.name, orgId: org.id })
-                  .then(() => ctx.organization.attribute.get.invalidate())
-                  .then(() => ctx.organization.attribute.list.invalidate())
-                  .then(() => router.push(`/${org.slug}/attributes`))
-                  .catch(() => 0)
-              }
-            >
-              Delete
-            </Button>
-          </div>
-          <AttributeLinks />
-          <div className="flex flex-col gap-2">
-            <Heading level="h4">Referenced Meetings</Heading>
-            {data.rewards.length === 0 && (
-              <EmptyContent
-                heading="No meetings reference this attribute"
-                sub="Create a reward for this attribute in a meeting to see it here!"
-              />
-            )}
-            {data.rewards.length > 0 && (
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
-                    <th>Meeting Name</th>
-                    <th>Action</th>
-                    <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.rewards.map((reward) => (
-                    <Link
-                      key={reward.id}
-                      href={`/${org.slug}/${reward.meeting.slug}/rewards`}
-                      passHref
-                      className="cursor-pointer"
-                    >
-                      <tr>
-                        <td>{reward.meeting.name}</td>
-                        <td>{reward.action}</td>
-                        <td>{reward.value}</td>
+          <div className="flex flex-col gap-6 lg:flex-row">
+            <div className="flex flex-1 flex-col gap-4">
+              <Card className="flex items-center justify-between">
+                <Heading level="h3">{data.name}</Heading>
+                <Button
+                  variant="danger"
+                  icon={<FaTrash />}
+                  loading={deleteAttr.isLoading}
+                  onClick={() =>
+                    deleteAttr
+                      .mutateAsync({ name: data.name, orgId: org.id })
+                      .then(() => ctx.organization.attribute.get.invalidate())
+                      .then(() => ctx.organization.attribute.list.invalidate())
+                      .then(() => router.push(`/${org.slug}/attributes`))
+                      .catch(() => 0)
+                  }
+                >
+                  Delete
+                </Button>
+              </Card>
+              <AttributeLinks />
+            </div>
+            <div className="flex flex-1 flex-col gap-4">
+              <div className="flex flex-col gap-3">
+                <Heading level="h4">Referenced Meetings</Heading>
+                {data.rewards.length === 0 && (
+                  <EmptyContent
+                    heading="No meetings reference this attribute"
+                    sub="Create a reward for this attribute in a meeting to see it here!"
+                  />
+                )}
+                {data.rewards.length > 0 && (
+                  <table className="w-full table-fixed text-left">
+                    <thead>
+                      <tr className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
+                        <th>Meeting Name</th>
+                        <th>Action</th>
+                        <th>Value</th>
                       </tr>
-                    </Link>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
-          <hr className="border-accent-stroke" />
-          <div className="flex flex-col gap-2">
-            <Heading level="h4">Statistics</Heading>
-            <table className="w-full text-left">
-              <thead>
-                <tr className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.memberAttributes.map((memberAttribute) => (
-                  <tr key={memberAttribute.id}>
-                    <td>{memberAttribute.orgMember.user.name}</td>
-                    <td>{memberAttribute.orgMember.user.email}</td>
-                    <td>
-                      <ValueEditable
-                        handleSubmit={(text) => {
-                          editValue
-                            .mutateAsync({
-                              attributeName:
-                                memberAttribute.organizationAttributeName,
-                              orgId: org.id,
-                              value: parseInt(text),
-                              userId: memberAttribute.orgMember.user.id,
-                            })
-                            .then(() =>
-                              ctx.organization.attribute.get.invalidate()
-                            )
-                            .catch(() => 0);
-                        }}
-                        initialValue={memberAttribute.value.toString()}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                      {data.rewards.map((reward) => (
+                        <Link
+                          key={reward.id}
+                          href={`/${org.slug}/${reward.meeting.slug}/rewards`}
+                          passHref
+                          className="cursor-pointer"
+                        >
+                          <tr>
+                            <td>{reward.meeting.name}</td>
+                            <td>{reward.action}</td>
+                            <td>{reward.value}</td>
+                          </tr>
+                        </Link>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+              <div className="flex flex-col gap-3">
+                <Heading level="h4">Statistics</Heading>
+                <table className="w-full table-fixed text-left">
+                  <thead>
+                    <tr className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.memberAttributes.map((memberAttribute) => (
+                      <tr key={memberAttribute.id}>
+                        <td>{memberAttribute.orgMember.user.name}</td>
+                        <td>{memberAttribute.orgMember.user.email}</td>
+                        <td>
+                          <ValueEditable
+                            handleSubmit={(text) => {
+                              editValue
+                                .mutateAsync({
+                                  attributeName:
+                                    memberAttribute.organizationAttributeName,
+                                  orgId: org.id,
+                                  value: parseInt(text),
+                                  userId: memberAttribute.orgMember.user.id,
+                                })
+                                .then(() =>
+                                  ctx.organization.attribute.get.invalidate()
+                                )
+                                .catch(() => 0);
+                            }}
+                            initialValue={memberAttribute.value.toString()}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       )}
