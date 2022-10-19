@@ -4,9 +4,9 @@ import { Heading } from "@/shared-components/system/heading";
 import { Dialog } from "@headlessui/react";
 import { useState } from "react";
 import { FaQrcode } from "react-icons/fa";
-import QRCode from "react-qr-code";
+import Code from "react-qr-code";
 
-export const CheckingQRCode: React.FC = () => {
+export const QRCode: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -19,7 +19,7 @@ export const CheckingQRCode: React.FC = () => {
           <Dialog.Title as={Heading} level="h2">
             QR Code
           </Dialog.Title>
-          <QRCode
+          <Code
             value={window.location.host + window.location.pathname}
             bgColor="#111"
             fgColor="#fff"

@@ -19,7 +19,7 @@ export const NewReward: React.FC = () => {
   const org = useOrg();
   const meeting = useMeeting();
   const ctx = trpc.useContext();
-  const createMeeting = trpc.meeting.reward.create.useMutation();
+  const createReward = trpc.meeting.reward.create.useMutation();
   const methods = useZodForm({
     schema: z.object({
       key: z.string().min(1),
@@ -60,7 +60,7 @@ export const NewReward: React.FC = () => {
                     className="flex flex-col items-end gap-2"
                     autoComplete="off"
                     onSubmit={methods.handleSubmit(async (values) => {
-                      await createMeeting
+                      await createReward
                         .mutateAsync({
                           orgId: org.id,
                           meetingId: meeting.id,

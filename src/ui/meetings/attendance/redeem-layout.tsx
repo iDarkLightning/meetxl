@@ -1,26 +1,51 @@
 import { MainLayout } from "@/shared-components/layout/main-layout";
+import { Tab } from "@/types/tab";
 import { OrgProvider, useOrg } from "@/ui/org/org-shell";
 import React from "react";
-import { MeetingProvider, meetingTabs } from "../meeting-shell";
+import { MeetingProvider } from "../meeting-shell";
 
-const RedeemLayoutInner: React.FC<React.PropsWithChildren> = (props) => {
+interface Props {
+  tabs: Tab[];
+  includeMeetingProvider?: boolean;
+}
+
+const RedeemLayoutInner: React.FC<React.PropsWithChildren<Props>> = (props) => {
   const org = useOrg();
 
   if (org.member.role === "ADMIN") {
     return (
-      <MainLayout tabs={meetingTabs}>
-        <MeetingProvider>{props.children}</MeetingProvider>
+      <MainLayout tabs={props.tabs}>
+        {props.includeMeetingProvider ? (
+          <MeetingProvider>{props.children}</MeetingProvider>
+        ) : (
+          props.children
+        )}
       </MainLayout>
     );
   }
 
-  return <MeetingProvider>{props.children}</MeetingProvider>;
+  return (
+    <>
+      {!props.includeMeetingProvider ? (
+        props.children
+      ) : (
+        <MeetingProvider>{props.children}</MeetingProvider>
+      )}
+    </>
+  );
 };
 
-export const RedeemLayout: React.FC<React.PropsWithChildren> = (props) => {
+export const RedeemLayout: React.FC<React.PropsWithChildren<Props>> = (
+  props
+) => {
   return (
     <OrgProvider>
-      <RedeemLayoutInner>{props.children}</RedeemLayoutInner>
+      <RedeemLayoutInner
+        tabs={props.tabs}
+        includeMeetingProvider={props.includeMeetingProvider}
+      >
+        {props.children}
+      </RedeemLayoutInner>
     </OrgProvider>
   );
 };

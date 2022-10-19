@@ -5,6 +5,7 @@ import {
   orgMemberProcedure,
 } from "../../procedures/org-procedures";
 import { t } from "../../trpc";
+import { orgAttributeLinkRouter } from "./org-attribute-link";
 
 export const orgAttributeRouter = t.router({
   create: orgAdminProcedure
@@ -146,4 +147,6 @@ export const orgAttributeRouter = t.router({
         },
       });
     }),
+
+  links: orgAttributeLinkRouter,
 });

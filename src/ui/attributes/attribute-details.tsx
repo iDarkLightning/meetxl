@@ -1,4 +1,5 @@
 import { Button } from "@/shared-components/system/button";
+import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { EmptyContent } from "@/shared-components/util/empty-content";
@@ -9,6 +10,9 @@ import { useRef } from "react";
 import ContentEditable, { ContentEditableEvent } from "react-contenteditable";
 import { FaTrash } from "react-icons/fa";
 import { useOrg } from "../org/org-shell";
+import { NewAttributeLink } from "./new-attribute-link";
+import { FaExternalLinkAlt } from "react-icons/fa";
+import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 
 const ValueEditable: React.FC<{
   initialValue: string;
@@ -38,6 +42,47 @@ const ValueEditable: React.FC<{
         }
       }}
     />
+  );
+};
+
+const AttributeLinks: React.FC = () => {
+  const org = useOrg();
+  const router = useRouter();
+  const links = trpc.organization.attribute.links.list.useQuery({
+    orgId: org.id,
+  });
+
+  return (
+    <Card className="hover:bg-opacity-100">
+      <div className="flex items-center justify-between">
+        <Heading level="h4">Links</Heading>
+        <NewAttributeLink />
+      </div>
+      <BaseQueryCell
+        query={links}
+        success={({ data }) => (
+          <AnimateWrapper className="mt-4 flex flex-col gap-4">
+            {data.map((link) => (
+              <Link
+                key={link.id}
+                href={`/${org.slug}/attributes/${router.query.name}/redeem/${link.code}`}
+                passHref
+              >
+                <a>
+                  <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-background-dark">
+                    <div>
+                      <p className="font-medium">{link.name}</p>
+                      <p className="font-mono text-green-400">{link.code}</p>
+                    </div>
+                    <FaExternalLinkAlt size="0.75rem" />
+                  </Card>
+                </a>
+              </Link>
+            ))}
+          </AnimateWrapper>
+        )}
+      />
+    </Card>
   );
 };
 
@@ -75,6 +120,7 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
               Delete
             </Button>
           </div>
+          <AttributeLinks />
           <div className="flex flex-col gap-2">
             <Heading level="h4">Referenced Meetings</Heading>
             {data.rewards.length === 0 && (

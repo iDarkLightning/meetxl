@@ -11,7 +11,7 @@ export const OrgContext = createContext<{
   org: inferProcedureOutput<AppRouter["organization"]["get"]> | null;
 }>({ org: null });
 
-const tabs: Tab[] = [
+export const orgTabs: Tab[] = [
   {
     name: "Meetings",
     route: "/[org]",
@@ -70,7 +70,7 @@ export const OrgShell: React.FC<React.PropsWithChildren<{ tabs?: Tab[] }>> = (
 ) => {
   return (
     <OrgProvider>
-      <MainLayout tabs={props.tabs || tabs}>{props.children}</MainLayout>
+      <MainLayout tabs={props.tabs || orgTabs}>{props.children}</MainLayout>
     </OrgProvider>
   );
 };

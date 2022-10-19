@@ -1,11 +1,8 @@
-import { Avatar } from "@/shared-components/system/avatar";
-import { Card } from "@/shared-components/system/card";
-import { Heading } from "@/shared-components/system/heading";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
-import { getAvatarFallback } from "@/utils/get-avatar-fallback";
+import { EmptyContent } from "@/shared-components/util/empty-content";
+import { RedeemCard } from "@/ui/org/redeem-card";
 import { trpc } from "@/utils/trpc";
 import { useMeeting } from "../meeting-shell";
-import { EmptyContent } from "@/shared-components/util/empty-content";
 
 export const LinkRedeemList: React.FC<{ id: string }> = (props) => {
   const meeting = useMeeting();
@@ -29,34 +26,11 @@ export const LinkRedeemList: React.FC<{ id: string }> = (props) => {
             )}
             {data.length > 0 &&
               data.map((redeem) => (
-                <Card
-                  key={redeem.participant.member.user.id}
-                  className="flex items-center justify-between gap-4"
-                >
-                  <div className="flex items-center gap-4">
-                    <Avatar
-                      imageProps={{
-                        src: redeem.participant.member.user.image as string,
-                      }}
-                      fallbackProps={{
-                        children: getAvatarFallback(
-                          redeem.participant.member.user.name
-                        ),
-                      }}
-                    />
-                    <div>
-                      <Heading level="h4">
-                        {redeem.participant.member.user.name}
-                      </Heading>
-                      <p className="text-sm opacity-80">
-                        {redeem.participant.member.user.email}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="opacity-80">
-                    {redeem.redeemedAt.toLocaleString()}
-                  </p>
-                </Card>
+                <RedeemCard
+                  key={redeem.participant.memberUserId}
+                  user={redeem.participant.member.user}
+                  redeemedAt={redeem.redeemedAt}
+                />
               ))}
           </div>
         )}

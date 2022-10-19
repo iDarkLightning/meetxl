@@ -12,15 +12,13 @@ import { FaCheck, FaChevronDown, FaPlus } from "react-icons/fa";
 import { useOrg } from "../org/org-shell";
 import { NewAttributeModal } from "./new-attribute";
 
-export const AttributeShell: React.FC<React.PropsWithChildren> = (props) => {
+const AdminView: React.FC<React.PropsWithChildren> = (props) => {
   const org = useOrg();
   const attributes = trpc.organization.attribute.list.useQuery({
     orgId: org.id,
   });
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-
-  if (org.member.role === "MEMBER") return <>{props.children}</>;
 
   return (
     <SectionWrapper>
@@ -108,4 +106,12 @@ export const AttributeShell: React.FC<React.PropsWithChildren> = (props) => {
       {props.children}
     </SectionWrapper>
   );
+};
+
+export const AttributeShell: React.FC<React.PropsWithChildren> = (props) => {
+  const org = useOrg();
+
+  if (org.member.role === "MEMBER") return <>{props.children}</>;
+
+  return <AdminView {...props} />;
 };

@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaChevronLeft, FaTrash } from "react-icons/fa";
 import { useMeeting } from "../meeting-shell";
-import { CheckingQRCode } from "./checking-qr-code";
+import { QRCode } from "../../../shared-components/util/qr-code";
 import { CodeDisplay } from "./code-display";
 import { LinkRedeemList } from "./link-redeem-list";
 
@@ -49,7 +49,7 @@ const AdminView: React.FC<{ link: AttendanceLink }> = (props) => {
           >
             Delete
           </Button>
-          <CheckingQRCode />
+          <QRCode />
         </div>
       </div>
       <LinkRedeemList id={props.link.id} />
