@@ -5,6 +5,7 @@ import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { getAvatarFallback } from "@/utils/get-avatar-fallback";
 import { trpc } from "@/utils/trpc";
 import { useMeeting } from "../meeting-shell";
+import { EmptyContent } from "@/shared-components/util/empty-content";
 
 export const LinkRedeemList: React.FC<{ id: string }> = (props) => {
   const meeting = useMeeting();
@@ -21,12 +22,10 @@ export const LinkRedeemList: React.FC<{ id: string }> = (props) => {
         success={({ data }) => (
           <div>
             {data.length === 0 && (
-              <Card className="flex min-h-[15rem] flex-col items-center justify-center border-dotted bg-background-primary">
-                <Heading level="h4">No one has used this link yet</Heading>
-                <p className="text-sm opacity-75">
-                  Share this link with participants for them to redeem it
-                </p>
-              </Card>
+              <EmptyContent
+                heading="No one has used this link"
+                sub="Share this link with others and monitor uses here."
+              />
             )}
             {data.length > 0 &&
               data.map((redeem) => (
