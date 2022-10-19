@@ -204,7 +204,7 @@ model Meeting {
     name             String
     slug             String
     startTime        DateTime
-    endTime          DateTime?
+    endTime          DateTime
     location         String?
     organizationSlug String
     rewardsEnabled   Boolean              @default(false)
