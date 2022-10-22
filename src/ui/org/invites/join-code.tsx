@@ -10,6 +10,7 @@ import { getAvatarFallback } from "@/utils/get-avatar-fallback";
 import { trpc } from "@/utils/trpc";
 import { MemberRole } from "@prisma/client";
 import { FaPlus } from "react-icons/fa";
+import { toast } from "react-toastify";
 import { useOrg } from "../org-shell";
 
 export const JoinCodeInvite = () => {
@@ -67,9 +68,11 @@ export const JoinCodeInvite = () => {
                       />
                       <div>
                         <p
-                          onClick={() =>
-                            navigator.clipboard.writeText(code.code)
-                          }
+                          onClick={() => {
+                            navigator.clipboard.writeText(code.code);
+
+                            toast.success("Copied to clipboard");
+                          }}
                           className="cursor-pointer"
                         >
                           {code.code}
