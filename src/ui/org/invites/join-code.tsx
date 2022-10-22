@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { Avatar } from "@/shared-components/system/avatar";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
@@ -9,7 +8,7 @@ import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { getAvatarFallback } from "@/utils/get-avatar-fallback";
 import { trpc } from "@/utils/trpc";
 import { MemberRole } from "@prisma/client";
-import { FaPlus } from "react-icons/fa";
+import { FaCopy, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useOrg } from "../org-shell";
 
@@ -98,6 +97,21 @@ export const JoinCodeInvite = () => {
                         <option value={MemberRole.ADMIN}>Admin</option>
                         <option value={MemberRole.MEMBER}>Member</option>
                       </Select>
+                      <Button
+                        icon={<FaCopy />}
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            window.location
+                              .toString()
+                              .replace(`/${org.slug}/invite`, "") +
+                              `/${org.slug}/join/${code.code}`
+                          );
+
+                          toast.success("Copied to clipboard");
+                        }}
+                      >
+                        Copy Link
+                      </Button>
                       <Button
                         size="sm"
                         variant="danger"

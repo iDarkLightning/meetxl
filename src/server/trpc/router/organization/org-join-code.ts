@@ -23,7 +23,7 @@ export const orgJoinCodeRouter = t.router({
             },
           },
         },
-        code: randomBytes(4).toString("hex"),
+        code: randomBytes(3).toString("hex"),
         role: MemberRole.MEMBER,
       },
     });
@@ -65,6 +65,37 @@ export const orgJoinCodeRouter = t.router({
           id: input.id,
         },
       });
+    }),
+
+  get: authedProcedure
+    .input(z.object({ code: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const joinCode = await ctx.prisma.joinCode.findUniqueOrThrow({
+        where: {
+          code: input.code,
+        },
+        include: {
+          organization: true,
+        },
+      });
+
+      const orgMember = await ctx.prisma.organizationMember.findUnique({
+        where: {
+          organizationId_userId: {
+            organizationId: joinCode.organizationId,
+            userId: ctx.session.user.id,
+          },
+        },
+      });
+
+      if (orgMember) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "You are already a member of this organization",
+        });
+      }
+
+      return joinCode;
     }),
 
   accept: authedProcedure
