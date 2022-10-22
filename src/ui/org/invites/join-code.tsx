@@ -77,7 +77,9 @@ export const JoinCodeInvite = () => {
                         >
                           {code.code}
                         </p>
-                        <p className="opacity-80">{code.uses} Uses</p>
+                        <p className="opacity-80">
+                          {code.uses} Use{code.uses === 0 ? "" : "s"}
+                        </p>
                       </div>
                     </div>
                     <div className="flex gap-4">
