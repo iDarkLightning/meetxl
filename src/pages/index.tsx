@@ -39,13 +39,15 @@ const Home: CustomNextPage = () => {
                   variant="primary"
                   size="lg"
                   icon={<FaGoogle />}
-                  onClick={() => signIn("google")}
+                  onClick={() =>
+                    signIn("google", { callbackUrl: "/dashboard" })
+                  }
                 >
                   Continue with Google
                 </Button>
               ) : (
                 <Button size="lg" variant="primary" href="/dashboard">
-                  Return to Dashboard
+                  Go to Dashboard
                 </Button>
               )}
             </Card>

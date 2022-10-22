@@ -30,6 +30,11 @@ export const orgTabs: Tab[] = [
     route: "/[org]/members",
     adminRequired: true,
   },
+  {
+    name: "Insights",
+    route: "/[org]/insights",
+    adminRequired: true,
+  },
 ];
 
 export const useOrg = () => {

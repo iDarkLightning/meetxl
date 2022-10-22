@@ -98,13 +98,15 @@ const OrgHome: CustomNextPage = () => {
           heading="Meetings"
           sub={`All of the available meetings for the ${org.name} organization`}
         />
-        <Button
-          variant="primary"
-          icon={<FaPlus size="0.75rem" />}
-          onClick={() => setIsOpen(true)}
-        >
-          New
-        </Button>
+        {org.member.role === "ADMIN" && (
+          <Button
+            variant="primary"
+            icon={<FaPlus size="0.75rem" />}
+            onClick={() => setIsOpen(true)}
+          >
+            New
+          </Button>
+        )}
       </div>
       {org.member.role === "ADMIN" ? <AdminListing /> : <MemberListing />}
       <NewMeetingsModal isOpen={isOpen} setIsOpen={setIsOpen} />

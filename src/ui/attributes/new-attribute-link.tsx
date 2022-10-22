@@ -60,7 +60,7 @@ export const NewAttributeLink: React.FC = () => {
                   attributeName: router.query.name as string,
                 })
                 .catch(() => 0);
-              ctx.meeting.reward.list.invalidate();
+              ctx.organization.attribute.links.list.invalidate();
               setIsOpen(false);
             })}
           >

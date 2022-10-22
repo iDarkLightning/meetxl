@@ -120,7 +120,7 @@ const AdminView: React.FC = () => {
           <>
             <div className="flex items-center justify-between gap-4">
               <SectionHeading
-                heading="Attendance Link"
+                heading="Attribute Link"
                 sub={`Code: ${data.code} Action: ${data.action} Value: ${data.value}`}
               />
               <div className="flex items-center gap-4">

@@ -74,6 +74,7 @@ model OrganizationMember {
     issuedAttendanceLinks  AttendanceLink[]
     issuedAttributeLinks   AttributeLink[]
     redeemedAttributeLinks AttributeLinkRedeem[]
+    joinedAt               DateTime              @default(now())
 
     @@id([organizationId, userId])
 }
@@ -143,7 +144,7 @@ model MemberAttribute {
 
 model AttributeLink {
     id                        String                  @id @default(cuid())
-    organizationAttribute     OrganizationAttribute   @relation(fields: [organizationAttributeName, orgId], references: [name, organizationId])
+    organizationAttribute     OrganizationAttribute   @relation(fields: [organizationAttributeName, orgId], references: [name, organizationId], onDelete: Cascade, onUpdate: Cascade)
     organizationAttributeName String
     orgId                     String
     code                      String
