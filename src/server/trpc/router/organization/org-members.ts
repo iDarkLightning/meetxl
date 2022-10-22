@@ -1,3 +1,4 @@
+import { getMemberInsights } from "@/server/common/get-member-insights";
 import { z } from "zod";
 import {
   orgAdminProcedure,
@@ -31,44 +32,12 @@ export const orgMembersRouter = t.router({
     }),
 
   getInsights: orgMemberProcedure.query(async ({ ctx }) => {
-    const attendedMeetings = await ctx.prisma.meetingParticipant.findMany({
-      where: {
-        memberOrganizationId: ctx.org.id,
-        status: "ATTENDED",
-      },
-      include: {
-        meeting: true,
-      },
-    });
-
-    const redeemedAttendanceLinks =
-      await ctx.prisma.attendanceLinkRedeem.findMany({
-        where: {
-          meetingParticipantMemberUserId: ctx.session.user.id,
-        },
-        include: {
-          link: {
-            include: {
-              meeting: true,
-            },
-          },
-        },
-      });
-
-    const redeemedAttributeLinks =
-      await ctx.prisma.attributeLinkRedeem.findMany({
-        where: {
-          memberUserId: ctx.session.user.id,
-        },
-        include: {
-          link: true,
-        },
-      });
-
-    return {
-      attendedMeetings,
-      redeemedAttendanceLinks,
-      redeemedAttributeLinks,
-    };
+    return getMemberInsights(ctx, ctx.session.user.id);
   }),
+
+  getInsightsFor: orgAdminProcedure
+    .input(z.object({ memberId: z.string().cuid() }))
+    .query(async ({ ctx, input }) => {
+      return getMemberInsights(ctx, input.memberId);
+    }),
 });

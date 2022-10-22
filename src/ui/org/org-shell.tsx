@@ -27,7 +27,7 @@ export const orgTabs: Tab[] = [
   },
   {
     name: "Members",
-    route: "/[org]/members",
+    route: "/[org]/members/*",
     adminRequired: true,
   },
   {
