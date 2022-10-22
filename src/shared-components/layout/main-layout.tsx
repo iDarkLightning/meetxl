@@ -82,7 +82,7 @@ export const MainLayout: React.FC<
                     )}
                   </Heading>
                   <Button
-                    onClick={() => signOut()}
+                    onClick={() => signOut({ callbackUrl: "/" })}
                     size="sm"
                     className="block md:hidden"
                   >
@@ -136,7 +136,7 @@ export const MainLayout: React.FC<
                 </ul>
               </div>
               <Button
-                onClick={() => signOut()}
+                onClick={() => signOut({ callbackUrl: "/" })}
                 size="sm"
                 className="hidden w-36 md:inline-block"
               >
