@@ -108,6 +108,24 @@ export const meetingParticipantRouter = t.router({
     });
   }),
 
+  leave: meetingMemberProcedure.mutation(async ({ ctx }) => {
+    if (!ctx.meeting.isPublic)
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "Cannot leave a public meeting",
+      });
+
+    return ctx.prisma.meetingParticipant.delete({
+      where: {
+        meetingId_memberOrganizationId_memberUserId: {
+          meetingId: ctx.meeting.id,
+          memberOrganizationId: ctx.org.id,
+          memberUserId: ctx.session.user.id,
+        },
+      },
+    });
+  }),
+
   toggleLimit: meetingAdminProcedure.mutation(async ({ ctx }) => {
     const participantCount = await ctx.prisma.meetingParticipant.count({
       where: {

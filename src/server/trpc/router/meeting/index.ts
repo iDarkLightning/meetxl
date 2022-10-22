@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { Context } from "../../context";
 import {
@@ -34,10 +35,16 @@ export const meetingRouter = t.router({
       z.object({
         name: z.string(),
         startTime: z.string().transform((d) => new Date(d)),
+        endTime: z.string().transform((d) => new Date(d)),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      console.log(input.startTime);
+      if (input.startTime.getTime() > input.endTime.getTime()) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Start time must be before end time",
+        });
+      }
 
       return ctx.prisma.meeting.create({
         data: {
@@ -45,6 +52,35 @@ export const meetingRouter = t.router({
           slug: await generateMeetingSlug(input.name, ctx),
           organizationSlug: ctx.org.slug,
           startTime: input.startTime,
+          endTime: input.endTime,
+        },
+      });
+    }),
+
+  update: meetingAdminProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        location: z.string(),
+        startTime: z.string().transform((d) => new Date(d)),
+        endTime: z.string().transform((d) => new Date(d)),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (input.startTime.getTime() > input.endTime.getTime()) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Start time must be before end time",
+        });
+      }
+
+      return ctx.prisma.meeting.update({
+        where: { id: ctx.meeting.id },
+        data: {
+          name: input.name,
+          location: input.location,
+          startTime: input.startTime,
+          endTime: input.endTime,
         },
       });
     }),
@@ -115,6 +151,14 @@ export const meetingRouter = t.router({
       },
       data: {
         isPublic: !ctx.meeting.isPublic,
+      },
+    });
+  }),
+
+  delete: meetingAdminProcedure.mutation(async ({ ctx }) => {
+    return ctx.prisma.meeting.delete({
+      where: {
+        id: ctx.meeting.id,
       },
     });
   }),

@@ -22,7 +22,7 @@ const AdminView: React.FC = () => {
 
   useEffect(() => {
     if (attributes.isSuccess && attributes.data[0]) {
-      router.push(`/${org.slug}/attributes/${attributes.data[0].name}`);
+      router.replace(`/${org.slug}/attributes/${attributes.data[0].name}`);
     }
   }, [attributes, org, router]);
 

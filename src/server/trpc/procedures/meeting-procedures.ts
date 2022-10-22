@@ -9,6 +9,13 @@ export const meetingAdminProcedure = orgAdminProcedure
         OR: [{ id: input.meetingId }, { slug: input.meetingId }],
         organizationSlug: ctx.org.slug,
       },
+      include: {
+        _count: {
+          select: {
+            participants: true,
+          },
+        },
+      },
     });
 
     return next({ ctx: { meeting } });
@@ -49,6 +56,13 @@ export const meetingMemberProcedure = orgMemberProcedure
           },
         ],
         organizationSlug: ctx.org.slug,
+      },
+      include: {
+        _count: {
+          select: {
+            participants: true,
+          },
+        },
       },
     });
 

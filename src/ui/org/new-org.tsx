@@ -76,7 +76,7 @@ const JoinOrganization: React.FC = () => {
           ctx.organization.list.invalidate();
         })}
       >
-        <label htmlFor="name" className="text-gray-400">
+        <label htmlFor="code" className="text-gray-400">
           Code
         </label>
         <Input {...methods.register("code")} className="mt-2" />

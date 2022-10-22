@@ -22,6 +22,7 @@
     "@trpc/react": "10.0.0-proxy-beta.0",
     "@trpc/server": "10.0.0-proxy-beta.0",
     "clsx": "^1.2.1",
+    "dayjs": "^1.11.6",
     "framer-motion": "^7.5.3",
     "next": "12.2.5",
     "next-auth": "^4.10.2",

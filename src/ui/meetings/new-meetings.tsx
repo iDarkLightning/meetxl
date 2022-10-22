@@ -20,10 +20,12 @@ export const NewMeetingsModal: React.FC<{
     schema: z.object({
       name: z.string().min(1),
       startTime: z.string(),
+      endTime: z.string(),
     }),
     defaultValues: {
       name: "",
       startTime: "",
+      endTime: "",
     },
   });
 
@@ -63,11 +65,24 @@ export const NewMeetingsModal: React.FC<{
           <Input
             {...methods.register("startTime")}
             className="mt-2"
-            type="date"
+            type="datetime-local"
           />
           {methods.formState.errors.startTime?.message && (
             <p className="text-red-500">
               {methods.formState.errors.startTime?.message}
+            </p>
+          )}
+          <label htmlFor="endTime" className="text-gray-400">
+            End Time
+          </label>
+          <Input
+            {...methods.register("endTime")}
+            className="mt-2"
+            type="datetime-local"
+          />
+          {methods.formState.errors.endTime?.message && (
+            <p className="text-red-500">
+              {methods.formState.errors.endTime?.message}
             </p>
           )}
           <Button type="submit" className="mt-4" loading={create.isLoading}>
