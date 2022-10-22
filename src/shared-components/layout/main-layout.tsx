@@ -33,17 +33,17 @@ export const MainLayout: React.FC<
         <title>
           {org?.org?.name || "MeetXL"} -{" "}
           {props.tabs?.find((item) => isSelected(item, router.pathname))?.name}
-          <meta property="og:title" content="MeetXL" />
-          <meta property="og:site_name" content="MeetXL" />
-          <meta property="og:type" content="website" />
-          <meta content="summary_large_image" property="twitter:card" />
-          <meta content="/banner.png" property="og:image" />
-          <meta
-            content="Event and meeting management, made easy"
-            property="og:description"
-          />
-          <meta name="theme-color" content="#bb71ee" />
         </title>
+        <meta property="og:title" content="MeetXL" />
+        <meta property="og:site_name" content="MeetXL" />
+        <meta property="og:type" content="website" />
+        <meta content="summary_large_image" property="twitter:card" />
+        <meta content="/banner.png" property="og:image" />
+        <meta
+          content="Event and meeting management, made easy"
+          property="og:description"
+        />
+        <meta name="theme-color" content="#bb71ee" />
       </Head>
       <main>
         <header className="sticky top-0 z-10 bg-background-primary">
