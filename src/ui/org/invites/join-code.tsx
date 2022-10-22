@@ -56,7 +56,7 @@ export const JoinCodeInvite = () => {
                 data.map((code) => (
                   <div
                     key={code.id}
-                    className="flex items-center justify-between gap-4 border-b-[0.025rem] border-accent-stroke pb-2"
+                    className="flex flex-col justify-between gap-4 border-b-[0.025rem] border-accent-stroke pb-2 md:flex-row md:items-center"
                   >
                     <div className="flex items-center gap-4">
                       <Avatar
