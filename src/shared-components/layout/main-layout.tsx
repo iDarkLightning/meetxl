@@ -8,7 +8,6 @@ import React, { useContext } from "react";
 import { Button } from "../system/button";
 import { Heading } from "../system/heading";
 import { ContentWrapper } from "./content-wrapper";
-import Image from "next/image";
 
 const isSelected = (tab: Tab, path: string) => {
   if (tab.route.endsWith("/*")) {

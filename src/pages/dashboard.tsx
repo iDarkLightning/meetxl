@@ -32,7 +32,7 @@ const Dashboard: CustomNextPage = () => {
       <BaseQueryCell
         query={orgsQuery}
         success={({ data }) => (
-          <ul className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {data.map((org) => (
               <li key={org.id}>
                 <Link href={`/${org.name}`} passHref>

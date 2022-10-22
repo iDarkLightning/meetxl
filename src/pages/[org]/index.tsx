@@ -4,6 +4,7 @@ import { Button } from "@/shared-components/system/button";
 import { Heading } from "@/shared-components/system/heading";
 import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
+import { EmptyContent } from "@/shared-components/util/empty-content";
 import { CustomNextPage } from "@/types/next-page";
 import { MeetingCard } from "@/ui/meetings/meeting-card";
 import { NewMeetingsModal } from "@/ui/meetings/new-meetings";
@@ -22,6 +23,15 @@ const MemberListing: React.FC = () => {
       success={({ data }) => {
         const publicMeetings = data.filter((meeting) => meeting.isPublic);
         const privateMeetings = data.filter((meeting) => !meeting.isPublic);
+
+        if (publicMeetings.length === 0 && privateMeetings.length === 0) {
+          return (
+            <EmptyContent
+              heading="No meetings"
+              sub="This organization currently has no meetings"
+            />
+          );
+        }
 
         return (
           <div className="flex flex-col gap-4">
@@ -61,9 +71,16 @@ const AdminListing: React.FC = () => {
       query={meetingsQuery}
       success={({ data }) => (
         <AnimateWrapper className="flex flex-col gap-3">
-          {data.map((meeting) => (
-            <MeetingCard meeting={meeting} key={meeting.id} />
-          ))}
+          {data.length === 0 && (
+            <EmptyContent
+              heading="No Meetings"
+              sub="This organization currently has no meetings. You can create one above to get started."
+            />
+          )}
+          {data.length > 0 &&
+            data.map((meeting) => (
+              <MeetingCard meeting={meeting} key={meeting.id} />
+            ))}
         </AnimateWrapper>
       )}
     />
