@@ -1,6 +1,7 @@
 import { ContentWrapper } from "@/shared-components/layout/content-wrapper";
 import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { Button } from "@/shared-components/system/button";
+import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { EmptyContent } from "@/shared-components/util/empty-content";
 import { QRCode } from "@/shared-components/util/qr-code";
@@ -105,11 +106,16 @@ const MemberView: React.FC = () => {
 const AdminView: React.FC = () => {
   const router = useRouter();
   const org = useOrg();
-  const link = trpc.organization.attribute.links.getDetailed.useQuery({
-    attributeName: router.query.name as string,
-    code: router.query.code as string,
-    orgId: org.id,
-  });
+  const link = trpc.organization.attribute.links.getDetailed.useQuery(
+    {
+      attributeName: router.query.name as string,
+      code: router.query.code as string,
+      orgId: org.id,
+    },
+    {
+      refetchInterval: 15 * 1000,
+    }
+  );
   const deleteLink = trpc.organization.attribute.links.delete.useMutation();
 
   return (
@@ -150,7 +156,7 @@ const AdminView: React.FC = () => {
               />
             )}
             {data.redeemedBy.length > 0 && (
-              <>
+              <AnimateWrapper>
                 {data.redeemedBy.map((redeemed) => (
                   <RedeemCard
                     key={redeemed.memberUserId}
@@ -158,7 +164,7 @@ const AdminView: React.FC = () => {
                     user={redeemed.member.user}
                   />
                 ))}
-              </>
+              </AnimateWrapper>
             )}
           </>
         )}

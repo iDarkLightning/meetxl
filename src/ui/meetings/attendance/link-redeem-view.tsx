@@ -166,12 +166,17 @@ export const LinkRedeemView: React.FC<{ action: AttendanceLinkAction }> = (
   const org = useOrg();
   const meeting = useMeeting();
   const router = useRouter();
-  const codeQuery = trpc.meeting.attendance.links.get.useQuery({
-    orgId: org.id,
-    meetingId: meeting.id,
-    code: router.query.code as string,
-    type: props.action,
-  });
+  const codeQuery = trpc.meeting.attendance.links.get.useQuery(
+    {
+      orgId: org.id,
+      meetingId: meeting.id,
+      code: router.query.code as string,
+      type: props.action,
+    },
+    {
+      refetchInterval: 15 * 1000,
+    }
+  );
 
   return (
     <SectionWrapper>
