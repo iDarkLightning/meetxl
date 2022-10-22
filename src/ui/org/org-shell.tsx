@@ -33,7 +33,6 @@ export const orgTabs: Tab[] = [
   {
     name: "Insights",
     route: "/[org]/insights",
-    adminRequired: true,
   },
 ];
 

@@ -4,6 +4,7 @@ import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { CustomNextPage } from "@/types/next-page";
+import { MeetingCard } from "@/ui/meetings/meeting-card";
 import { OrgShell, useOrg } from "@/ui/org/org-shell";
 import { trpc } from "@/utils/trpc";
 import {
@@ -18,7 +19,7 @@ import { Bar } from "react-chartjs-2";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
-const OrgInsights: CustomNextPage = () => {
+const AdminView: React.FC = () => {
   const org = useOrg();
   const insights = trpc.organization.getInsights.useQuery({
     orgId: org.id,
@@ -97,6 +98,87 @@ const OrgInsights: CustomNextPage = () => {
       />
     </SectionWrapper>
   );
+};
+
+const MemberView: React.FC = () => {
+  const org = useOrg();
+  const insights = trpc.organization.members.getInsights.useQuery({
+    orgId: org.id,
+  });
+
+  return (
+    <SectionWrapper>
+      <SectionHeading
+        heading="Insights"
+        sub="View your history for this organization"
+      />
+      <BaseQueryCell
+        query={insights}
+        success={({ data }) => (
+          <div className="flex flex-col gap-4 lg:flex-row">
+            <div className="flex flex-1 flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <Heading level="h4">Redeemed Attendance Links</Heading>
+                {data.redeemedAttendanceLinks.map((item) => (
+                  <Card
+                    key={item.linkId}
+                    className="flex items-center justify-between"
+                  >
+                    <div>
+                      <p>
+                        {item.link.meeting.name} - {item.link.code}
+                      </p>
+                      <p className="font-mono text-green-400">
+                        {item.link.action}
+                      </p>
+                    </div>
+                    <p className="text-sm opacity-75">
+                      {item.redeemedAt.toLocaleString()}
+                    </p>
+                  </Card>
+                ))}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Heading level="h4">Redeemed Attribute Links</Heading>
+                {data.redeemedAttributeLinks.map((item) => (
+                  <Card
+                    key={item.linkId}
+                    className="flex items-center justify-between"
+                  >
+                    <div>
+                      <p>
+                        {item.link.name} - {item.link.code}
+                      </p>
+                      <p className="font-mono text-green-400">
+                        {item.link.action}
+                      </p>
+                    </div>
+                    <p className="text-sm opacity-75">
+                      {item.redeemedAt.toLocaleString()}
+                    </p>
+                  </Card>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-1 flex-col gap-2">
+              <Heading level="h4">Attended Meetings</Heading>
+              {data.attendedMeetings.map((item) => (
+                <MeetingCard key={item.meetingId} meeting={item.meeting} />
+              ))}
+            </div>
+          </div>
+        )}
+      />
+    </SectionWrapper>
+  );
+};
+
+const OrgInsights: CustomNextPage = () => {
+  const org = useOrg();
+
+  if (org.member.role === "ADMIN") return <AdminView />;
+
+  return <MemberView />;
 };
 
 OrgInsights.auth = true;
