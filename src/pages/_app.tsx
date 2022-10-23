@@ -23,7 +23,7 @@ const AppInner = ({
   const getLayout = Component.getLayout ?? ((page) => page);
 
   if (Component.auth) {
-    return getLayout(<Auth>{props.children}</Auth>);
+    return <Auth>{getLayout(<>{props.children}</>)}</Auth>;
   }
 
   return getLayout(<>{props.children}</>);
