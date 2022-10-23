@@ -12,10 +12,6 @@ datasource db {
     referentialIntegrity = "prisma"
 }
 
-model Example {
-    id String @id @default(cuid())
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -177,7 +173,7 @@ model MeetingParticipant {
     memberOrganizationId String
     memberUserId         String
     member               OrganizationMember       @relation(fields: [memberOrganizationId, memberUserId], references: [organizationId, userId], onDelete: Cascade, onUpdate: Cascade)
-    meeting              Meeting                  @relation(fields: [meetingId], references: [id])
+    meeting              Meeting                  @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     checkedIn     Boolean                @default(false)
     checkedOut    Boolean                @default(false)
