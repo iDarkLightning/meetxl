@@ -96,7 +96,7 @@ model AttendanceLink {
     id                               String                 @id @default(cuid())
     code                             String
     action                           AttendanceLinkAction
-    meeting                          Meeting                @relation(fields: [meetingId], references: [id])
+    meeting                          Meeting                @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     meetingId                        String
     issuer                           OrganizationMember     @relation(fields: [organizationMemberOrganizationId, organizationMemberUserId], references: [organizationId, userId])
     organizationMemberOrganizationId String

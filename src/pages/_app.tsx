@@ -1,14 +1,13 @@
 // src/pages/_app.tsx
-import "../styles/globals.css";
-import { SessionProvider } from "next-auth/react";
-import type { AppType } from "next/dist/shared/lib/utils";
-import { trpc } from "@/utils/trpc";
-import { AppProps } from "next/app";
-import { CustomNextPage } from "@/types/next-page";
 import { Auth } from "@/shared-components/util/auth";
+import { CustomNextPage } from "@/types/next-page";
+import { trpc } from "@/utils/trpc";
+import { SessionProvider } from "next-auth/react";
+import { AppProps } from "next/app";
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
+import "../styles/globals.css";
 
 type CustomComponent = {
   Component: CustomNextPage;

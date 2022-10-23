@@ -42,7 +42,7 @@ const AdminView: React.FC<{ link: AttendanceLink }> = (props) => {
                   meetingId: meeting.id,
                 })
                 .then(() =>
-                  router.push(`/${org.slug}/${meeting.slug}/attendance`)
+                  router.push(`/${org.slug}/${meeting.slug}/participants`)
                 )
                 .catch(() => 0)
             }
