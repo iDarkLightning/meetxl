@@ -19,11 +19,7 @@ export const QRCode: React.FC = () => {
           <Dialog.Title as={Heading} level="h2">
             QR Code
           </Dialog.Title>
-          <Code
-            value={window.location.host + window.location.pathname}
-            bgColor="#111"
-            fgColor="#fff"
-          />
+          <Code value={window.location.href} bgColor="#111" fgColor="#fff" />
         </div>
       </DialogWrapper>
     </>
