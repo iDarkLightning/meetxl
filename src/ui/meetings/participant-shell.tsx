@@ -14,7 +14,12 @@ const ShellInner: React.FC<React.PropsWithChildren> = (props) => {
       <div className="flex-1">
         <div className="flex flex-col gap-6">
           <Card className="flex items-center justify-between">
-            <Heading level="h5">Participants</Heading>
+            <div>
+              <Heading level="h4">Participants</Heading>
+              <p className="opacity-75">
+                Manually edit participants for this meeting
+              </p>
+            </div>
             <EditParticipantsModal />
           </Card>
           <ParticipantList />

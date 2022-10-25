@@ -141,7 +141,6 @@ const MeetingParticipants: CustomNextPage = () => {
               </p>
             </div>
             <Button
-              variant={meeting.limitParticipants ? "danger" : "primary"}
               onClick={() =>
                 toggleLimit
                   .mutateAsync({

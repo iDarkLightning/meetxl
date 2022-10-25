@@ -57,10 +57,7 @@ export const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (
           methods.reset();
         })}
       >
-        <label htmlFor="name" className="opacity-75">
-          Registration Code
-        </label>
-        <div>
+        <div className="mt-4">
           <div className="flex gap-2">
             <Input
               {...methods.register("code")}
@@ -96,7 +93,6 @@ export const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (
           Check {props.action === "CHECKIN" ? "In" : "Out"} Links
         </Heading>
         <Button
-          variant="primary"
           icon={<FaPlus size="0.7rem" />}
           onClick={() =>
             newLink
@@ -161,7 +157,6 @@ export const AttendanceChecking: React.FC<{ action: AttendanceLinkAction }> = (
             </Heading>
           </div>
           <Button
-            variant={enabled ? "danger" : "primary"}
             loading={toggleChecking.isLoading}
             onClick={() =>
               toggleChecking
