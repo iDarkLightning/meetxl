@@ -8,6 +8,7 @@ import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { useMeeting } from "@/ui/meetings/meeting-shell";
 import { trpc } from "@/utils/trpc";
 import { AttendanceLinkAction } from "@prisma/client";
+import clsx from "clsx";
 import Link from "next/link";
 import { FaExternalLinkAlt, FaPlus } from "react-icons/fa";
 import { z } from "zod";
@@ -87,7 +88,7 @@ export const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (
   const newLink = trpc.meeting.attendance.links.create.useMutation();
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <Heading level="h4">
           Check {props.action === "CHECKIN" ? "In" : "Out"} Links
@@ -111,7 +112,12 @@ export const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (
       <BaseQueryCell
         query={checkingLinks}
         success={({ data }) => (
-          <AnimateWrapper className="mt-4 flex flex-col gap-4">
+          <AnimateWrapper
+            className={clsx(
+              "flex-col gap-4",
+              data.length === 0 ? "hidden" : "flex"
+            )}
+          >
             {data.map((link) => (
               <Link
                 key={link.id}

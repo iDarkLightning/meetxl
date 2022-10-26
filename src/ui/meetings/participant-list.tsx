@@ -1,6 +1,18 @@
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { trpc } from "@/utils/trpc";
+import dayjs from "dayjs";
 import { useMeeting } from "./meeting-shell";
+
+const formatDate = (data: Date | null) => {
+  const date = dayjs(data);
+  const now = dayjs();
+
+  if (date.isSame(now, "day")) {
+    return date.format("h:mm A");
+  }
+
+  return date.format("DD/MM/YYYY");
+};
 
 export const ParticipantList: React.FC = () => {
   const meeting = useMeeting();
@@ -13,38 +25,34 @@ export const ParticipantList: React.FC = () => {
     <div className="overflow-auto">
       <table className="w-full text-left">
         <thead>
-          <tr className="bg-background-secondary">
+          <tr className="whitespace-nowrap bg-background-secondary">
             <th>Name</th>
-            <th>Email</th>
-            <th>Confirmation Code</th>
+            <th>Code</th>
             <th>Status</th>
-            {meeting.requireCheckIn && <th>Check In Time</th>}
-            {meeting.requireCheckOut && <th>Check Out Time</th>}
+            {meeting.requireCheckIn && <th>Check In</th>}
+            {meeting.requireCheckOut && <th>Check Out</th>}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="">
           <BaseQueryCell
             query={participantsQuery}
             success={({ data }) => (
               <>
                 {data.map((p) => (
-                  <tr
-                    key={p.memberUserId}
-                    className="whitespace-nowrap transition-colors hover:bg-accent-secondary"
-                  >
-                    <td>{p.member.user.name}</td>
-                    <td>{p.member.user.email}</td>
-                    <td>{p.code}</td>
+                  <tr key={p.memberUserId} className="whitespace-nowrap">
+                    <td>
+                      <p>{p.member.user.name}</p>
+                      <p className="font-normal opacity-75">
+                        {p.member.user.email}
+                      </p>
+                    </td>
+                    <td className="font-mono">{p.code}</td>
                     <td>{p.status}</td>
                     {meeting.requireCheckIn && (
-                      <td>
-                        {p.checkedIn ? p.checkInTime?.toLocaleString() : "-"}
-                      </td>
+                      <td>{p.checkedIn ? formatDate(p.checkInTime) : "-"}</td>
                     )}
                     {meeting.requireCheckOut && (
-                      <td>
-                        {p.checkedOut ? p.checkOutTime?.toLocaleString() : "-"}
-                      </td>
+                      <td>{p.checkedOut ? formatDate(p.checkOutTime) : "-"}</td>
                     )}
                   </tr>
                 ))}

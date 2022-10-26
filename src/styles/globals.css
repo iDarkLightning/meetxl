@@ -25,7 +25,7 @@ table {
 }
 
 td {
-  padding: theme("padding.2");
+  padding: theme("padding.4") theme("padding.2");
   font-weight: theme("fontWeight.medium");
 }
 
