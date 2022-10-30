@@ -82,7 +82,7 @@ const RewardList: React.FC = () => {
         success={({ data }) => (
           <table className="w-full table-fixed text-left">
             <thead className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
-              <tr>
+              <tr className="bordered">
                 <th>Key</th>
                 <th>Value</th>
                 <th>Action</th>

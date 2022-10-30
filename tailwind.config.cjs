@@ -7,7 +7,7 @@ module.exports = {
         background: {
           primary: "#111",
           secondary: "#1c1c1c",
-          dark: "#181818",
+          dark: "#191919",
         },
         accent: {
           primary: "#bb71ee",
@@ -18,5 +18,9 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addVariant }) {
+      addVariant("child", "& > *");
+    },
+  ],
 };

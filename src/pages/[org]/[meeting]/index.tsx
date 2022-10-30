@@ -38,7 +38,7 @@ const ApplyLinkForm: React.FC = () => {
   });
 
   return (
-    <div className="flex w-full flex-col gap-4">
+    <div className="flex w-full flex-col gap-6">
       <form
         autoComplete="off"
         onSubmit={methods.handleSubmit((values) => {
@@ -57,7 +57,7 @@ const ApplyLinkForm: React.FC = () => {
         <label htmlFor="code" className="text-gray-400">
           Link Code
         </label>
-        <div className="mt-2 flex items-center gap-4">
+        <div className="mt-2 flex items-center gap-6">
           <div className="w-full">
             <Input {...methods.register("code")} className="w-full" />
             {methods.formState.errors.code?.message && (
@@ -110,7 +110,7 @@ const ParticipantIndex: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center md:flex-row">
-      <div className="flex w-full flex-col justify-center gap-4">
+      <div className="flex w-full flex-col justify-center gap-6">
         <Card className="flex flex-col gap-2 hover:bg-opacity-100">
           <ApplyLinkForm />
           <div className="flex flex-col gap-2">
@@ -137,7 +137,7 @@ const ParticipantIndex: React.FC = () => {
             </div>
           </div>
         </Card>
-        <Card className="flex w-full flex-col gap-4 border-accent-danger hover:bg-opacity-100">
+        <Card className="flex w-full flex-col gap-6 border-accent-danger hover:bg-opacity-100">
           <div className="flex flex-col gap-2">
             <Heading level="h5">Leave</Heading>
             <p className="text-sm opacity-75">
@@ -274,8 +274,8 @@ const MeetingIndex: CustomNextPage = () => {
         heading={meeting.name}
         sub="View and manage settings for this meeting"
       />
-      <div className="flex flex-col gap-4 md:flex-row">
-        <div className="flex flex-1 flex-col gap-4">
+      <div className="flex flex-col gap-6 md:flex-row">
+        <div className="flex flex-1 flex-col gap-6">
           {org.member.role === "MEMBER" ? (
             <ParticipantIndex />
           ) : (
@@ -291,7 +291,7 @@ const MeetingIndex: CustomNextPage = () => {
                   <EditMeetingForm />
                 </div>
               </Card>
-              <Card className="flex flex-col gap-4 border-accent-danger hover:bg-opacity-100">
+              <Card className="flex flex-col gap-6 border-accent-danger hover:bg-opacity-100">
                 <div className="flex flex-col gap-2">
                   <Heading level="h5">Delete</Heading>
                   <p className="text-sm opacity-75">
@@ -321,11 +321,11 @@ const MeetingIndex: CustomNextPage = () => {
             </>
           )}
         </div>
-        <div className="flex flex-1 flex-col gap-4">
+        <div className="flex flex-1 flex-col gap-6">
           <Card>
             <Heading level="h5">Meeting Details</Heading>
           </Card>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3">
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3">
             <InfoCard
               icon={BiTime}
               content={(() => {

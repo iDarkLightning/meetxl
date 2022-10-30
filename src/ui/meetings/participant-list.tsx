@@ -25,7 +25,7 @@ export const ParticipantList: React.FC = () => {
     <div className="overflow-auto">
       <table className="w-full text-left">
         <thead>
-          <tr className="whitespace-nowrap bg-background-secondary">
+          <tr className="bordered whitespace-nowrap bg-background-secondary">
             <th>Name</th>
             <th>Code</th>
             <th>Status</th>

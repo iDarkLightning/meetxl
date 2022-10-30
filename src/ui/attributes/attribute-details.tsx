@@ -79,7 +79,7 @@ const AttributeLinks: React.FC = () => {
                     passHref
                   >
                     <a>
-                      <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-background-dark">
+                      <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-opacity-80">
                         <div>
                           <p className="font-medium">{link.name}</p>
                           <p className="font-mono text-green-400">
@@ -114,9 +114,9 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
     <BaseQueryCell
       query={attribute}
       success={({ data }) => (
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
-            <div className="flex flex-1 flex-col gap-4 lg:gap-6">
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 lg:flex-row">
+            <div className="flex flex-1 flex-col gap-6">
               <Card className="flex items-center justify-between hover:bg-opacity-100">
                 <Heading level="h3">{data.name}</Heading>
                 <Button
@@ -137,77 +137,85 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
               </Card>
               <AttributeLinks />
             </div>
-            <div className="flex flex-1 flex-col gap-4">
+            <div className="flex flex-1 flex-col gap-6">
               {data.rewards.length > 0 && (
                 <>
-                  <div className="flex flex-col gap-3">
-                    <Heading level="h4">Referenced Meetings</Heading>
-                    <table className="w-full table-fixed text-left">
-                      <thead>
-                        <tr className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
-                          <th>Meeting Name</th>
-                          <th>Action</th>
-                          <th>Value</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data.rewards.map((reward) => (
-                          <Link
-                            key={reward.id}
-                            href={`/${org.slug}/${reward.meeting.slug}/rewards`}
-                            passHref
-                            className="cursor-pointer"
-                          >
-                            <tr>
-                              <td>{reward.meeting.name}</td>
-                              <td>{reward.action}</td>
-                              <td>{reward.value}</td>
-                            </tr>
-                          </Link>
-                        ))}
-                      </tbody>
-                    </table>
+                  <div className="flex flex-col gap-6">
+                    <Card className="p-0">
+                      <div className="p-4 pb-0">
+                        <Heading level="h4">Referenced Meetings</Heading>
+                      </div>
+                      <table className="w-full table-fixed text-left">
+                        <thead>
+                          <tr className="child:border-b-[0.0125rem] child:border-accent-stroke child:p-4">
+                            <th>Meeting Name</th>
+                            <th>Action</th>
+                            <th>Value</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {data.rewards.map((reward) => (
+                            <Link
+                              key={reward.id}
+                              href={`/${org.slug}/${reward.meeting.slug}/rewards`}
+                              passHref
+                              className="cursor-pointer"
+                            >
+                              <tr className="child:p-4">
+                                <td>{reward.meeting.name}</td>
+                                <td>{reward.action}</td>
+                                <td>{reward.value}</td>
+                              </tr>
+                            </Link>
+                          ))}
+                        </tbody>
+                      </table>
+                    </Card>
                   </div>
                 </>
               )}
-              <div className="flex flex-col gap-3">
-                <Heading level="h4">Statistics</Heading>
-                <table className="w-full table-fixed text-left">
-                  <thead>
-                    <tr className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Value</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.memberAttributes.map((memberAttribute) => (
-                      <tr key={memberAttribute.id}>
-                        <td>{memberAttribute.orgMember.user.name}</td>
-                        <td>{memberAttribute.orgMember.user.email}</td>
-                        <td>
-                          <ValueEditable
-                            handleSubmit={(text) => {
-                              editValue
-                                .mutateAsync({
-                                  attributeName:
-                                    memberAttribute.organizationAttributeName,
-                                  orgId: org.id,
-                                  value: parseInt(text),
-                                  userId: memberAttribute.orgMember.user.id,
-                                })
-                                .then(() =>
-                                  ctx.organization.attribute.get.invalidate()
-                                )
-                                .catch(() => 0);
-                            }}
-                            initialValue={memberAttribute.value.toString()}
-                          />
-                        </td>
+              <div className="flex flex-col">
+                <Card className="p-0 hover:bg-opacity-100">
+                  <div className="p-4 pb-0">
+                    <Heading level="h4">Statistics</Heading>
+                  </div>
+                  <table className="w-full table-fixed text-left">
+                    <thead>
+                      <tr className="child:border-b-[0.0125rem] child:border-accent-stroke child:p-4">
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Value</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {data.memberAttributes.map((memberAttribute) => (
+                        <tr key={memberAttribute.id} className="child:p-4">
+                          <td>{memberAttribute.orgMember.user.name}</td>
+                          <td>{memberAttribute.orgMember.user.email}</td>
+                          <td>
+                            <ValueEditable
+                              handleSubmit={(text) => {
+                                editValue
+                                  .mutateAsync({
+                                    attributeName:
+                                      memberAttribute.organizationAttributeName,
+                                    orgId: org.id,
+                                    value: parseInt(text),
+                                    userId: memberAttribute.orgMember.user.id,
+                                  })
+                                  .then(() =>
+                                    ctx.organization.attribute.get.invalidate()
+                                  )
+                                  .catch(() => 0);
+                              }}
+                              initialValue={memberAttribute.value.toString()}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </Card>
               </div>
             </div>
           </div>

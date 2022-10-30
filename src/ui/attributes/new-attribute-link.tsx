@@ -37,7 +37,6 @@ export const NewAttributeLink: React.FC = () => {
       <Button
         className="w-min"
         onClick={() => setIsOpen(true)}
-        variant="primary"
         icon={<FaPlus size="0.75rem" />}
       >
         New
