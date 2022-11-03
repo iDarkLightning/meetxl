@@ -22,7 +22,7 @@ const AdminView: React.FC<React.PropsWithChildren> = (props) => {
 
   return (
     <SectionWrapper>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
         <SectionHeading
           heading="Attributes"
           sub="Manage organization level attributes"
@@ -38,7 +38,7 @@ const AdminView: React.FC<React.PropsWithChildren> = (props) => {
                       as={Button}
                       size="sm"
                       icon={<FaChevronDown size="0.75rem" />}
-                      className="flex-row-reverse gap-3"
+                      className="w-full flex-row-reverse gap-3 md:w-min"
                     >
                       {data.find((a) => a.name === router.query.name)?.name}
                     </Menu.Button>

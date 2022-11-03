@@ -93,13 +93,14 @@ const OrgHome: CustomNextPage = () => {
 
   return (
     <SectionWrapper>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
         <SectionHeading
           heading="Meetings"
           sub={`All of the available meetings for the ${org.name} organization`}
         />
         {org.member.role === "ADMIN" && (
           <Button
+            className="w-full md:w-min"
             variant="primary"
             icon={<FaPlus size="0.75rem" />}
             onClick={() => setIsOpen(true)}

@@ -55,7 +55,7 @@ export const NewReward: React.FC = () => {
           success={({ data }) => (
             <>
               {data.length > 0 && (
-                <div className="mt-3 w-96">
+                <div className="mt-3 md:w-96">
                   <form
                     className="flex flex-col items-end gap-2"
                     autoComplete="off"

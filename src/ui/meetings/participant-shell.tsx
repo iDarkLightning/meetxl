@@ -13,7 +13,7 @@ const ShellInner: React.FC<React.PropsWithChildren> = (props) => {
       <div className="flex-1 md:flex-[0.75]">{props.children}</div>
       <div className="flex-1">
         <div className="flex flex-col gap-6">
-          <Card className="flex items-center justify-between">
+          <Card className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
             <div>
               <Heading level="h4">Participants</Heading>
               <p className="opacity-75">

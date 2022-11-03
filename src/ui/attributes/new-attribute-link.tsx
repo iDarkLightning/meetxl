@@ -45,7 +45,7 @@ export const NewAttributeLink: React.FC = () => {
         <Dialog.Title as={Heading} level="h3">
           New Link
         </Dialog.Title>
-        <div className="mt-3 w-96">
+        <div className="mt-3 md:w-96">
           <form
             className="flex flex-col items-end gap-2"
             autoComplete="off"

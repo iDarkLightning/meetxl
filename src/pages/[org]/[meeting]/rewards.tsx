@@ -80,7 +80,7 @@ const RewardList: React.FC = () => {
       <BaseQueryCell
         query={rewardsQuery}
         success={({ data }) => (
-          <table className="w-full table-fixed text-left">
+          <table className="w-full text-left">
             <thead className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
               <tr className="bordered">
                 <th>Key</th>
@@ -147,10 +147,10 @@ const MeetingRewards: CustomNextPage = () => {
         {meeting.rewardsEnabled && (
           <div className="mt-2 flex gap-4">
             <div className="flex-1">
-              <ToggleButton variant="danger">Disable</ToggleButton>
+              {org.member.role === "ADMIN" && <NewReward />}
             </div>
             <div className="flex-1">
-              {org.member.role === "ADMIN" && <NewReward />}
+              <ToggleButton variant="danger">Disable</ToggleButton>
             </div>
           </div>
         )}

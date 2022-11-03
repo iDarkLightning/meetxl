@@ -24,7 +24,7 @@ const CreateOrganization: React.FC = () => {
   });
 
   return (
-    <div className="mt-6 flex w-96 flex-col gap-4">
+    <div className="mt-6 flex flex-col gap-4">
       <form
         autoComplete="off"
         onSubmit={methods.handleSubmit(async (values) => {
@@ -68,7 +68,7 @@ const JoinOrganization: React.FC = () => {
   });
 
   return (
-    <div className="mt-6 flex w-96 flex-col gap-4">
+    <div className="mt-6 flex flex-col gap-4">
       <form
         autoComplete="off"
         onSubmit={methods.handleSubmit(async (values) => {
@@ -115,16 +115,16 @@ export const NewOrganizationModal: React.FC<{
         New Organization
       </Dialog.Title>
       {mode === "unselected" && (
-        <div className="mt-4 flex flex-col gap-4">
+        <div className="mt-4 flex flex-col gap-4 md:w-96">
           <Button
-            className="h-16 w-96 flex-row-reverse justify-between"
+            className="h-16 w-full flex-row-reverse justify-between gap-2"
             icon={<FaChevronRight />}
             onClick={() => setMode("join")}
           >
             Join a New Organization
           </Button>
           <Button
-            className="h-16 w-96 flex-row-reverse justify-between"
+            className="h-16 w-full flex-row-reverse justify-between gap-2"
             icon={<FaChevronRight />}
             onClick={() => setMode("create")}
           >

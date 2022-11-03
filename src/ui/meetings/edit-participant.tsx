@@ -23,7 +23,11 @@ export const EditParticipantsModal: React.FC = () => {
 
   return (
     <>
-      <Button icon={<FaEdit size="0.75rem" />} onClick={() => setIsOpen(true)}>
+      <Button
+        icon={<FaEdit size="0.75rem" />}
+        onClick={() => setIsOpen(true)}
+        className="w-full md:w-min"
+      >
         Edit Participants
       </Button>
       <DialogWrapper
@@ -35,7 +39,7 @@ export const EditParticipantsModal: React.FC = () => {
         <Dialog.Title as={Heading} level="h3">
           Edit Participants
         </Dialog.Title>
-        <div className="mt-3 w-96">
+        <div className="mt-3 md:w-96">
           <BaseQueryCell
             query={membersQuery}
             success={({ data }) => (

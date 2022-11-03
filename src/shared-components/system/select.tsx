@@ -2,7 +2,8 @@ import clsx from "clsx";
 import { forwardRef } from "react";
 
 const variants = {
-  filled: "rounded-md pl-2 pr-4 py-2",
+  filled:
+    "rounded-md pl-2 pr-4 py-2 bg-accent-secondary border-[0.0125rem] border-accent-stroke",
 };
 
 export interface SelectProps

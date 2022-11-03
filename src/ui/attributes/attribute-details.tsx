@@ -148,7 +148,7 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
                       <table className="w-full table-fixed text-left">
                         <thead>
                           <tr className="child:border-b-[0.0125rem] child:border-accent-stroke child:p-4">
-                            <th>Meeting Name</th>
+                            <th>Meeting</th>
                             <th>Action</th>
                             <th>Value</th>
                           </tr>
@@ -179,19 +179,22 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
                   <div className="p-4 pb-0">
                     <Heading level="h4">Statistics</Heading>
                   </div>
-                  <table className="w-full table-fixed text-left">
+                  <table className="w-full text-left">
                     <thead>
                       <tr className="child:border-b-[0.0125rem] child:border-accent-stroke child:p-4">
                         <th>Name</th>
-                        <th>Email</th>
                         <th>Value</th>
                       </tr>
                     </thead>
                     <tbody>
                       {data.memberAttributes.map((memberAttribute) => (
                         <tr key={memberAttribute.id} className="child:p-4">
-                          <td>{memberAttribute.orgMember.user.name}</td>
-                          <td>{memberAttribute.orgMember.user.email}</td>
+                          <td>
+                            <p>{memberAttribute.orgMember.user.name}</p>
+                            <p className="font-normal opacity-75">
+                              {memberAttribute.orgMember.user.email}
+                            </p>
+                          </td>
                           <td>
                             <ValueEditable
                               handleSubmit={(text) => {

@@ -111,12 +111,13 @@ const MeetingParticipants: CustomNextPage = () => {
   return (
     <SectionWrapper>
       <Card className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
           <div>
             <Heading level="h4">Member Access</Heading>
             <p className="opacity-75">Manage who can join this meeting</p>
           </div>
           <Button
+            className="w-full md:w-min"
             onClick={() =>
               toggleAccess
                 .mutateAsync({
@@ -133,7 +134,7 @@ const MeetingParticipants: CustomNextPage = () => {
       </Card>
       {meeting.isPublic && (
         <Card className="flex flex-col gap-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
             <div>
               <Heading level="h4">Registration Limit</Heading>
               <p className="opacity-75">
@@ -141,6 +142,7 @@ const MeetingParticipants: CustomNextPage = () => {
               </p>
             </div>
             <Button
+              className="w-full md:w-min"
               onClick={() =>
                 toggleLimit
                   .mutateAsync({

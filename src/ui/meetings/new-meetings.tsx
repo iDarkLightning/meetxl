@@ -39,7 +39,7 @@ export const NewMeetingsModal: React.FC<{
       <Dialog.Title as={Heading} level="h3">
         New Meeting
       </Dialog.Title>
-      <div className="mt-3 w-96">
+      <div className="mt-3 md:w-96">
         <form
           autoComplete="off"
           onSubmit={methods.handleSubmit(async (values) => {
