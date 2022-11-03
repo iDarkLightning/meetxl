@@ -46,7 +46,6 @@ const MyApp = ({ Component, pageProps }: CustomAppProps) => {
           draggable
           pauseOnHover
           theme="dark"
-          toastClassName="bg-red-200"
         />
       </SessionProvider>
     </>
