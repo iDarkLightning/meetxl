@@ -32,8 +32,11 @@ const OrgJoinPage: CustomNextPage = () => {
                   animate={{ y: 0, opacity: 1 }}
                 >
                   <SectionHeading
-                    heading="Attendance Link"
-                    sub={`Join ${data.organization.name} with code ${data.code}`}
+                    heading="Join Organization"
+                    sub={`Join ${data.organization.name} as a ${
+                      data.role.substring(0, 1) +
+                      data.role.toLowerCase().substring(1, data.role.length)
+                    }`}
                   />
                 </motion.div>
                 <CodeDisplay code={data.code} />
@@ -47,7 +50,7 @@ const OrgJoinPage: CustomNextPage = () => {
                         join.mutateAsync({ code: data.code });
                       }}
                     >
-                      Redeem
+                      Join
                     </Button>
                     <Button size="md" href={`/dashboard`}>
                       Cancel
