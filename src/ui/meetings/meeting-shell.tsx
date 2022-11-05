@@ -18,7 +18,7 @@ export const meetingTabs: Tab[] = [
   },
   {
     name: "Participants",
-    route: "/[org]/[meeting]/participants",
+    route: "/[org]/[meeting]/participants/*",
     adminRequired: true,
   },
 ];

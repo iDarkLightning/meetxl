@@ -130,7 +130,7 @@ export const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (
                 key={link.id}
                 href={`/${meeting.organizationSlug}/${
                   meeting.slug
-                }/attendance/check-${
+                }/participants/check-${
                   props.action === "CHECKIN" ? "in" : "out"
                 }/${link.code}`}
               >
