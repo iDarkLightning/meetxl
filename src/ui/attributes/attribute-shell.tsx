@@ -2,6 +2,7 @@ import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
 import { transitionClasses } from "@/shared-components/system/transition";
+import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { trpc } from "@/utils/trpc";
 import { Menu, Transition } from "@headlessui/react";
@@ -97,7 +98,7 @@ const AdminView: React.FC<React.PropsWithChildren> = (props) => {
           )}
         />
       </div>
-      {props.children}
+      <AnimateWrapper>{props.children}</AnimateWrapper>
     </SectionWrapper>
   );
 };

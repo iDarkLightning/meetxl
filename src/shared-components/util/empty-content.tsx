@@ -9,7 +9,7 @@ export const EmptyContent: React.FC<
   return (
     <Card
       className={clsx(
-        "flex min-h-[15rem] flex-col items-center justify-center gap-4 border-dotted bg-opacity-0 hover:bg-opacity-0",
+        "flex min-h-[15rem] flex-col items-center justify-center gap-4 border-dotted bg-opacity-0",
         props.className
       )}
     >

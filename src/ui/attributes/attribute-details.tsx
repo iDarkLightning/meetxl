@@ -73,7 +73,7 @@ const AttributeLinks: React.FC = () => {
           <AnimateWrapper className="flex flex-col gap-4">
             {data.length === 0 && (
               <EmptyContent
-                className="border-none"
+                className="bg-opacity-100 hover:bg-opacity-100"
                 heading="This attribute has no links"
                 sub="Create a new link to share with members"
               />
@@ -165,7 +165,7 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
                               passHref
                               className="cursor-pointer"
                             >
-                              <tr className="child:p-4">
+                              <tr className="cursor-pointer child:p-4">
                                 <td>{reward.meeting.name}</td>
                                 <td>{reward.action}</td>
                                 <td>{reward.value}</td>
