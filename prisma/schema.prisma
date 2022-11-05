@@ -189,7 +189,7 @@ model MeetingReward {
     id             String                  @id @default(cuid())
     value          Float
     action         AttributeModifierAction
-    meeting        Meeting                 @relation(fields: [meetingId], references: [id])
+    meeting        Meeting                 @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     meetingId      String
     attribute      OrganizationAttribute   @relation(fields: [attributeName, attributeOrgId], references: [name, organizationId], onDelete: Cascade, onUpdate: Cascade)
     attributeName  String
