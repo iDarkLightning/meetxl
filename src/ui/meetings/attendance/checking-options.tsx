@@ -89,12 +89,19 @@ export const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <Heading level="h4">
-          Check {props.action === "CHECKIN" ? "In" : "Out"} Links
-        </Heading>
+      <Card className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
+        <div>
+          <Heading level="h4">
+            Check {props.action === "CHECKIN" ? "In" : "Out"} Links
+          </Heading>
+          <p className="text-sm opacity-75">
+            Create links that participants can use to check{" "}
+            {props.action === "CHECKIN" ? "in" : "out"}
+          </p>
+        </div>
         <Button
           icon={<FaPlus size="0.7rem" />}
+          loading={newLink.isLoading}
           onClick={() =>
             newLink
               .mutateAsync({
@@ -108,7 +115,7 @@ export const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (
         >
           New
         </Button>
-      </div>
+      </Card>
       <BaseQueryCell
         query={checkingLinks}
         success={({ data }) => (
@@ -181,9 +188,9 @@ export const AttendanceChecking: React.FC<{ action: AttendanceLinkAction }> = (
         {enabled && <CheckingForm action={props.action} />}
       </Card>
       {enabled && (
-        <Card className="hover:bg-opacity-100">
-          <CheckingLinks action={props.action} />
-        </Card>
+        // <Card className="hover:bg-opacity-100">
+        <CheckingLinks action={props.action} />
+        // </Card>
       )}
     </>
   );

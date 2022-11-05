@@ -54,47 +54,51 @@ const AttributeLinks: React.FC = () => {
   });
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <Card className="hover:bg-opacity-100">
-        <div className="flex items-center justify-between">
-          <Heading level="h4">Links</Heading>
+        <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
+          <div>
+            <Heading level="h4">Links</Heading>
+            <p className="text-sm opacity-75">
+              Create links that can be shared to directly modify this attribute
+              for members.
+            </p>
+          </div>
           <NewAttributeLink />
         </div>
-        <BaseQueryCell
-          query={links}
-          success={({ data }) => (
-            <AnimateWrapper className="mt-4 flex flex-col gap-4">
-              {data.length === 0 && (
-                <EmptyContent
-                  className="border-none"
-                  heading="This attribute has no links"
-                  sub="Create a new link to share with members"
-                />
-              )}
-              {data.length > 0 &&
-                data.map((link) => (
-                  <Link
-                    key={link.id}
-                    href={`/${org.slug}/attributes/${router.query.name}/redeem/${link.code}`}
-                    passHref
-                  >
-                    <a>
-                      <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-opacity-80">
-                        <div>
-                          <p className="font-medium">{link.name}</p>
-                          <p className="font-mono text-green-400">
-                            {link.code}
-                          </p>
-                        </div>
-                        <FaExternalLinkAlt size="0.75rem" />
-                      </Card>
-                    </a>
-                  </Link>
-                ))}
-            </AnimateWrapper>
-          )}
-        />
       </Card>
+      <BaseQueryCell
+        query={links}
+        success={({ data }) => (
+          <AnimateWrapper className="flex flex-col gap-4">
+            {data.length === 0 && (
+              <EmptyContent
+                className="border-none"
+                heading="This attribute has no links"
+                sub="Create a new link to share with members"
+              />
+            )}
+            {data.length > 0 &&
+              data.map((link) => (
+                <Link
+                  key={link.id}
+                  href={`/${org.slug}/attributes/${router.query.name}/redeem/${link.code}`}
+                  passHref
+                >
+                  <a>
+                    <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-opacity-80">
+                      <div>
+                        <p className="font-medium">{link.name}</p>
+                        <p className="font-mono text-green-400">{link.code}</p>
+                      </div>
+                      <FaExternalLinkAlt size="0.75rem" />
+                    </Card>
+                  </a>
+                </Link>
+              ))}
+          </AnimateWrapper>
+        )}
+      />
     </div>
   );
 };

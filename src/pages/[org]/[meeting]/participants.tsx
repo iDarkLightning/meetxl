@@ -91,7 +91,7 @@ const MeetingAttendance = () => {
         ))}
       </Tab.List>
       <Tab.Panels>
-        <Tab.Panel className="flex flex-col gap-4">
+        <Tab.Panel className="flex flex-col gap-6">
           <AttendanceChecking action="CHECKIN" />
         </Tab.Panel>
         <Tab.Panel className="flex flex-col gap-4">
