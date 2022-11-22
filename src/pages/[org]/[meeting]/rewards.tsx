@@ -1,8 +1,6 @@
 import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
-import { Card } from "@/shared-components/system/card";
-import { Heading } from "@/shared-components/system/heading";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { EmptyContent } from "@/shared-components/util/empty-content";
 import { CustomNextPage } from "@/types/next-page";

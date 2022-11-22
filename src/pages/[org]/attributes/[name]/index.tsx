@@ -1,4 +1,3 @@
-import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { CustomNextPage } from "@/types/next-page";
 import { AttributeDetails } from "@/ui/attributes/attribute-details";
 import { AttributeShell } from "@/ui/attributes/attribute-shell";

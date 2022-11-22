@@ -57,6 +57,7 @@ export const orgAttributeRouter = t.router({
         return attribute;
       } catch (err) {
         console.error(err);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if ((err as any).code === "P2002") {
           throw new TRPCError({
             code: "BAD_REQUEST",
