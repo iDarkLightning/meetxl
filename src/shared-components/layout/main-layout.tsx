@@ -1,13 +1,18 @@
 import { Tab } from "@/types/tab";
 import { OrgContext } from "@/ui/org/org-shell";
+import { getAvatarFallback } from "@/utils/get-avatar-fallback";
+import { Menu, Transition } from "@headlessui/react";
 import clsx from "clsx";
-import { signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useContext } from "react";
+import React, { Fragment, useContext } from "react";
+import { FaChevronDown, FaSignOutAlt, FaUsers } from "react-icons/fa";
+import { Avatar } from "../system/avatar";
 import { Button } from "../system/button";
 import { Heading } from "../system/heading";
+import { transitionClasses } from "../system/transition";
 import { ContentWrapper } from "./content-wrapper";
 
 const isSelected = (tab: Tab, path: string) => {
@@ -17,6 +22,71 @@ const isSelected = (tab: Tab, path: string) => {
   }
 
   return path === tab.route;
+};
+
+const OptionsMenu: React.FC<{ className: string }> = (props) => {
+  const { data: session } = useSession();
+
+  return (
+    <Menu
+      as="div"
+      className={clsx("relative inline-block text-left", props.className)}
+    >
+      <Menu.Button
+        as={Button}
+        variant="ghost"
+        size="sm"
+        className="hover:bg-background-primary"
+      >
+        <Avatar
+          imageProps={{ src: session?.user?.image as string }}
+          fallbackProps={{
+            children: getAvatarFallback(session?.user?.name as string),
+          }}
+        />
+      </Menu.Button>
+      <Transition as={Fragment} {...transitionClasses}>
+        <Menu.Items className="absolute right-0 z-10 mt-2 w-64 divide-y divide-red-400 rounded-md border-[0.0125rem] border-accent-stroke bg-background-dark shadow-xl">
+          <div className="flex flex-col gap-2 p-2">
+            <Menu.Item as="div" className="flex items-center gap-2 p-2">
+              <Avatar
+                imageProps={{ src: session?.user?.image as string }}
+                fallbackProps={{
+                  children: getAvatarFallback(session?.user?.name as string),
+                }}
+              />
+              <div>
+                <p>{session?.user?.name}</p>
+                <p className="opacity-75">{session?.user?.email}</p>
+              </div>
+            </Menu.Item>
+            <hr className="border-accent-stroke" />
+            <Menu.Item
+              as={Button}
+              variant="ghost"
+              icon={<FaUsers />}
+              centered={false}
+              onClick={() => {
+                signOut();
+                signIn("google", { callbackUrl: "/dashboard" });
+              }}
+            >
+              Switch Accounts
+            </Menu.Item>
+            <Menu.Item
+              as={Button}
+              variant="ghost"
+              centered={false}
+              icon={<FaSignOutAlt />}
+              onClick={() => signOut({ callbackUrl: "/" })}
+            >
+              Sign Out
+            </Menu.Item>
+          </div>
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  );
 };
 
 export const MainLayout: React.FC<
@@ -81,13 +151,14 @@ export const MainLayout: React.FC<
                       </Link>
                     )}
                   </Heading>
-                  <Button
+                  <OptionsMenu className="block md:hidden" />
+                  {/* <Button
                     onClick={() => signOut({ callbackUrl: "/" })}
                     size="sm"
                     className="block md:hidden"
                   >
                     Log Out
-                  </Button>
+                  </Button> */}
                 </div>
                 <ul className="flex flex-wrap gap-4">
                   {props.tabs
@@ -135,13 +206,14 @@ export const MainLayout: React.FC<
                     ))}
                 </ul>
               </div>
-              <Button
+              {/* <Button
                 onClick={() => signOut({ callbackUrl: "/" })}
                 size="sm"
                 className="hidden w-36 md:inline-block"
               >
                 Log Out
-              </Button>
+              </Button> */}
+              <OptionsMenu className="hidden md:inline-block" />
             </nav>
           </ContentWrapper>
         </header>

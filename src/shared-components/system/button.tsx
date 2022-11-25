@@ -64,6 +64,7 @@ export interface ButtonProps
    * @default false
    */
   loading?: boolean;
+  centered?: boolean;
 }
 
 const defaultProps = {
@@ -76,11 +77,20 @@ const defaultProps = {
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (props, ref) => {
     // spread default props, since {} is truthy
-    const { size, variant, href, icon, disabled, loading, className, ...rest } =
-      {
-        ...defaultProps,
-        ...props,
-      };
+    const {
+      size,
+      variant,
+      href,
+      icon,
+      disabled,
+      loading,
+      className,
+      centered = true,
+      ...rest
+    } = {
+      ...defaultProps,
+      ...props,
+    };
 
     // wrap the component in a NextLink if the href is provided
     const WrapperComponent = href ? NextLink : Fragment;
@@ -91,11 +101,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         <button
           ref={ref}
           className={clsx(
-            `flex items-center justify-center truncate font-medium transition-colors`,
+            `flex items-center truncate font-medium transition-colors`,
             sizes[size],
             variants[variant],
             !disabled && !loading && `${variantHover[variant]} active:scale-95`,
             disabled && "cursor-not-allowed opacity-50",
+            centered && "justify-center",
             className
           )}
           aria-disabled={disabled}
