@@ -67,8 +67,10 @@ const OptionsMenu: React.FC<{ className: string }> = (props) => {
               icon={<FaUsers />}
               centered={false}
               onClick={() => {
-                signOut({ callbackUrl: "/" });
-                signIn("google", { callbackUrl: "/dashboard" });
+                signOut({ callbackUrl: "/" }).then(() => {
+                  console.log("SIGNING IN?");
+                  signIn("google", { callbackUrl: "/dashboard" });
+                });
               }}
             >
               Switch Accounts
