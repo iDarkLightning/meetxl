@@ -67,7 +67,7 @@ const OptionsMenu: React.FC<{ className: string }> = (props) => {
               icon={<FaUsers />}
               centered={false}
               onClick={() => {
-                signOut();
+                signOut({ callbackUrl: "/" });
                 signIn("google", { callbackUrl: "/dashboard" });
               }}
             >
