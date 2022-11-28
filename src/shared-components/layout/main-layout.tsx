@@ -3,12 +3,12 @@ import { OrgContext } from "@/ui/org/org-shell";
 import { getAvatarFallback } from "@/utils/get-avatar-fallback";
 import { Menu, Transition } from "@headlessui/react";
 import clsx from "clsx";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession, getCsrfToken } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { Fragment, useContext } from "react";
-import { FaChevronDown, FaSignOutAlt, FaUsers } from "react-icons/fa";
+import { FaSignOutAlt, FaUsers } from "react-icons/fa";
 import { Avatar } from "../system/avatar";
 import { Button } from "../system/button";
 import { Heading } from "../system/heading";
@@ -66,9 +66,21 @@ const OptionsMenu: React.FC<{ className: string }> = (props) => {
               variant="ghost"
               icon={<FaUsers />}
               centered={false}
-              onClick={() => {
-                signOut({ callbackUrl: "/?auth=true" });
-                signIn("google", { callbackUrl: "/dashboard" });
+              onClick={async () => {
+                fetch("/api/auth/signout", {
+                  method: "post",
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                  },
+                  //@ts-expect-error serialization
+                  body: new URLSearchParams({
+                    csrfToken: await getCsrfToken(),
+                    callbackUrl: window.location.href,
+                    json: true,
+                  }),
+                }).then((res) => {
+                  if (res.ok) signIn("google");
+                });
               }}
             >
               Switch Accounts
