@@ -5,24 +5,10 @@ import { Heading } from "@/shared-components/system/heading";
 import { CustomNextPage } from "@/types/next-page";
 import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { FaGoogle } from "react-icons/fa";
 
 const Home: CustomNextPage = () => {
   const session = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (
-      router.asPath.includes("auth=true") &&
-      session.status === "unauthenticated"
-    ) {
-      signIn("google", { callbackUrl: "/dashboard" });
-    }
-  }, [router, session]);
-
-  if (router.asPath.includes("auth=true")) return null;
 
   return (
     <>

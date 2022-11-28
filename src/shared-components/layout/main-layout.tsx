@@ -7,7 +7,7 @@ import { signIn, signOut, useSession, getCsrfToken } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { FaSignOutAlt, FaUsers } from "react-icons/fa";
 import { Avatar } from "../system/avatar";
 import { Button } from "../system/button";
@@ -22,6 +22,41 @@ const isSelected = (tab: Tab, path: string) => {
   }
 
   return path === tab.route;
+};
+
+const SwitchAccounts: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <Menu.Item
+      as={Button}
+      loading={loading}
+      variant="ghost"
+      icon={<FaUsers />}
+      centered={false}
+      onClick={async (evt: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        evt.preventDefault();
+
+        setLoading(true);
+        fetch("/api/auth/signout", {
+          method: "post",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          //@ts-expect-error serialization
+          body: new URLSearchParams({
+            csrfToken: await getCsrfToken(),
+            callbackUrl: window.location.href,
+            json: true,
+          }),
+        }).then((res) => {
+          if (res.ok) signIn("google", { callbackUrl: "/dashboard" });
+        });
+      }}
+    >
+      Switch Accounts
+    </Menu.Item>
+  );
 };
 
 const OptionsMenu: React.FC<{ className: string }> = (props) => {
@@ -61,30 +96,7 @@ const OptionsMenu: React.FC<{ className: string }> = (props) => {
               </div>
             </Menu.Item>
             <hr className="border-accent-stroke" />
-            <Menu.Item
-              as={Button}
-              variant="ghost"
-              icon={<FaUsers />}
-              centered={false}
-              onClick={async () => {
-                fetch("/api/auth/signout", {
-                  method: "post",
-                  headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                  },
-                  //@ts-expect-error serialization
-                  body: new URLSearchParams({
-                    csrfToken: await getCsrfToken(),
-                    callbackUrl: window.location.href,
-                    json: true,
-                  }),
-                }).then((res) => {
-                  if (res.ok) signIn("google");
-                });
-              }}
-            >
-              Switch Accounts
-            </Menu.Item>
+            <SwitchAccounts />
             <Menu.Item
               as={Button}
               variant="ghost"
