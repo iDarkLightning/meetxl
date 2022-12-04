@@ -7,7 +7,7 @@ import { trpc } from "@/utils/trpc";
 import { Dialog } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { FaChevronRight } from "react-icons/fa";
+import { FaChevronRight, FaPlus } from "react-icons/fa";
 import { z } from "zod";
 
 const CreateOrganization: React.FC = () => {
@@ -93,47 +93,57 @@ const JoinOrganization: React.FC = () => {
   );
 };
 
-export const NewOrganizationModal: React.FC<{
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}> = (props) => {
+export const NewOrganizationModal: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState<"unselected" | "join" | "create">(
     "unselected"
   );
 
   return (
-    <DialogWrapper
-      isOpen={props.isOpen}
-      onClose={() => {
-        props.setIsOpen(false);
-        setTimeout(() => {
-          setMode("unselected");
-        }, 250);
-      }}
-    >
-      <Dialog.Title as={Heading} level="h3">
-        New Organization
-      </Dialog.Title>
-      {mode === "unselected" && (
-        <div className="mt-4 flex flex-col gap-4 md:w-96">
-          <Button
-            className="h-16 w-full flex-row-reverse justify-between gap-2"
-            icon={<FaChevronRight />}
-            onClick={() => setMode("join")}
-          >
-            Join a New Organization
-          </Button>
-          <Button
-            className="h-16 w-full flex-row-reverse justify-between gap-2"
-            icon={<FaChevronRight />}
-            onClick={() => setMode("create")}
-          >
-            Create a New Organization
-          </Button>
-        </div>
-      )}
-      {mode === "create" && <CreateOrganization />}
-      {mode === "join" && <JoinOrganization />}
-    </DialogWrapper>
+    <>
+      <Button
+        icon={<FaPlus size="0.75rem" />}
+        variant="primary"
+        size="sm"
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        New
+      </Button>
+      <DialogWrapper
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+          setTimeout(() => {
+            setMode("unselected");
+          }, 250);
+        }}
+      >
+        <Dialog.Title as={Heading} level="h3">
+          New Organization
+        </Dialog.Title>
+        {mode === "unselected" && (
+          <div className="mt-4 flex flex-col gap-4 md:w-96">
+            <Button
+              className="h-16 w-full flex-row-reverse justify-between gap-2"
+              icon={<FaChevronRight />}
+              onClick={() => setMode("join")}
+            >
+              Join a New Organization
+            </Button>
+            <Button
+              className="h-16 w-full flex-row-reverse justify-between gap-2"
+              icon={<FaChevronRight />}
+              onClick={() => setMode("create")}
+            >
+              Create a New Organization
+            </Button>
+          </div>
+        )}
+        {mode === "create" && <CreateOrganization />}
+        {mode === "join" && <JoinOrganization />}
+      </DialogWrapper>
+    </>
   );
 };

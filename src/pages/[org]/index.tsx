@@ -1,6 +1,5 @@
 import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
-import { Button } from "@/shared-components/system/button";
 import { Heading } from "@/shared-components/system/heading";
 import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
@@ -10,8 +9,6 @@ import { MeetingCard } from "@/ui/meetings/meeting-card";
 import { NewMeetingsModal } from "@/ui/meetings/new-meetings";
 import { OrgShell, useOrg } from "@/ui/org/org-shell";
 import { trpc } from "@/utils/trpc";
-import { useState } from "react";
-import { FaPlus } from "react-icons/fa";
 
 const MemberListing: React.FC = () => {
   const org = useOrg();
@@ -89,7 +86,6 @@ const AdminListing: React.FC = () => {
 
 const OrgHome: CustomNextPage = () => {
   const org = useOrg();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
     <SectionWrapper>
@@ -98,19 +94,9 @@ const OrgHome: CustomNextPage = () => {
           heading="Meetings"
           sub={`All of the available meetings for the ${org.name} organization`}
         />
-        {org.member.role === "ADMIN" && (
-          <Button
-            className="w-full md:w-min"
-            variant="primary"
-            icon={<FaPlus size="0.75rem" />}
-            onClick={() => setIsOpen(true)}
-          >
-            New
-          </Button>
-        )}
+        {org.member.role === "ADMIN" && <NewMeetingsModal />}
       </div>
       {org.member.role === "ADMIN" ? <AdminListing /> : <MemberListing />}
-      <NewMeetingsModal isOpen={isOpen} setIsOpen={setIsOpen} />
     </SectionWrapper>
   );
 };
