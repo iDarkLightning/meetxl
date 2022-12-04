@@ -1,4 +1,6 @@
 import { useZodForm } from "@/lib/hooks/use-zod-form";
+import { applyLinkSchema } from "@/lib/schemas/link-schemas";
+import { createOrgSchema } from "@/lib/schemas/org-schemas";
 import { Button } from "@/shared-components/system/button";
 import { DialogWrapper } from "@/shared-components/system/dialog";
 import { Heading } from "@/shared-components/system/heading";
@@ -8,16 +10,13 @@ import { Dialog } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { FaChevronRight, FaPlus } from "react-icons/fa";
-import { z } from "zod";
 
 const CreateOrganization: React.FC = () => {
   const ctx = trpc.useContext();
   const create = trpc.organization.create.useMutation();
 
   const methods = useZodForm({
-    schema: z.object({
-      name: z.string().min(1),
-    }),
+    schema: createOrgSchema,
     defaultValues: {
       name: "",
     },
@@ -59,9 +58,7 @@ const JoinOrganization: React.FC = () => {
   });
 
   const methods = useZodForm({
-    schema: z.object({
-      code: z.string().min(1),
-    }),
+    schema: applyLinkSchema,
     defaultValues: {
       code: "",
     },

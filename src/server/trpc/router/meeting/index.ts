@@ -1,5 +1,8 @@
+import {
+  createMeetingSchema,
+  updateMeetingSchema,
+} from "@/lib/schemas/meeting-schemas";
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 import { Context } from "../../context";
 import {
   meetingAdminProcedure,
@@ -31,13 +34,7 @@ const generateMeetingSlug = async (name: string, ctx: Context) => {
 
 export const meetingRouter = t.router({
   create: orgAdminProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        startTime: z.string().transform((d) => new Date(d)),
-        endTime: z.string().transform((d) => new Date(d)),
-      })
-    )
+    .input(createMeetingSchema)
     .mutation(async ({ ctx, input }) => {
       if (input.startTime.getTime() > input.endTime.getTime()) {
         throw new TRPCError({
@@ -58,14 +55,7 @@ export const meetingRouter = t.router({
     }),
 
   update: meetingAdminProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        location: z.string(),
-        startTime: z.string().transform((d) => new Date(d)),
-        endTime: z.string().transform((d) => new Date(d)),
-      })
-    )
+    .input(updateMeetingSchema)
     .mutation(async ({ ctx, input }) => {
       if (input.startTime.getTime() > input.endTime.getTime()) {
         throw new TRPCError({

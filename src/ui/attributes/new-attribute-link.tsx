@@ -1,4 +1,5 @@
 import { useZodForm } from "@/lib/hooks/use-zod-form";
+import { createAttributeLinkShema } from "@/lib/schemas/link-schemas";
 import { Button } from "@/shared-components/system/button";
 import { DialogWrapper } from "@/shared-components/system/dialog";
 import { Heading } from "@/shared-components/system/heading";
@@ -10,7 +11,6 @@ import { AttributeModifierAction } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import { z } from "zod";
 import { useOrg } from "../org/org-shell";
 
 export const NewAttributeLink: React.FC = () => {
@@ -20,11 +20,7 @@ export const NewAttributeLink: React.FC = () => {
   const ctx = trpc.useContext();
   const createLink = trpc.organization.attribute.links.create.useMutation();
   const methods = useZodForm({
-    schema: z.object({
-      name: z.string().min(1),
-      value: z.string(),
-      action: z.nativeEnum(AttributeModifierAction),
-    }),
+    schema: createAttributeLinkShema,
     defaultValues: {
       name: "",
       value: "0",
@@ -53,7 +49,7 @@ export const NewAttributeLink: React.FC = () => {
               await createLink
                 .mutateAsync({
                   orgId: org.id,
-                  value: parseInt(values.value),
+                  value: values.value,
                   name: values.name,
                   action: values.action,
                   attributeName: router.query.name as string,

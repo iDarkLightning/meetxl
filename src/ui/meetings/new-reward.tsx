@@ -1,4 +1,5 @@
 import { useZodForm } from "@/lib/hooks/use-zod-form";
+import { createMeetingRewardSchema } from "@/lib/schemas/meeting-schemas";
 import { Button } from "@/shared-components/system/button";
 import { DialogWrapper } from "@/shared-components/system/dialog";
 import { Heading } from "@/shared-components/system/heading";
@@ -10,7 +11,6 @@ import { Dialog } from "@headlessui/react";
 import { AttributeModifierAction } from "@prisma/client";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import { z } from "zod";
 import { useOrg } from "../org/org-shell";
 import { useMeeting } from "./meeting-shell";
 
@@ -21,11 +21,7 @@ export const NewReward: React.FC = () => {
   const ctx = trpc.useContext();
   const createReward = trpc.meeting.reward.create.useMutation();
   const methods = useZodForm({
-    schema: z.object({
-      key: z.string().min(1),
-      value: z.string(),
-      action: z.nativeEnum(AttributeModifierAction),
-    }),
+    schema: createMeetingRewardSchema,
     defaultValues: {
       key: "",
       value: "0",
@@ -64,7 +60,7 @@ export const NewReward: React.FC = () => {
                         .mutateAsync({
                           orgId: org.id,
                           meetingId: meeting.id,
-                          value: parseInt(values.value),
+                          value: values.value,
                           key: values.key,
                           action: values.action,
                         })

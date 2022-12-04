@@ -1,4 +1,5 @@
 import { useZodForm } from "@/lib/hooks/use-zod-form";
+import { updateParticipantLimitSchema } from "@/lib/schemas/meeting-schemas";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
@@ -19,11 +20,9 @@ const LimitForm: React.FC = () => {
   const updateLimit = trpc.meeting.participant.updateLimit.useMutation();
 
   const methods = useZodForm({
-    schema: z.object({
-      value: z.string(),
-    }),
+    schema: updateParticipantLimitSchema,
     defaultValues: {
-      value: meeting.maxParticipants?.toString(),
+      limit: meeting.maxParticipants?.toString(),
     },
   });
 
@@ -34,7 +33,7 @@ const LimitForm: React.FC = () => {
       onSubmit={methods.handleSubmit(async (values) => {
         await updateLimit
           .mutateAsync({
-            limit: parseInt(values.value),
+            limit: values.limit,
             meetingId: meeting.id,
             orgId: meeting.organizationSlug,
           })
@@ -49,11 +48,11 @@ const LimitForm: React.FC = () => {
       </label>
       <div>
         <div className="flex gap-2">
-          <Input {...methods.register("value")} type="number" />
+          <Input {...methods.register("limit")} type="number" />
         </div>
-        {methods.formState.errors.value?.message && (
+        {methods.formState.errors.limit?.message && (
           <p className="text-accent-danger">
-            {methods.formState.errors.value?.message}
+            {methods.formState.errors.limit?.message}
           </p>
         )}
       </div>

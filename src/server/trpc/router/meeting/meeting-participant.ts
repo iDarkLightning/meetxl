@@ -1,3 +1,4 @@
+import { updateParticipantLimitSchema } from "@/lib/schemas/meeting-schemas";
 import { TRPCError } from "@trpc/server";
 import { randomBytes } from "crypto";
 import { z } from "zod";
@@ -147,7 +148,7 @@ export const meetingParticipantRouter = t.router({
   }),
 
   updateLimit: meetingAdminProcedure
-    .input(z.object({ limit: z.number() }))
+    .input(updateParticipantLimitSchema)
     .mutation(async ({ ctx, input }) => {
       const participantCount = await ctx.prisma.meetingParticipant.count({
         where: {

@@ -1,3 +1,4 @@
+import { createAttributeSchema } from "@/lib/schemas/org-schemas";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import {
@@ -9,7 +10,7 @@ import { orgAttributeLinkRouter } from "./org-attribute-link";
 
 export const orgAttributeRouter = t.router({
   create: orgAdminProcedure
-    .input(z.object({ name: z.string() }))
+    .input(createAttributeSchema)
     .mutation(async ({ ctx, input }) => {
       try {
         const attribute = await ctx.prisma.organizationAttribute.create({

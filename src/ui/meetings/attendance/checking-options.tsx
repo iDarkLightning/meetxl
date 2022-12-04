@@ -1,4 +1,5 @@
 import { useZodForm } from "@/lib/hooks/use-zod-form";
+import { applyLinkSchema } from "@/lib/schemas/link-schemas";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
@@ -11,7 +12,6 @@ import { AttendanceLinkAction } from "@prisma/client";
 import clsx from "clsx";
 import Link from "next/link";
 import { FaExternalLinkAlt, FaPlus } from "react-icons/fa";
-import { z } from "zod";
 
 export const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (
   props
@@ -22,9 +22,7 @@ export const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (
   const ctx = trpc.useContext();
 
   const methods = useZodForm({
-    schema: z.object({
-      code: z.string().min(1),
-    }),
+    schema: applyLinkSchema,
     defaultValues: {
       code: "",
     },

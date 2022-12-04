@@ -1,3 +1,4 @@
+import { createMeetingRewardSchema } from "@/lib/schemas/meeting-schemas";
 import { AttributeModifierAction } from "@prisma/client";
 import { z } from "zod";
 import {
@@ -19,13 +20,7 @@ export const meetingRewardRouter = t.router({
   }),
 
   create: meetingAdminProcedure
-    .input(
-      z.object({
-        key: z.string(),
-        value: z.number(),
-        action: z.nativeEnum(AttributeModifierAction),
-      })
-    )
+    .input(createMeetingRewardSchema)
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.meetingReward.create({
         data: {

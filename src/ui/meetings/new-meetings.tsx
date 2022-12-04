@@ -1,4 +1,5 @@
 import { useZodForm } from "@/lib/hooks/use-zod-form";
+import { createMeetingSchema } from "@/lib/schemas/meeting-schemas";
 import { Button } from "@/shared-components/system/button";
 import { DialogWrapper } from "@/shared-components/system/dialog";
 import { Heading } from "@/shared-components/system/heading";
@@ -7,7 +8,6 @@ import { trpc } from "@/utils/trpc";
 import { Dialog } from "@headlessui/react";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import { z } from "zod";
 import { useOrg } from "../org/org-shell";
 
 export const NewMeetingsModal: React.FC = () => {
@@ -17,11 +17,7 @@ export const NewMeetingsModal: React.FC = () => {
   const create = trpc.meeting.create.useMutation();
 
   const methods = useZodForm({
-    schema: z.object({
-      name: z.string().min(1),
-      startTime: z.string(),
-      endTime: z.string(),
-    }),
+    schema: createMeetingSchema,
     defaultValues: {
       name: "",
       startTime: "",

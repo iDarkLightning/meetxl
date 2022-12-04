@@ -1,3 +1,4 @@
+import { applyLinkSchema } from "@/lib/schemas/link-schemas";
 import { grantRewards } from "@/server/common/grant-rewards";
 import { AttendanceLinkAction } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -106,7 +107,7 @@ export const meetingAttendanceLinkRouter = t.router({
     }),
 
   apply: meetingMemberProcedure
-    .input(z.object({ code: z.string().length(6) }))
+    .input(applyLinkSchema)
     .mutation(async ({ ctx, input }) => {
       const link = await ctx.prisma.attendanceLink.findUniqueOrThrow({
         where: {

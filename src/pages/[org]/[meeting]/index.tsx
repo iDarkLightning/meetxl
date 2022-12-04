@@ -1,4 +1,6 @@
 import { useZodForm } from "@/lib/hooks/use-zod-form";
+import { applyLinkSchema } from "@/lib/schemas/link-schemas";
+import { updateMeetingSchema } from "@/lib/schemas/meeting-schemas";
 import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
@@ -19,7 +21,6 @@ import { BiExit, BiGift, BiTime } from "react-icons/bi";
 import { FaEye, FaTrash } from "react-icons/fa";
 import { GoLocation } from "react-icons/go";
 import { IoMdPeople } from "react-icons/io";
-import { z } from "zod";
 
 dayjs.extend(relativeTime);
 
@@ -29,9 +30,7 @@ const ApplyLinkForm: React.FC = () => {
   const ctx = trpc.useContext();
 
   const methods = useZodForm({
-    schema: z.object({
-      code: z.string().min(1),
-    }),
+    schema: applyLinkSchema,
     defaultValues: {
       code: "",
     },
@@ -182,12 +181,7 @@ const InfoCard: React.FC<{
 const EditMeetingForm: React.FC = () => {
   const meeting = useMeeting();
   const methods = useZodForm({
-    schema: z.object({
-      name: z.string().min(1),
-      startTime: z.string(),
-      endTime: z.string(),
-      location: z.string(),
-    }),
+    schema: updateMeetingSchema,
     defaultValues: {
       name: meeting.name,
       location: meeting.location ?? "",

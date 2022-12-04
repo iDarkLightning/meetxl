@@ -1,4 +1,5 @@
 import { useZodForm } from "@/lib/hooks/use-zod-form";
+import { createAttributeSchema } from "@/lib/schemas/org-schemas";
 import { Button } from "@/shared-components/system/button";
 import { DialogWrapper } from "@/shared-components/system/dialog";
 import { Heading } from "@/shared-components/system/heading";
@@ -18,9 +19,7 @@ export const NewAttributeModal: React.FC<{
   const create = trpc.organization.attribute.create.useMutation();
 
   const methods = useZodForm({
-    schema: z.object({
-      name: z.string().min(1),
-    }),
+    schema: createAttributeSchema,
     defaultValues: {
       name: "",
     },

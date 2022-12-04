@@ -1,3 +1,4 @@
+import { createOrgSchema } from "@/lib/schemas/org-schemas";
 import { MemberRole } from "@prisma/client";
 import { z } from "zod";
 import { Context } from "../../context";
@@ -28,7 +29,7 @@ const generateOrgSlug = async (name: string, ctx: Context) => {
 
 export const organizationRouter = t.router({
   create: authedProcedure
-    .input(z.object({ name: z.string() }))
+    .input(createOrgSchema)
     .mutation(async ({ ctx, input }) => {
       const org = await ctx.prisma.organization.create({
         data: {

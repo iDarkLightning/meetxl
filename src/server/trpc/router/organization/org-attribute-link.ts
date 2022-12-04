@@ -1,4 +1,4 @@
-import { AttributeModifierAction } from "@prisma/client";
+import { createAttributeLinkShema } from "@/lib/schemas/link-schemas";
 import { TRPCError } from "@trpc/server";
 import { randomBytes } from "crypto";
 import { z } from "zod";
@@ -10,14 +10,7 @@ import { t } from "../../trpc";
 
 export const orgAttributeLinkRouter = t.router({
   create: orgAdminProcedure
-    .input(
-      z.object({
-        attributeName: z.string(),
-        value: z.number(),
-        name: z.string(),
-        action: z.nativeEnum(AttributeModifierAction),
-      })
-    )
+    .input(createAttributeLinkShema)
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.attributeLink.create({
         data: {
