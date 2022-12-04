@@ -7,7 +7,6 @@ import { Input } from "@/shared-components/system/input";
 import { trpc } from "@/utils/trpc";
 import { Dialog } from "@headlessui/react";
 import React from "react";
-import { z } from "zod";
 import { useOrg } from "../org/org-shell";
 
 export const NewAttributeModal: React.FC<{

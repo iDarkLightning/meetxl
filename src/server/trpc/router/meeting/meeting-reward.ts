@@ -1,5 +1,4 @@
 import { createMeetingRewardSchema } from "@/lib/schemas/meeting-schemas";
-import { AttributeModifierAction } from "@prisma/client";
 import { z } from "zod";
 import {
   meetingAdminProcedure,

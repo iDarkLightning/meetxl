@@ -12,7 +12,6 @@ import { ParticipantShell } from "@/ui/meetings/participant-shell";
 import { trpc } from "@/utils/trpc";
 import { Tab } from "@headlessui/react";
 import clsx from "clsx";
-import { z } from "zod";
 
 const LimitForm: React.FC = () => {
   const meeting = useMeeting();
