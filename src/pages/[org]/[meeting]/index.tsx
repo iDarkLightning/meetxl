@@ -1,4 +1,3 @@
-import { useZodForm } from "@/lib/hooks/use-zod-form";
 import { applyLinkSchema } from "@/lib/schemas/link-schemas";
 import { updateMeetingSchema } from "@/lib/schemas/meeting-schemas";
 import { SectionHeading } from "@/shared-components/layout/section-heading";
@@ -6,11 +5,11 @@ import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
-import { Input } from "@/shared-components/system/input";
 import { EmptyContent } from "@/shared-components/util/empty-content";
 import { CustomNextPage } from "@/types/next-page";
 import { MeetingShell, useMeeting } from "@/ui/meetings/meeting-shell";
 import { useOrg } from "@/ui/org/org-shell";
+import { createForm } from "@/utils/create-form";
 import { trpc } from "@/utils/trpc";
 import clsx from "clsx";
 import dayjs from "dayjs";
@@ -24,13 +23,14 @@ import { IoMdPeople } from "react-icons/io";
 
 dayjs.extend(relativeTime);
 
+const applyLinkForm = createForm(applyLinkSchema);
+
 const ApplyLinkForm: React.FC = () => {
   const meeting = useMeeting();
   const applyLink = trpc.meeting.attendance.links.apply.useMutation();
   const ctx = trpc.useContext();
 
-  const methods = useZodForm({
-    schema: applyLinkSchema,
+  const methods = applyLinkForm.useForm({
     defaultValues: {
       code: "",
     },
@@ -38,8 +38,8 @@ const ApplyLinkForm: React.FC = () => {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <form
-        autoComplete="off"
+      <applyLinkForm.Wrapper
+        methods={methods}
         onSubmit={methods.handleSubmit((values) => {
           applyLink
             .mutateAsync({
@@ -53,28 +53,21 @@ const ApplyLinkForm: React.FC = () => {
           methods.reset();
         })}
       >
-        <label htmlFor="code" className="text-gray-400">
-          Link Code
-        </label>
-        <div className="mt-2 flex items-center gap-6">
+        <applyLinkForm.Label fieldName="code" />
+        <div className="flex w-full gap-2">
           <div className="w-full">
-            <Input {...methods.register("code")} className="w-full" />
-            {methods.formState.errors.code?.message && (
-              <p className="text-red-500">
-                {methods.formState.errors.code?.message}
-              </p>
-            )}
+            <applyLinkForm.Input fieldName="code" className="w-full" />
+            <applyLinkForm.ErrorMessage fieldName="code" />
           </div>
-          <Button
-            type="submit"
+          <applyLinkForm.SubmitButton
             size="md"
             loading={applyLink.isLoading}
             className="h-full"
           >
             Apply
-          </Button>
+          </applyLinkForm.SubmitButton>
         </div>
-      </form>
+      </applyLinkForm.Wrapper>
     </div>
   );
 };
@@ -178,10 +171,11 @@ const InfoCard: React.FC<{
   );
 };
 
+const editMeetingForm = createForm(updateMeetingSchema);
+
 const EditMeetingForm: React.FC = () => {
   const meeting = useMeeting();
-  const methods = useZodForm({
-    schema: updateMeetingSchema,
+  const methods = editMeetingForm.useForm({
     defaultValues: {
       name: meeting.name,
       location: meeting.location ?? "",
@@ -193,8 +187,8 @@ const EditMeetingForm: React.FC = () => {
   const ctx = trpc.useContext();
 
   return (
-    <form
-      autoComplete="off"
+    <editMeetingForm.Wrapper
+      methods={methods}
       onSubmit={methods.handleSubmit(async (values) => {
         await update
           .mutateAsync({
@@ -207,52 +201,14 @@ const EditMeetingForm: React.FC = () => {
         ctx.meeting.get.invalidate();
       })}
     >
-      <label htmlFor="name" className="text-gray-400">
-        Name
-      </label>
-      <Input {...methods.register("name")} className="mt-2" />
-      {methods.formState.errors.name?.message && (
-        <p className="text-red-500">{methods.formState.errors.name?.message}</p>
-      )}
-      <label htmlFor="name" className="text-gray-400">
-        Location
-      </label>
-      <Input {...methods.register("location")} className="mt-2" />
-      {methods.formState.errors.location?.message && (
-        <p className="text-red-500">
-          {methods.formState.errors.location?.message}
-        </p>
-      )}
-      <label htmlFor="startTime" className="text-gray-400">
-        Start Time
-      </label>
-      <Input
-        {...methods.register("startTime")}
-        className="mt-2"
-        type="datetime-local"
-      />
-      {methods.formState.errors.startTime?.message && (
-        <p className="text-red-500">
-          {methods.formState.errors.startTime?.message}
-        </p>
-      )}
-      <label htmlFor="endTime" className="text-gray-400">
-        End Time
-      </label>
-      <Input
-        {...methods.register("endTime")}
-        className="mt-2"
-        type="datetime-local"
-      />
-      {methods.formState.errors.endTime?.message && (
-        <p className="text-red-500">
-          {methods.formState.errors.endTime?.message}
-        </p>
-      )}
-      <Button type="submit" className="mt-4">
+      <editMeetingForm.InputField fieldName="name" />
+      <editMeetingForm.InputField fieldName="location" />
+      <editMeetingForm.InputField fieldName="startTime" type="datetime-local" />
+      <editMeetingForm.InputField fieldName="endTime" type="datetime-local" />
+      <editMeetingForm.SubmitButton className="mt-4">
         Save
-      </Button>
-    </form>
+      </editMeetingForm.SubmitButton>
+    </editMeetingForm.Wrapper>
   );
 };
 

@@ -1,34 +1,34 @@
-import { useZodForm } from "@/lib/hooks/use-zod-form";
 import { updateParticipantLimitSchema } from "@/lib/schemas/meeting-schemas";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
-import { Input } from "@/shared-components/system/input";
 import { CustomNextPage } from "@/types/next-page";
 import { AttendanceChecking } from "@/ui/meetings/attendance/checking-options";
 import { useMeeting } from "@/ui/meetings/meeting-shell";
 import { ParticipantShell } from "@/ui/meetings/participant-shell";
+import { createForm } from "@/utils/create-form";
 import { trpc } from "@/utils/trpc";
 import { Tab } from "@headlessui/react";
 import clsx from "clsx";
+
+const form = createForm(updateParticipantLimitSchema);
 
 const LimitForm: React.FC = () => {
   const meeting = useMeeting();
   const ctx = trpc.useContext();
   const updateLimit = trpc.meeting.participant.updateLimit.useMutation();
 
-  const methods = useZodForm({
-    schema: updateParticipantLimitSchema,
+  const methods = form.useForm({
     defaultValues: {
       limit: meeting.maxParticipants?.toString(),
     },
   });
 
   return (
-    <form
+    <form.Wrapper
+      methods={methods}
       className="flex w-full flex-col gap-2"
-      autoComplete="off"
       onSubmit={methods.handleSubmit(async (values) => {
         await updateLimit
           .mutateAsync({
@@ -42,20 +42,8 @@ const LimitForm: React.FC = () => {
         methods.reset(values);
       })}
     >
-      <label htmlFor="value" className="opacity-75">
-        Limit
-      </label>
-      <div>
-        <div className="flex gap-2">
-          <Input {...methods.register("limit")} type="number" />
-        </div>
-        {methods.formState.errors.limit?.message && (
-          <p className="text-accent-danger">
-            {methods.formState.errors.limit?.message}
-          </p>
-        )}
-      </div>
-    </form>
+      <form.InputField fieldName="limit" />
+    </form.Wrapper>
   );
 };
 

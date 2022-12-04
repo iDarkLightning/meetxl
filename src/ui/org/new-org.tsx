@@ -1,22 +1,23 @@
-import { useZodForm } from "@/lib/hooks/use-zod-form";
 import { applyLinkSchema } from "@/lib/schemas/link-schemas";
 import { createOrgSchema } from "@/lib/schemas/org-schemas";
 import { Button } from "@/shared-components/system/button";
 import { DialogWrapper } from "@/shared-components/system/dialog";
 import { Heading } from "@/shared-components/system/heading";
-import { Input } from "@/shared-components/system/input";
+import { createForm } from "@/utils/create-form";
 import { trpc } from "@/utils/trpc";
 import { Dialog } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { FaChevronRight, FaPlus } from "react-icons/fa";
 
+const createOrgForm = createForm(createOrgSchema);
+const joinOrgForm = createForm(applyLinkSchema);
+
 const CreateOrganization: React.FC = () => {
   const ctx = trpc.useContext();
   const create = trpc.organization.create.useMutation();
 
-  const methods = useZodForm({
-    schema: createOrgSchema,
+  const methods = createOrgForm.useForm({
     defaultValues: {
       name: "",
     },
@@ -24,26 +25,18 @@ const CreateOrganization: React.FC = () => {
 
   return (
     <div className="mt-6 flex flex-col gap-4">
-      <form
-        autoComplete="off"
+      <createOrgForm.Wrapper
+        methods={methods}
         onSubmit={methods.handleSubmit(async (values) => {
           await create.mutateAsync(values).catch(() => 0);
           ctx.organization.list.invalidate();
         })}
       >
-        <label htmlFor="name" className="text-gray-400">
-          Name
-        </label>
-        <Input {...methods.register("name")} className="mt-2" />
-        {methods.formState.errors.name?.message && (
-          <p className="text-red-500">
-            {methods.formState.errors.name?.message}
-          </p>
-        )}
-        <Button type="submit" className="mt-4" loading={create.isLoading}>
+        <createOrgForm.InputField fieldName="name" />
+        <createOrgForm.SubmitButton className="mt-4" loading={create.isLoading}>
           Create
-        </Button>
-      </form>
+        </createOrgForm.SubmitButton>
+      </createOrgForm.Wrapper>
     </div>
   );
 };
@@ -57,8 +50,7 @@ const JoinOrganization: React.FC = () => {
     },
   });
 
-  const methods = useZodForm({
-    schema: applyLinkSchema,
+  const methods = joinOrgForm.useForm({
     defaultValues: {
       code: "",
     },
@@ -66,26 +58,18 @@ const JoinOrganization: React.FC = () => {
 
   return (
     <div className="mt-6 flex flex-col gap-4">
-      <form
-        autoComplete="off"
+      <joinOrgForm.Wrapper
+        methods={methods}
         onSubmit={methods.handleSubmit(async (values) => {
           await join.mutateAsync(values).catch(() => 0);
           ctx.organization.list.invalidate();
         })}
       >
-        <label htmlFor="code" className="text-gray-400">
-          Code
-        </label>
-        <Input {...methods.register("code")} className="mt-2" />
-        {methods.formState.errors.code?.message && (
-          <p className="text-red-500">
-            {methods.formState.errors.code?.message}
-          </p>
-        )}
-        <Button type="submit" className="mt-4" loading={join.isLoading}>
+        <joinOrgForm.InputField fieldName="code" />
+        <joinOrgForm.SubmitButton className="mt-4" loading={join.isLoading}>
           Join
-        </Button>
-      </form>
+        </joinOrgForm.SubmitButton>
+      </joinOrgForm.Wrapper>
     </div>
   );
 };

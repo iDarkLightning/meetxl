@@ -1,17 +1,18 @@
-import { useZodForm } from "@/lib/hooks/use-zod-form";
 import { applyLinkSchema } from "@/lib/schemas/link-schemas";
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
-import { Input } from "@/shared-components/system/input";
 import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { useMeeting } from "@/ui/meetings/meeting-shell";
+import { createForm } from "@/utils/create-form";
 import { trpc } from "@/utils/trpc";
 import { AttendanceLinkAction } from "@prisma/client";
 import clsx from "clsx";
 import Link from "next/link";
 import { FaExternalLinkAlt, FaPlus } from "react-icons/fa";
+
+const form = createForm(applyLinkSchema);
 
 export const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (
   props
@@ -21,8 +22,7 @@ export const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (
   const checkOut = trpc.meeting.attendance.checkOut.useMutation();
   const ctx = trpc.useContext();
 
-  const methods = useZodForm({
-    schema: applyLinkSchema,
+  const methods = form.useForm({
     defaultValues: {
       code: "",
     },
@@ -30,9 +30,9 @@ export const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (
 
   return (
     <div>
-      <form
+      <form.Wrapper
+        methods={methods}
         className="flex flex-col gap-2"
-        autoComplete="off"
         onSubmit={methods.handleSubmit(async (values) => {
           if (props.action === "CHECKIN") {
             await checkIn
@@ -56,20 +56,11 @@ export const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (
           methods.reset();
         })}
       >
-        <div className="mt-4">
-          <div className="flex gap-2">
-            <Input
-              {...methods.register("code")}
-              placeholder="Participant's Registration Code"
-            />
-          </div>
-          {methods.formState.errors.code?.message && (
-            <p className="text-accent-danger">
-              {methods.formState.errors.code?.message}
-            </p>
-          )}
-        </div>
-      </form>
+        <form.InputField
+          fieldName="code"
+          placeholder="Participant's Registration Code"
+        />
+      </form.Wrapper>
     </div>
   );
 };

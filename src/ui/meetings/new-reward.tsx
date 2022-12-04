@@ -1,11 +1,9 @@
-import { useZodForm } from "@/lib/hooks/use-zod-form";
 import { createMeetingRewardSchema } from "@/lib/schemas/meeting-schemas";
 import { Button } from "@/shared-components/system/button";
 import { DialogWrapper } from "@/shared-components/system/dialog";
 import { Heading } from "@/shared-components/system/heading";
-import { Input } from "@/shared-components/system/input";
-import { Select } from "@/shared-components/system/select";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
+import { createForm } from "@/utils/create-form";
 import { trpc } from "@/utils/trpc";
 import { Dialog } from "@headlessui/react";
 import { AttributeModifierAction } from "@prisma/client";
@@ -14,14 +12,15 @@ import { FaPlus } from "react-icons/fa";
 import { useOrg } from "../org/org-shell";
 import { useMeeting } from "./meeting-shell";
 
+const form = createForm(createMeetingRewardSchema);
+
 export const NewReward: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const org = useOrg();
   const meeting = useMeeting();
   const ctx = trpc.useContext();
   const createReward = trpc.meeting.reward.create.useMutation();
-  const methods = useZodForm({
-    schema: createMeetingRewardSchema,
+  const methods = form.useForm({
     defaultValues: {
       key: "",
       value: "0",
@@ -52,9 +51,9 @@ export const NewReward: React.FC = () => {
             <>
               {data.length > 0 && (
                 <div className="mt-3 md:w-96">
-                  <form
+                  <form.Wrapper
+                    methods={methods}
                     className="flex flex-col items-end gap-2"
-                    autoComplete="off"
                     onSubmit={methods.handleSubmit(async (values) => {
                       await createReward
                         .mutateAsync({
@@ -66,43 +65,29 @@ export const NewReward: React.FC = () => {
                         })
                         .catch(() => 0);
                       ctx.meeting.reward.list.invalidate();
+
+                      methods.reset();
                       setIsOpen(false);
                     })}
                   >
-                    <div className="flex w-full flex-col">
-                      <label htmlFor="name" className="text-gray-400">
-                        Key
-                      </label>
-                      <Select
-                        {...methods.register("key")}
+                    <div className="flex w-full flex-col gap-2">
+                      <form.SelectField
+                        fieldName="key"
                         options={data.map((attribute) => attribute.name)}
-                        className="mt-2"
                       />
-                    </div>
-                    <div className="w-full">
-                      <label htmlFor="value" className="text-gray-400">
-                        Value
-                      </label>
-                      <Input
-                        {...methods.register("value")}
-                        className="mt-2"
-                        type="number"
-                      />
-                    </div>
-                    <div className="flex w-full flex-col">
-                      <label htmlFor="value" className="text-gray-400">
-                        Action
-                      </label>
-                      <Select
-                        {...methods.register("action")}
+                      <form.InputField fieldName="value" type="number" />
+                      <form.SelectField
+                        fieldName="action"
                         options={Object.keys(AttributeModifierAction)}
-                        className="mt-2"
                       />
                     </div>
-                    <Button type="submit" className="mt-4">
+                    <form.SubmitButton
+                      className="mt-4"
+                      loading={createReward.isLoading}
+                    >
                       Create
-                    </Button>
-                  </form>
+                    </form.SubmitButton>
+                  </form.Wrapper>
                 </div>
               )}
               {data.length === 0 && (

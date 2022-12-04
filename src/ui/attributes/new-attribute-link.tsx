@@ -1,10 +1,8 @@
-import { useZodForm } from "@/lib/hooks/use-zod-form";
 import { createAttributeLinkShema } from "@/lib/schemas/link-schemas";
 import { Button } from "@/shared-components/system/button";
 import { DialogWrapper } from "@/shared-components/system/dialog";
 import { Heading } from "@/shared-components/system/heading";
-import { Input } from "@/shared-components/system/input";
-import { Select } from "@/shared-components/system/select";
+import { createForm } from "@/utils/create-form";
 import { trpc } from "@/utils/trpc";
 import { Dialog } from "@headlessui/react";
 import { AttributeModifierAction } from "@prisma/client";
@@ -13,14 +11,15 @@ import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useOrg } from "../org/org-shell";
 
+const form = createForm(createAttributeLinkShema.omit({ attributeName: true }));
+
 export const NewAttributeLink: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const router = useRouter();
   const org = useOrg();
   const ctx = trpc.useContext();
   const createLink = trpc.organization.attribute.links.create.useMutation();
-  const methods = useZodForm({
-    schema: createAttributeLinkShema,
+  const methods = form.useForm({
     defaultValues: {
       name: "",
       value: "0",
@@ -42,9 +41,9 @@ export const NewAttributeLink: React.FC = () => {
           New Link
         </Dialog.Title>
         <div className="mt-3 md:w-96">
-          <form
+          <form.Wrapper
+            methods={methods}
             className="flex flex-col items-end gap-2"
-            autoComplete="off"
             onSubmit={methods.handleSubmit(async (values) => {
               await createLink
                 .mutateAsync({
@@ -60,39 +59,15 @@ export const NewAttributeLink: React.FC = () => {
             })}
           >
             <div className="flex w-full flex-col">
-              <label htmlFor="name" className="text-gray-400">
-                Name
-              </label>
-              <Input {...methods.register("name")} className="mt-2" />
-            </div>
-            <div className="w-full">
-              <label htmlFor="value" className="text-gray-400">
-                Value
-              </label>
-              <Input
-                {...methods.register("value")}
-                className="mt-2"
-                type="number"
+              <form.InputField fieldName="name" />
+              <form.InputField fieldName="value" type="number" />
+              <form.SelectField
+                fieldName="action"
+                options={Object.keys(AttributeModifierAction)}
               />
             </div>
-            <div className="flex w-full flex-col">
-              <label htmlFor="value" className="text-gray-400">
-                Action
-              </label>
-              <Select {...methods.register("action")} className="mt-2">
-                <option value={AttributeModifierAction.INCREMENT}>
-                  Increment
-                </option>
-                <option value={AttributeModifierAction.DECREMENT}>
-                  Decrement
-                </option>
-                <option value={AttributeModifierAction.SET}>Set</option>
-              </Select>
-            </div>
-            <Button type="submit" className="mt-4">
-              Create
-            </Button>
-          </form>
+            <form.SubmitButton className="mt-4">Create</form.SubmitButton>
+          </form.Wrapper>
         </div>
       </DialogWrapper>
     </>

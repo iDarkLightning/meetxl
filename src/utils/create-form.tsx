@@ -1,5 +1,6 @@
 import { useZodForm } from "@/lib/hooks/use-zod-form";
-import {
+import { Button, ButtonProps } from "@/shared-components/system/button";
+import React, {
   DetailedHTMLProps,
   FormHTMLAttributes,
   HTMLAttributes,
@@ -16,20 +17,46 @@ import { z } from "zod";
 import { Input, InputProps } from "../shared-components/system/input";
 import { Select, SelectProps } from "../shared-components/system/select";
 
+type LabelProps = DetailedHTMLProps<
+  LabelHTMLAttributes<HTMLLabelElement>,
+  HTMLLabelElement
+>;
+
+type ErrorProps = DetailedHTMLProps<
+  HTMLAttributes<HTMLParagraphElement>,
+  HTMLParagraphElement
+>;
+
 type FieldProps<T> = {
   fieldName: T;
   label?: string;
-  labelProps?: DetailedHTMLProps<
-    LabelHTMLAttributes<HTMLLabelElement>,
-    HTMLLabelElement
-  >;
-  errorProps?: DetailedHTMLProps<
-    HTMLAttributes<HTMLParagraphElement>,
-    HTMLParagraphElement
-  >;
+  labelProps?: LabelProps;
+  errorProps?: ErrorProps;
+};
+
+const Label: React.FC<
+  React.PropsWithChildren<{ fieldName: string } & LabelProps>
+> = (props) => {
+  return (
+    <label htmlFor={props.fieldName} className="text-gray-400" {...props}>
+      {props.children ??
+        props.fieldName.substring(0, 1).toUpperCase() +
+          props.fieldName.substring(1)}
+    </label>
+  );
+};
+
+const ErrorMessage: React.FC<React.PropsWithChildren<ErrorProps>> = (props) => {
+  return (
+    <p className="text-red-500" {...props}>
+      {props.children}
+    </p>
+  );
 };
 
 export const createForm = <T extends z.ZodType>(schema: T) => {
+  type FieldValues = T["_output"];
+
   return {
     schema,
 
@@ -56,62 +83,81 @@ export const createForm = <T extends z.ZodType>(schema: T) => {
       );
     },
 
-    InputField: (
-      props: FieldProps<keyof z.infer<typeof schema>> & InputProps
+    Label: (
+      props: {
+        fieldName: keyof FieldValues;
+        children?: React.ReactNode;
+      } & LabelProps
     ) => {
-      const methods = useFormContext<z.infer<typeof schema>>();
-
-      const fieldName = props.fieldName as Path<z.infer<typeof schema>>;
-
       return (
-        <>
-          <label
-            htmlFor={fieldName}
-            className="text-gray-400"
-            {...props.labelProps}
-          >
-            {props.label ??
-              fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1)}
-          </label>
-          <Input {...methods.register(fieldName)} {...props} />
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
-          {methods.formState.errors[fieldName as any]?.message && (
-            <p className="text-red-500" {...props.errorProps}>
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
-              {methods.formState.errors[fieldName as any]?.message as string}
-            </p>
-          )}
-        </>
+        <Label fieldName={props.fieldName as string}>{props.children}</Label>
       );
     },
 
-    SelectField: (
-      props: FieldProps<keyof z.infer<typeof schema>> & SelectProps
-    ) => {
-      const methods = useFormContext<z.infer<typeof schema>>();
+    ErrorMessage: (props: { fieldName: keyof FieldValues } & ErrorProps) => {
+      const methods = useFormContext<FieldValues>();
+      const message = methods.formState.errors[props.fieldName]?.message;
 
-      const fieldName = props.fieldName as Path<z.infer<typeof schema>>;
+      if (!message) {
+        return null;
+      }
+
+      return <ErrorMessage {...props}>{message as string}</ErrorMessage>;
+    },
+
+    Input: (props: { fieldName: keyof FieldValues } & InputProps) => {
+      const methods = useFormContext<FieldValues>();
 
       return (
-        <>
-          <label
-            htmlFor={fieldName}
-            className="text-gray-400"
-            {...props.labelProps}
-          >
-            {props.label ??
-              fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1)}
-          </label>
-          <Select {...methods.register(fieldName)} {...props} />
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
-          {methods.formState.errors[fieldName as any]?.message && (
-            <p className="text-red-500" {...props.errorProps}>
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
-              {methods.formState.errors[fieldName as any]?.message as string}
-            </p>
-          )}
-        </>
+        <Input
+          {...methods.register(props.fieldName as Path<FieldValues>)}
+          {...props}
+        />
       );
+    },
+
+    InputField: (props: FieldProps<keyof FieldValues> & InputProps) => {
+      const methods = useFormContext<FieldValues>();
+
+      const fieldName = props.fieldName as Path<FieldValues>;
+
+      return (
+        <div className="flex flex-col gap-2">
+          <Label fieldName={fieldName as string} {...props.labelProps}>
+            {props.label}
+          </Label>
+          <Input {...methods.register(fieldName)} {...props} />
+          {methods.formState.errors[fieldName]?.message && (
+            <ErrorMessage {...props.errorProps}>
+              {methods.formState.errors[fieldName]?.message as string}
+            </ErrorMessage>
+          )}
+        </div>
+      );
+    },
+
+    SelectField: (props: FieldProps<keyof FieldValues> & SelectProps) => {
+      const methods = useFormContext<FieldValues>();
+
+      const fieldName = props.fieldName as Path<FieldValues>;
+
+      return (
+        <div className="flex flex-col gap-3">
+          <Label fieldName={fieldName as string} {...props.labelProps}>
+            {props.label}
+          </Label>
+          <Select {...methods.register(fieldName)} {...props} />
+          {methods.formState.errors[fieldName]?.message && (
+            <ErrorMessage {...props.errorProps}>
+              {methods.formState.errors[fieldName]?.message as string}
+            </ErrorMessage>
+          )}
+        </div>
+      );
+    },
+
+    SubmitButton: (props: ButtonProps) => {
+      return <Button type="submit" {...props} />;
     },
   };
 };

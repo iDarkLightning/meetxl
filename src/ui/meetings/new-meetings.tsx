@@ -1,14 +1,15 @@
-import { useZodForm } from "@/lib/hooks/use-zod-form";
 import { createMeetingSchema } from "@/lib/schemas/meeting-schemas";
 import { Button } from "@/shared-components/system/button";
 import { DialogWrapper } from "@/shared-components/system/dialog";
 import { Heading } from "@/shared-components/system/heading";
-import { Input } from "@/shared-components/system/input";
+import { createForm } from "@/utils/create-form";
 import { trpc } from "@/utils/trpc";
 import { Dialog } from "@headlessui/react";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useOrg } from "../org/org-shell";
+
+const form = createForm(createMeetingSchema);
 
 export const NewMeetingsModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,8 +17,7 @@ export const NewMeetingsModal: React.FC = () => {
   const ctx = trpc.useContext();
   const create = trpc.meeting.create.useMutation();
 
-  const methods = useZodForm({
-    schema: createMeetingSchema,
+  const methods = form.useForm({
     defaultValues: {
       name: "",
       startTime: "",
@@ -45,8 +45,8 @@ export const NewMeetingsModal: React.FC = () => {
           New Meeting
         </Dialog.Title>
         <div className="mt-3 md:w-96">
-          <form
-            autoComplete="off"
+          <form.Wrapper
+            methods={methods}
             onSubmit={methods.handleSubmit(async (values) => {
               await create
                 .mutateAsync({ orgId: org.id, ...values })
@@ -55,45 +55,13 @@ export const NewMeetingsModal: React.FC = () => {
               setIsOpen(false);
             })}
           >
-            <label htmlFor="name" className="text-gray-400">
-              Name
-            </label>
-            <Input {...methods.register("name")} className="mt-2" />
-            {methods.formState.errors.name?.message && (
-              <p className="text-red-500">
-                {methods.formState.errors.name?.message}
-              </p>
-            )}
-            <label htmlFor="startTime" className="text-gray-400">
-              Start Time
-            </label>
-            <Input
-              {...methods.register("startTime")}
-              className="mt-2"
-              type="datetime-local"
-            />
-            {methods.formState.errors.startTime?.message && (
-              <p className="text-red-500">
-                {methods.formState.errors.startTime?.message}
-              </p>
-            )}
-            <label htmlFor="endTime" className="text-gray-400">
-              End Time
-            </label>
-            <Input
-              {...methods.register("endTime")}
-              className="mt-2"
-              type="datetime-local"
-            />
-            {methods.formState.errors.endTime?.message && (
-              <p className="text-red-500">
-                {methods.formState.errors.endTime?.message}
-              </p>
-            )}
-            <Button type="submit" className="mt-4" loading={create.isLoading}>
+            <form.InputField fieldName="name" />
+            <form.InputField fieldName="startTime" type="datetime-local" />
+            <form.InputField fieldName="endTime" type="datetime-local" />
+            <form.SubmitButton className="mt-4" loading={create.isLoading}>
               Create
-            </Button>
-          </form>
+            </form.SubmitButton>
+          </form.Wrapper>
         </div>
       </DialogWrapper>
     </>
