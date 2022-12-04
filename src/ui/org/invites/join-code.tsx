@@ -93,10 +93,8 @@ export const JoinCodeInvite = () => {
                             })
                             .catch(() => 0);
                         }}
-                      >
-                        <option value={MemberRole.ADMIN}>Admin</option>
-                        <option value={MemberRole.MEMBER}>Member</option>
-                      </Select>
+                        options={Object.keys(MemberRole)}
+                      />
                       <Button
                         icon={<FaCopy />}
                         onClick={() => {

@@ -73,13 +73,11 @@ export const NewReward: React.FC = () => {
                       <label htmlFor="name" className="text-gray-400">
                         Key
                       </label>
-                      <Select {...methods.register("key")} className="mt-2">
-                        {data.map((attribute, idx) => (
-                          <option value={attribute.name} key={idx}>
-                            {attribute.name}
-                          </option>
-                        ))}
-                      </Select>
+                      <Select
+                        {...methods.register("key")}
+                        options={data.map((attribute) => attribute.name)}
+                        className="mt-2"
+                      />
                     </div>
                     <div className="w-full">
                       <label htmlFor="value" className="text-gray-400">
@@ -95,15 +93,11 @@ export const NewReward: React.FC = () => {
                       <label htmlFor="value" className="text-gray-400">
                         Action
                       </label>
-                      <Select {...methods.register("action")} className="mt-2">
-                        <option value={AttributeModifierAction.INCREMENT}>
-                          Increment
-                        </option>
-                        <option value={AttributeModifierAction.DECREMENT}>
-                          Decrement
-                        </option>
-                        <option value={AttributeModifierAction.SET}>Set</option>
-                      </Select>
+                      <Select
+                        {...methods.register("action")}
+                        options={Object.keys(AttributeModifierAction)}
+                        className="mt-2"
+                      />
                     </div>
                     <Button type="submit" className="mt-4">
                       Create

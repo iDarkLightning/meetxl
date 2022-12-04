@@ -7,7 +7,8 @@ const variants = {
 };
 
 export interface SelectProps
-  extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "children"> {
+  options: string[];
   variant?: keyof typeof variants;
 }
 
@@ -23,11 +24,13 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>((p, ref) => {
   };
 
   return (
-    <select
-      ref={ref}
-      className={clsx(variants[variant], className)}
-      {...props}
-    />
+    <select ref={ref} className={clsx(variants[variant], className)} {...props}>
+      {props.options.map((opt, idx) => (
+        <option value={opt} key={idx}>
+          {opt}
+        </option>
+      ))}
+    </select>
   );
 });
 
