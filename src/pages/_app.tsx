@@ -2,13 +2,13 @@
 import { Auth } from "@/shared-components/util/auth";
 import { CustomNextPage } from "@/types/next-page";
 import { trpc } from "@/utils/trpc";
+import { Inter } from "@next/font/google";
 import { SessionProvider } from "next-auth/react";
 import { AppProps } from "next/app";
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import "../styles/globals.scss";
-import { Inter } from "@next/font/google";
 
 type CustomComponent = {
   Component: CustomNextPage;
@@ -16,7 +16,9 @@ type CustomComponent = {
 
 type CustomAppProps = AppProps & CustomComponent;
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+});
 
 const AppInner = ({
   Component,
@@ -33,7 +35,7 @@ const AppInner = ({
 
 const MyApp = ({ Component, pageProps }: CustomAppProps) => {
   return (
-    <div className={inter.className}>
+    <div>
       <SessionProvider session={pageProps.session}>
         <AppInner Component={Component}>
           <Component {...pageProps} />
