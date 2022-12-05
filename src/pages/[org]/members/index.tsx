@@ -31,24 +31,21 @@ const OrgMembers: CustomNextPage = () => {
               <Link
                 key={member.userId}
                 href={`/${org.slug}/members/${member.userId}`}
-                passHref
               >
-                <a>
-                  <Card className="flex justify-between">
-                    <div className="flex items-center gap-4">
-                      <Avatar
-                        imageProps={{ src: member.user.image as string }}
-                        fallbackProps={{
-                          children: getAvatarFallback(member.user.name),
-                        }}
-                      />
-                      <div>
-                        <p>{member.user.name}</p>
-                        <p>{member.user.email}</p>
-                      </div>
+                <Card className="flex justify-between">
+                  <div className="flex items-center gap-4">
+                    <Avatar
+                      imageProps={{ src: member.user.image as string }}
+                      fallbackProps={{
+                        children: getAvatarFallback(member.user.name),
+                      }}
+                    />
+                    <div>
+                      <p>{member.user.name}</p>
+                      <p>{member.user.email}</p>
                     </div>
-                  </Card>
-                </a>
+                  </div>
+                </Card>
               </Link>
             ))}
           </AnimateWrapper>

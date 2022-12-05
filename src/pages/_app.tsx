@@ -8,12 +8,15 @@ import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import "../styles/globals.scss";
+import { Inter } from "@next/font/google";
 
 type CustomComponent = {
   Component: CustomNextPage;
 };
 
 type CustomAppProps = AppProps & CustomComponent;
+
+const inter = Inter({ subsets: ["latin"] });
 
 const AppInner = ({
   Component,
@@ -30,7 +33,7 @@ const AppInner = ({
 
 const MyApp = ({ Component, pageProps }: CustomAppProps) => {
   return (
-    <>
+    <div className={inter.className}>
       <SessionProvider session={pageProps.session}>
         <AppInner Component={Component}>
           <Component {...pageProps} />
@@ -48,7 +51,7 @@ const MyApp = ({ Component, pageProps }: CustomAppProps) => {
           theme="dark"
         />
       </SessionProvider>
-    </>
+    </div>
   );
 };
 

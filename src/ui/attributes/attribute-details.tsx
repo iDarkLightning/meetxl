@@ -83,17 +83,14 @@ const AttributeLinks: React.FC = () => {
                 <Link
                   key={link.id}
                   href={`/${org.slug}/attributes/${router.query.name}/redeem/${link.code}`}
-                  passHref
                 >
-                  <a>
-                    <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-opacity-80">
-                      <div>
-                        <p className="font-medium">{link.name}</p>
-                        <p className="font-mono text-green-400">{link.code}</p>
-                      </div>
-                      <FaExternalLinkAlt size="0.75rem" />
-                    </Card>
-                  </a>
+                  <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-opacity-80">
+                    <div>
+                      <p className="font-medium">{link.name}</p>
+                      <p className="font-mono text-green-400">{link.code}</p>
+                    </div>
+                    <FaExternalLinkAlt size="0.75rem" />
+                  </Card>
                 </Link>
               ))}
           </AnimateWrapper>

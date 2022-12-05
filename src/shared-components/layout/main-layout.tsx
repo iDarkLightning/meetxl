@@ -14,6 +14,8 @@ import { Button } from "../system/button";
 import { Heading } from "../system/heading";
 import { transitionClasses } from "../system/transition";
 import { ContentWrapper } from "./content-wrapper";
+import Image from "next/image";
+import logo from "../../../public/symbol-alt-2.svg";
 
 const isSelected = (tab: Tab, path: string) => {
   if (tab.route.endsWith("/*")) {
@@ -146,32 +148,29 @@ export const MainLayout: React.FC<
               <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
                 <div className="flex w-full items-center justify-between gap-4 md:w-min">
                   <Heading className="flex items-center gap-5" level="h3">
-                    <Link href="/dashboard" passHref>
-                      <a className="flex h-8 w-8 items-center">
-                        <img src="/symbol-alt-2.svg" alt="logo" />
-                      </a>
+                    <Link
+                      href="/dashboard"
+                      className="flex h-8 w-8 items-center"
+                    >
+                      <Image src={logo} alt="logo" />
+                      {/* <img src="/symbol-alt-2.svg" alt="logo" /> */}
                     </Link>
                     {router.query.org && (
-                      <Link href={`/${router.query.org}`} passHref>
-                        <a className="flex gap-3">
-                          <span className="text-md font-light opacity-30">
-                            /
-                          </span>
-                          <span>{router.query.org}</span>
-                        </a>
+                      <Link
+                        href={`/${router.query.org}`}
+                        className="flex gap-3"
+                      >
+                        <span className="text-md font-light opacity-30">/</span>
+                        <span>{router.query.org}</span>
                       </Link>
                     )}
                     {router.query.org && router.query.meeting && (
                       <Link
                         href={`/${router.query.org}/${router.query.meeting}`}
-                        passHref
+                        className="flex gap-3"
                       >
-                        <a className="flex gap-3">
-                          <span className="text-md font-light opacity-30">
-                            /
-                          </span>
-                          <span>{router.query.meeting}</span>
-                        </a>
+                        <span className="text-md font-light opacity-30">/</span>
+                        <span>{router.query.meeting}</span>
                       </Link>
                     )}
                   </Heading>
@@ -212,20 +211,16 @@ export const MainLayout: React.FC<
                           })(),
                         }}
                         key={item.name}
-                        passHref
+                        className={clsx(
+                          "rounded-md py-2 px-4 leading-none transition-all",
+                          isSelected(item, router.pathname) &&
+                            " bg-accent-primary bg-opacity-30",
+                          !isSelected(item, router.pathname) &&
+                            "opacity-70 hover:bg-accent-secondary hover:opacity-100"
+                        )}
                       >
-                        <a
-                          className={clsx(
-                            "rounded-md py-2 px-4 leading-none transition-all",
-                            isSelected(item, router.pathname) &&
-                              " bg-accent-primary bg-opacity-30",
-                            !isSelected(item, router.pathname) &&
-                              "opacity-70 hover:bg-accent-secondary hover:opacity-100"
-                          )}
-                        >
-                          <li>{item.name}</li>
-                          <hr className="absolute bottom-0 border-red-200" />
-                        </a>
+                        <li>{item.name}</li>
+                        <hr className="absolute bottom-0 border-red-200" />
                       </Link>
                     ))}
                 </ul>

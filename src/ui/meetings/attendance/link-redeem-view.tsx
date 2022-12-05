@@ -84,8 +84,11 @@ const MemberView: React.FC<{ link: AttendanceLink }> = (props) => {
             {!meeting.participant && (
               <div className="text-xl font-medium">
                 Please{" "}
-                <Link href={`/${org.slug}/${meeting.slug}`}>
-                  <a className="text-purple-500">register</a>
+                <Link
+                  href={`/${org.slug}/${meeting.slug}`}
+                  className="text-purple-500"
+                >
+                  register
                 </Link>{" "}
                 to check in
               </div>

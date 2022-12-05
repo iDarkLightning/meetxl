@@ -123,12 +123,10 @@ export const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (
                   props.action === "CHECKIN" ? "in" : "out"
                 }/${link.code}`}
               >
-                <a>
-                  <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-background-dark">
-                    <p className="font-mono text-green-400">{link.code}</p>
-                    <FaExternalLinkAlt size="0.75rem" />
-                  </Card>
-                </a>
+                <Card className="flex cursor-pointer items-center justify-between gap-4 py-2 transition-colors hover:bg-background-dark">
+                  <p className="font-mono text-green-400">{link.code}</p>
+                  <FaExternalLinkAlt size="0.75rem" />
+                </Card>
               </Link>
             ))}
           </AnimateWrapper>
