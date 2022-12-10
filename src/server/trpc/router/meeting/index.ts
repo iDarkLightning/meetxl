@@ -48,8 +48,10 @@ export const meetingRouter = t.router({
           name: input.name,
           slug: await generateMeetingSlug(input.name, ctx),
           organizationSlug: ctx.org.slug,
-          startTime: input.startTime,
-          endTime: input.endTime,
+          startTime: new Date(
+            JSON.stringify(input.startTime).replaceAll('"', "")
+          ),
+          endTime: new Date(JSON.stringify(input.endTime).replaceAll('"', "")),
         },
       });
     }),
