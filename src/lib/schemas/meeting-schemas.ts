@@ -2,14 +2,14 @@ import { AttributeModifierAction } from "@prisma/client";
 import { z } from "zod";
 
 export const updateMeetingSchema = z.object({
-  name: z.string(),
+  name: z.string().min(2),
   location: z.string(),
   startTime: z.string().transform((d) => new Date(d)),
   endTime: z.string().transform((d) => new Date(d)),
 });
 
 export const createMeetingSchema = z.object({
-  name: z.string(),
+  name: z.string().min(2),
   startTime: z.string().transform((d) => new Date(d)),
   endTime: z.string().transform((d) => new Date(d)),
 });
