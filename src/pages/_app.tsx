@@ -35,7 +35,7 @@ const AppInner = ({
 
 const MyApp = ({ Component, pageProps }: CustomAppProps) => {
   return (
-    <div>
+    <div className={inter.className}>
       <SessionProvider session={pageProps.session}>
         <AppInner Component={Component}>
           <Component {...pageProps} />
