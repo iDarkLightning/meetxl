@@ -74,24 +74,36 @@ const JoinOrganization: React.FC = () => {
   );
 };
 
-export const NewOrganizationModal: React.FC = () => {
+export const NewOrganizationModal: React.FC<{
+  customButton?: (
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    setInitialMode: React.Dispatch<
+      React.SetStateAction<"unselected" | "join" | "create">
+    >
+  ) => React.ReactNode;
+  initialMode?: "unselected" | "join" | "create";
+}> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState<"unselected" | "join" | "create">(
-    "unselected"
+    props.initialMode ?? "unselected"
   );
 
   return (
     <>
-      <Button
-        icon={<FaPlus size="0.75rem" />}
-        variant="primary"
-        size="sm"
-        onClick={() => {
-          setIsOpen(true);
-        }}
-      >
-        New
-      </Button>
+      {typeof props.customButton === "function" ? (
+        props.customButton(setIsOpen, setMode)
+      ) : (
+        <Button
+          icon={<FaPlus size="0.75rem" />}
+          variant="primary"
+          size="sm"
+          onClick={() => {
+            setIsOpen(true);
+          }}
+        >
+          New
+        </Button>
+      )}
       <DialogWrapper
         isOpen={isOpen}
         onClose={() => {

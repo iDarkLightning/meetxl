@@ -52,7 +52,7 @@ const OrgJoinPage: CustomNextPage = () => {
                     >
                       Join
                     </Button>
-                    <Button size="md" href={`/dashboard`}>
+                    <Button size="md" href={`/`}>
                       Cancel
                     </Button>
                   </div>

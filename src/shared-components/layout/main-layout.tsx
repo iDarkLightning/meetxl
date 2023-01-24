@@ -16,6 +16,7 @@ import { transitionClasses } from "../system/transition";
 import { ContentWrapper } from "./content-wrapper";
 import Image from "next/image";
 import logo from "../../../public/symbol-alt-2.svg";
+import { switchAccount } from "@/utils/switch-account";
 
 const isSelected = (tab: Tab, path: string) => {
   if (tab.route.endsWith("/*")) {
@@ -40,20 +41,7 @@ const SwitchAccounts: React.FC = () => {
         evt.preventDefault();
 
         setLoading(true);
-        fetch("/api/auth/signout", {
-          method: "post",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          //@ts-expect-error serialization
-          body: new URLSearchParams({
-            csrfToken: await getCsrfToken(),
-            callbackUrl: window.location.href,
-            json: true,
-          }),
-        }).then((res) => {
-          if (res.ok) signIn("google", { callbackUrl: "/dashboard" });
-        });
+        switchAccount();
       }}
     >
       Switch Accounts
@@ -148,12 +136,8 @@ export const MainLayout: React.FC<
               <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
                 <div className="flex w-full items-center justify-between gap-4 md:w-min">
                   <Heading className="flex items-center gap-5" level="h3">
-                    <Link
-                      href="/dashboard"
-                      className="flex h-8 w-8 items-center"
-                    >
+                    <Link href="/" className="flex h-8 w-8 items-center">
                       <Image src={logo} alt="logo" />
-                      {/* <img src="/symbol-alt-2.svg" alt="logo" /> */}
                     </Link>
                     {router.query.org && (
                       <Link
@@ -175,13 +159,6 @@ export const MainLayout: React.FC<
                     )}
                   </Heading>
                   <OptionsMenu className="block md:hidden" />
-                  {/* <Button
-                    onClick={() => signOut({ callbackUrl: "/" })}
-                    size="sm"
-                    className="block md:hidden"
-                  >
-                    Log Out
-                  </Button> */}
                 </div>
                 <ul className="flex flex-wrap gap-4">
                   {props.tabs
@@ -225,13 +202,6 @@ export const MainLayout: React.FC<
                     ))}
                 </ul>
               </div>
-              {/* <Button
-                onClick={() => signOut({ callbackUrl: "/" })}
-                size="sm"
-                className="hidden w-36 md:inline-block"
-              >
-                Log Out
-              </Button> */}
               <OptionsMenu className="hidden md:inline-block" />
             </nav>
           </ContentWrapper>

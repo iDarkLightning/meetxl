@@ -2,10 +2,176 @@
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
+import { ScrollArea } from "@/shared-components/system/scroll-area";
+import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { CustomNextPage } from "@/types/next-page";
-import { signIn, useSession } from "next-auth/react";
+import { NewOrganizationModal } from "@/ui/org/new-org";
+import { switchAccount } from "@/utils/switch-account";
+import { trpc } from "@/utils/trpc";
+import { Session } from "next-auth";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
-import { FaGoogle } from "react-icons/fa";
+import Link from "next/link";
+import { FaChevronRight, FaGoogle } from "react-icons/fa";
+
+const Splash: React.FC = () => (
+  <section className="flex h-screen flex-col items-center justify-center p-8">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-1">
+        <Heading className="text-4xl">MeetXL</Heading>
+        <p className="max-w-xl text-2xl">
+          <span className="opacity-70">
+            Hosting a meeting shouldn&apos;t be difficult.{" "}
+          </span>
+          <span className="font-semibold opacity-90">
+            Meeting management made easy.
+          </span>
+        </p>
+      </div>
+
+      <Button
+        size="md"
+        icon={<FaGoogle />}
+        className="w-full"
+        onClick={() => signIn("google")}
+      >
+        Continue with Google
+      </Button>
+      <p className="max-w-xl text-xs opacity-50">
+        MeetXL is currently in an extremely alpha stage. By clicking
+        &quot;Continue with Google&quot; you acknowledge that your data may be
+        erased at any time without prior notice. It is not recommended to use
+        this service for any important data.
+      </p>
+    </div>
+  </section>
+);
+
+const SelectOrgLoading: React.FC = () => (
+  <Card className="w-full max-w-md p-0">
+    <ScrollArea className="h-96">
+      <ul className="flex flex-col gap-2">
+        {[...new Array(8)].map((_, idx) => (
+          <li key={idx}>
+            <div className="flex items-center justify-between border-b-[0.025rem] border-accent-stroke px-4 py-3">
+              <div className="flex flex-col gap-2">
+                <div className="h-3 w-12 animate-pulse rounded-sm bg-accent-stroke" />
+                <div className="h-4 w-16 animate-pulse rounded-sm bg-accent-stroke" />
+              </div>
+              <FaChevronRight />
+            </div>
+          </li>
+        ))}
+      </ul>
+    </ScrollArea>
+  </Card>
+);
+
+const SelectOrg: React.FC<{ session: Session }> = (props) => {
+  const orgsQuery = trpc.organization.list.useQuery();
+
+  return (
+    <section className="flex h-screen flex-col items-center justify-center gap-6 p-8">
+      <BaseQueryCell
+        query={orgsQuery}
+        loading={SelectOrgLoading}
+        success={({ data }) => {
+          if (data.length > 0) {
+            return (
+              <>
+                <div className="flex flex-col items-center">
+                  <Heading>Welcome, {props.session.user?.name}</Heading>
+                  <p className="text-sm opacity-70">
+                    Please choose an organization from below
+                  </p>
+                </div>
+                <Card className="w-full max-w-md p-0">
+                  <ScrollArea className="h-96">
+                    <ul className="flex flex-col gap-2">
+                      {data.map((org) => (
+                        <li key={org.id}>
+                          <Link href={`/${org.slug}`}>
+                            <div className="flex items-center justify-between border-b-[0.025rem] border-accent-stroke px-4 py-3">
+                              <div>
+                                <p className="text-sm opacity-50">{org.slug}</p>
+                                <p className="text-lg font-medium">
+                                  {org.name}
+                                </p>
+                              </div>
+                              <FaChevronRight />
+                            </div>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </ScrollArea>
+                </Card>
+              </>
+            );
+          }
+
+          return (
+            <>
+              <div className="flex flex-col items-center">
+                <Heading>Welcome, {props.session.user?.name}</Heading>
+                <p className="text-sm opacity-70">
+                  Please create or join a new organization below
+                </p>
+              </div>
+              <NewOrganizationModal
+                customButton={(setIsOpen, setMode) => (
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      size="lg"
+                      className=" w-96 flex-row-reverse justify-between gap-2"
+                      icon={<FaChevronRight />}
+                      onClick={() => {
+                        setMode("join");
+                        setIsOpen(true);
+                      }}
+                    >
+                      Join a New Organization
+                    </Button>
+                    <Button
+                      size="lg"
+                      className=" w-96 flex-row-reverse justify-between gap-2"
+                      icon={<FaChevronRight />}
+                      onClick={() => {
+                        setMode("create");
+                        setIsOpen(true);
+                      }}
+                    >
+                      Create a New Organization
+                    </Button>
+                  </div>
+                )}
+              />
+            </>
+          );
+        }}
+      />
+
+      <div className="flex flex-col items-center gap-1">
+        <p className="opacity-90">
+          Not {props.session.user?.name}?{" "}
+          <button
+            onClick={() => switchAccount()}
+            className="transition-all hover:text-accent-primary hover:underline"
+          >
+            Switch Accounts
+          </button>
+        </p>
+        <Button
+          onClick={() => signOut()}
+          variant="ghost"
+          className="opacity-95"
+        >
+          Sign Out
+        </Button>
+      </div>
+    </section>
+  );
+};
 
 const Home: CustomNextPage = () => {
   const session = useSession();
@@ -27,47 +193,10 @@ const Home: CustomNextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <section className="flex flex-col md:flex-row">
-          <div className="flex h-[100vh] min-h-[16rem] min-w-[24rem] flex-1 flex-col items-center justify-center gap-2 bg-[#0b0b0b]">
-            <Heading level="h1" className="text-4xl">
-              MeetXL
-              <sup className="font-mono text-accent-primary">[Beta]</sup>
-            </Heading>
-            <p className="opacity-80">
-              Event and meeting management made easy.
-            </p>
-          </div>
-          <div className="mt-24 flex flex-[3] items-center justify-center px-10 md:mt-12">
-            <Card className="mx-auto flex max-w-[30rem] flex-col gap-8 p-8 hover:bg-opacity-100 ">
-              <div className="flex flex-col gap-2">
-                <Heading level="h1">Welcome</Heading>
-                <p className="opacity-75">Please log in to use MeetXL.</p>
-              </div>
-              {session.status === "unauthenticated" ? (
-                <Button
-                  variant="primary"
-                  size="lg"
-                  icon={<FaGoogle />}
-                  onClick={() =>
-                    signIn("google", { callbackUrl: "/dashboard" })
-                  }
-                >
-                  Continue with Google
-                </Button>
-              ) : (
-                <Button size="lg" variant="primary" href="/dashboard">
-                  Go to Dashboard
-                </Button>
-              )}
-            </Card>
-          </div>
-          <a
-            href="https://github.com/idarklightning/meetxl"
-            className="absolute bottom-5 right-5 font-medium text-accent-primary"
-          >
-            GitHub
-          </a>
-        </section>
+        {session.status === "unauthenticated" && <Splash />}
+        {session.status === "authenticated" && (
+          <SelectOrg session={session.data} />
+        )}
       </main>
     </>
   );
