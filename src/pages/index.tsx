@@ -9,6 +9,7 @@ import { CustomNextPage } from "@/types/next-page";
 import { NewOrganizationModal } from "@/ui/org/new-org";
 import { switchAccount } from "@/utils/switch-account";
 import { trpc } from "@/utils/trpc";
+import clsx from "clsx";
 import { Session } from "next-auth";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
@@ -89,10 +90,16 @@ const SelectOrg: React.FC<{ session: Session }> = (props) => {
                 <Card className="w-full max-w-md p-0">
                   <ScrollArea className="h-96">
                     <ul className="flex flex-col gap-2">
-                      {data.map((org) => (
+                      {data.map((org, idx) => (
                         <li key={org.id}>
                           <Link href={`/${org.slug}`}>
-                            <div className="flex items-center justify-between border-b-[0.025rem] border-accent-stroke px-4 py-3">
+                            <div
+                              className={clsx(
+                                "flex items-center justify-between px-4 py-3",
+                                idx !== data.length &&
+                                  "border-b-[0.025rem] border-accent-stroke"
+                              )}
+                            >
                               <div>
                                 <p className="text-sm opacity-50">{org.slug}</p>
                                 <p className="text-lg font-medium">
