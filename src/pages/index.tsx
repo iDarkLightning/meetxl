@@ -4,6 +4,7 @@ import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
 import { ScrollArea } from "@/shared-components/system/scroll-area";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
+import { LoadingSpinner } from "@/shared-components/util/spinner";
 import { CustomNextPage } from "@/types/next-page";
 import { NewOrganizationModal } from "@/ui/org/new-org";
 import { switchAccount } from "@/utils/switch-account";
@@ -186,6 +187,7 @@ const Home: CustomNextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
+        {session.status === "loading" && <LoadingSpinner />}
         {session.status === "unauthenticated" && <Splash />}
         {session.status === "authenticated" && (
           <SelectOrg session={session.data} />
