@@ -151,23 +151,16 @@ const SelectOrg: React.FC<{ session: Session }> = (props) => {
         }}
       />
 
-      <div className="flex flex-col items-center gap-1">
-        <p className="opacity-90">
-          Not {props.session.user?.name}?{" "}
-          <button
-            onClick={() => switchAccount()}
-            className="transition-all hover:text-accent-primary hover:underline"
-          >
-            Switch Accounts
-          </button>
-        </p>
-        <Button
-          onClick={() => signOut()}
-          variant="ghost"
-          className="opacity-95"
-        >
-          Sign Out
-        </Button>
+      <div className="flex flex-col items-center justify-center gap-1">
+        <p className="text-sm opacity-80">Not {props.session.user?.name}?</p>
+        <div className="ml-[-0.5rem] flex items-center gap-2 opacity-95">
+          <Button onClick={() => switchAccount()} variant="ghost">
+            Switch
+          </Button>
+          <Button onClick={() => signOut()} variant="ghost">
+            Sign Out
+          </Button>
+        </div>
       </div>
     </section>
   );
