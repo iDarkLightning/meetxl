@@ -113,6 +113,10 @@ export const meetingRouter = t.router({
           },
         ],
       },
+      orderBy: {
+        startTime: "desc",
+        endTime: "desc",
+      },
     });
   }),
 
