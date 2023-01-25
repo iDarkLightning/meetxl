@@ -1,5 +1,5 @@
-import clsx from "clsx";
 import { forwardRef } from "react";
+import { twMerge } from "tailwind-merge";
 
 export const Card = forwardRef<
   HTMLDivElement,
@@ -8,7 +8,7 @@ export const Card = forwardRef<
   return (
     <div
       ref={ref}
-      className={clsx(
+      className={twMerge(
         "rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary p-4 transition-colors",
         props.className
       )}

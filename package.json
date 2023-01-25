@@ -39,6 +39,7 @@
     "react-toastify": "^9.0.8",
     "sass": "^1.55.0",
     "superjson": "^1.9.1",
+    "tailwind-merge": "^1.8.1",
     "zod": "^3.18.0"
   },
   "devDependencies": {
