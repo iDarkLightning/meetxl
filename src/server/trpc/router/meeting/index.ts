@@ -92,6 +92,9 @@ export const meetingRouter = t.router({
         where: {
           organizationSlug: ctx.org.slug,
         },
+        orderBy: {
+          startTime: "desc",
+        },
       });
     }
 
@@ -115,7 +118,6 @@ export const meetingRouter = t.router({
       },
       orderBy: {
         startTime: "desc",
-        endTime: "desc",
       },
     });
   }),
