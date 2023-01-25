@@ -3,10 +3,7 @@ const config = {
   extends: ["eslint:recommended"],
   overrides: [
     {
-      extends: [
-        "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking",
-      ],
+      extends: ["plugin:@typescript-eslint/recommended"],
       files: ["**/*.ts", "**/*.tsx"],
       parserOptions: {
         tsconfigRootDir: __dirname,
