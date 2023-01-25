@@ -2,7 +2,7 @@
  * Cells are a declarative approach to data fetching, inspired by https://redwoodjs.com/docs/cells
  * Implementation from https://github.com/trpc/trpc/pull/1734
  */
-import { AppRouter } from "@/trpc/router";
+import { AppRouter } from "@meetxl/api";
 import {
   QueryObserverLoadingErrorResult,
   QueryObserverLoadingResult,

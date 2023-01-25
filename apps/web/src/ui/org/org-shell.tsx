@@ -1,4 +1,4 @@
-import { AppRouter } from "@/trpc/router";
+import { AppRouter } from "@meetxl/api";
 import { MainLayout } from "@/shared-components/layout/main-layout";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { Tab } from "@/types/tab";
