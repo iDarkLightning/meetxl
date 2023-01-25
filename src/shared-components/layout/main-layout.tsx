@@ -17,6 +17,7 @@ import { ContentWrapper } from "./content-wrapper";
 import Image from "next/image";
 import logo from "../../../public/symbol-alt-2.svg";
 import { switchAccount } from "@/utils/switch-account";
+import { ScrollArea, ScrollBar } from "../system/scroll-area";
 
 const isSelected = (tab: Tab, path: string) => {
   if (tab.route.endsWith("/*")) {
@@ -160,47 +161,50 @@ export const MainLayout: React.FC<
                   </Heading>
                   <OptionsMenu className="block md:hidden" />
                 </div>
-                <ul className="flex flex-wrap gap-4">
-                  {props.tabs
-                    ?.filter(
-                      (item) =>
-                        !item.adminRequired ||
-                        (item.adminRequired &&
-                          org?.org?.member?.role === "ADMIN")
-                    )
-                    .map((item) => (
-                      <Link
-                        href={{
-                          pathname: item.route.replace("*", ""),
-                          query: (() => {
-                            if (router.query.org) {
-                              if (router.query.meeting) {
-                                return {
-                                  org: router.query.org,
-                                  meeting: router.query.meeting,
-                                };
+                <ScrollArea>
+                  <ul className="flex gap-4 pb-4">
+                    {props.tabs
+                      ?.filter(
+                        (item) =>
+                          !item.adminRequired ||
+                          (item.adminRequired &&
+                            org?.org?.member?.role === "ADMIN")
+                      )
+                      .map((item) => (
+                        <Link
+                          href={{
+                            pathname: item.route.replace("*", ""),
+                            query: (() => {
+                              if (router.query.org) {
+                                if (router.query.meeting) {
+                                  return {
+                                    org: router.query.org,
+                                    meeting: router.query.meeting,
+                                  };
+                                }
+
+                                return { org: router.query.org };
                               }
 
-                              return { org: router.query.org };
-                            }
-
-                            return router.query;
-                          })(),
-                        }}
-                        key={item.name}
-                        className={clsx(
-                          "rounded-md py-2 px-4 leading-none transition-all",
-                          isSelected(item, router.pathname) &&
-                            " bg-accent-primary bg-opacity-30",
-                          !isSelected(item, router.pathname) &&
-                            "opacity-70 hover:bg-accent-secondary hover:opacity-100"
-                        )}
-                      >
-                        <li>{item.name}</li>
-                        <hr className="absolute bottom-0 border-red-200" />
-                      </Link>
-                    ))}
-                </ul>
+                              return router.query;
+                            })(),
+                          }}
+                          key={item.name}
+                          className={clsx(
+                            "rounded-md py-2 px-4 leading-none transition-all",
+                            isSelected(item, router.pathname) &&
+                              " bg-accent-primary bg-opacity-30",
+                            !isSelected(item, router.pathname) &&
+                              "opacity-70 hover:bg-accent-secondary hover:opacity-100"
+                          )}
+                        >
+                          <li>{item.name}</li>
+                          <hr className="absolute bottom-0 border-red-200" />
+                        </Link>
+                      ))}
+                  </ul>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
               </div>
               <OptionsMenu className="hidden md:inline-block" />
             </nav>
