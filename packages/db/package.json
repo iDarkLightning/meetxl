@@ -1,0 +1,21 @@
+{
+  "name": "@meetxl/db",
+  "version": "0.1.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "db:generate": "yarn with-env prisma generate",
+    "db:push": "yarn with-env prisma db push --skip-generate",
+    "dev": "yarn with-env prisma studio --port 5555 --browser none",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.8.0"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^6.0.0",
+    "prisma": "^4.8.0",
+    "eslint": "^8.30.0"
+  }
+}

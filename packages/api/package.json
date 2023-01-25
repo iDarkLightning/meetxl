@@ -1,0 +1,22 @@
+{
+  "name": "@meetxl/api",
+  "version": "0.1.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@meetxl/auth": "*",
+    "@meetxl/db": "*",
+    "@meetxl/shared": "*",
+    "@trpc/server": "^10.8.1",
+    "superjson": "1.9.1",
+    "zod": "^3.20.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.30.0"
+  }
+}
