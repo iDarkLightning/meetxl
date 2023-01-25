@@ -162,7 +162,7 @@ export const MainLayout: React.FC<
                   <OptionsMenu className="block md:hidden" />
                 </div>
                 <ScrollArea>
-                  <ul className="flex gap-4 pb-4">
+                  <ul className="flex gap-4 pb-4 md:pb-0">
                     {props.tabs
                       ?.filter(
                         (item) =>
