@@ -82,12 +82,17 @@ const SelectOrg: React.FC<{ session: Session }> = (props) => {
             return (
               <>
                 <div className="flex flex-col items-center">
-                  <Heading>Welcome, {props.session.user?.name}</Heading>
+                  <div className="flex flex-col items-center gap-2">
+                    <Heading level="h3" className="opacity-40">
+                      MeetXL
+                    </Heading>
+                    <Heading>Welcome, {props.session.user?.name}</Heading>
+                  </div>
                   <p className="text-sm opacity-70">
                     Please choose an organization from below
                   </p>
                 </div>
-                <Card className="w-full max-w-md p-0">
+                <Card className="w-full max-w-md p-0 shadow-md shadow-accent-stroke">
                   <ScrollArea className="h-96">
                     <ul className="flex flex-col gap-2">
                       {data.map((org, idx) => (
@@ -95,7 +100,7 @@ const SelectOrg: React.FC<{ session: Session }> = (props) => {
                           <Link href={`/${org.slug}`}>
                             <div
                               className={clsx(
-                                "flex items-center justify-between px-4 py-3",
+                                "flex items-center justify-between px-4 py-3 transition-colors hover:bg-background-dark",
                                 idx !== data.length &&
                                   "border-b-[0.025rem] border-accent-stroke"
                               )}
@@ -121,7 +126,12 @@ const SelectOrg: React.FC<{ session: Session }> = (props) => {
           return (
             <>
               <div className="flex flex-col items-center">
-                <Heading>Welcome, {props.session.user?.name}</Heading>
+                <div className="flex flex-col items-center gap-2">
+                  <Heading level="h3" className="opacity-40">
+                    MeetXL
+                  </Heading>
+                  <Heading>Welcome, {props.session.user?.name}</Heading>
+                </div>
                 <p className="text-sm opacity-70">
                   Please create or join a new organization below
                 </p>
@@ -131,7 +141,7 @@ const SelectOrg: React.FC<{ session: Session }> = (props) => {
                   <div className="flex flex-col gap-2">
                     <Button
                       size="lg"
-                      className=" w-96 flex-row-reverse justify-between gap-2"
+                      className=" w-80 flex-row-reverse justify-between gap-2"
                       icon={<FaChevronRight />}
                       onClick={() => {
                         setMode("join");
@@ -142,7 +152,7 @@ const SelectOrg: React.FC<{ session: Session }> = (props) => {
                     </Button>
                     <Button
                       size="lg"
-                      className=" w-96 flex-row-reverse justify-between gap-2"
+                      className=" w-80 flex-row-reverse justify-between gap-2"
                       icon={<FaChevronRight />}
                       onClick={() => {
                         setMode("create");
@@ -159,7 +169,7 @@ const SelectOrg: React.FC<{ session: Session }> = (props) => {
         }}
       />
 
-      <div className="flex flex-col items-center justify-center gap-1">
+      <div className="flex flex-col items-center justify-center gap-2">
         <p className="text-sm opacity-80">Not {props.session.user?.name}?</p>
         <div className="ml-[-0.5rem] flex items-center gap-2 opacity-95">
           <Button onClick={() => switchAccount()} variant="ghost">
