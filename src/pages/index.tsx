@@ -92,7 +92,7 @@ const SelectOrg: React.FC<{ session: Session }> = (props) => {
                     Please choose an organization from below
                   </p>
                 </div>
-                <Card className="w-full max-w-md p-0 shadow-md shadow-accent-stroke">
+                <Card className="w-full max-w-md shadow-md shadow-accent-stroke">
                   <ScrollArea className="h-96">
                     <ul className="flex flex-col gap-2">
                       {data.map((org, idx) => (
