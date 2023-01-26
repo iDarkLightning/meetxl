@@ -31,6 +31,7 @@ const config = {
     ".eslintrc.js",
     "**/*.config.js",
     "**/*.config.cjs",
+    "**/*.preset.cjs",
     "packages/config/**",
   ],
 };
