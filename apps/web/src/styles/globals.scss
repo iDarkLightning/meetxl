@@ -16,7 +16,7 @@ body {
 }
 
 *:focus-visible {
-  @apply ring-2  ring-accent-primary ring-opacity-75;
+  @apply ring-accent-primary  ring-2 ring-opacity-75;
 }
 
 table {

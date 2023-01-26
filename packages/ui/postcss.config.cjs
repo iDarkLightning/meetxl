@@ -1,1 +1,6 @@
-module.exports = require("@meetxl/tailwind-config/postcss");
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};
