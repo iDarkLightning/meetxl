@@ -9,6 +9,7 @@ import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import "../styles/globals.scss";
+import "@meetxl/ui/styles/tailwind.css";
 
 type CustomComponent = {
   Component: CustomNextPage;

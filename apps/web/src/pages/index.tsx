@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { Button } from "@/shared-components/system/button";
 import { Card } from "@/shared-components/system/card";
 import { Heading } from "@/shared-components/system/heading";
@@ -15,7 +14,6 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { FaChevronRight, FaGoogle } from "react-icons/fa";
-import { Button as XLR8Button } from "@meetxl/ui";
 
 const Splash: React.FC = () => (
   <section className="flex h-screen flex-col items-center justify-center p-8">
@@ -56,10 +54,10 @@ const SelectOrgLoading: React.FC = () => (
       <ul className="flex flex-col gap-2">
         {[...new Array(8)].map((_, idx) => (
           <li key={idx}>
-            <div className="flex items-center justify-between border-b-[0.025rem] border-accent-stroke px-4 py-3">
+            <div className="border-accent-stroke flex items-center justify-between border-b-[0.025rem] px-4 py-3">
               <div className="flex flex-col gap-2">
-                <div className="h-3 w-12 animate-pulse rounded-sm bg-accent-stroke" />
-                <div className="h-4 w-16 animate-pulse rounded-sm bg-accent-stroke" />
+                <div className="bg-accent-stroke h-3 w-12 animate-pulse rounded-sm" />
+                <div className="bg-accent-stroke h-4 w-16 animate-pulse rounded-sm" />
               </div>
               <FaChevronRight />
             </div>
@@ -93,7 +91,7 @@ const SelectOrg: React.FC<{ session: Session }> = (props) => {
                     Please choose an organization from below
                   </p>
                 </div>
-                <Card className="w-full max-w-md p-0 shadow-md shadow-accent-stroke">
+                <Card className="shadow-accent-stroke w-full max-w-md p-0 shadow-md">
                   <ScrollArea className="h-96 w-full">
                     <ul className="flex flex-col gap-2">
                       {data.map((org, idx) => (
@@ -101,9 +99,9 @@ const SelectOrg: React.FC<{ session: Session }> = (props) => {
                           <Link href={`/${org.slug}`}>
                             <div
                               className={clsx(
-                                "flex items-center justify-between px-4 py-3 transition-colors hover:bg-background-dark",
+                                "hover:bg-background-dark flex items-center justify-between px-4 py-3 transition-colors",
                                 idx !== data.length &&
-                                  "border-b-[0.025rem] border-accent-stroke"
+                                  "border-accent-stroke border-b-[0.025rem]"
                               )}
                             >
                               <div>
@@ -210,7 +208,6 @@ const Home: CustomNextPage = () => {
         {session.status === "authenticated" && (
           <SelectOrg session={session.data} />
         )}
-        <XLR8Button />
       </main>
     </>
   );
