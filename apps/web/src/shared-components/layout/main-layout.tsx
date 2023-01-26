@@ -1,23 +1,23 @@
 import { Tab } from "@/types/tab";
 import { OrgContext } from "@/ui/org/org-shell";
 import { getAvatarFallback } from "@/utils/get-avatar-fallback";
+import { switchAccount } from "@/utils/switch-account";
 import { Menu, Transition } from "@headlessui/react";
 import clsx from "clsx";
-import { signIn, signOut, useSession, getCsrfToken } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { Fragment, useContext, useState } from "react";
 import { FaSignOutAlt, FaUsers } from "react-icons/fa";
+import logo from "../../../public/symbol-alt-2.svg";
 import { Avatar } from "../system/avatar";
 import { Button } from "../system/button";
 import { Heading } from "../system/heading";
+import { ScrollArea, ScrollBar } from "../system/scroll-area";
 import { transitionClasses } from "../system/transition";
 import { ContentWrapper } from "./content-wrapper";
-import Image from "next/image";
-import logo from "../../../public/symbol-alt-2.svg";
-import { switchAccount } from "@/utils/switch-account";
-import { ScrollArea, ScrollBar } from "../system/scroll-area";
 
 const isSelected = (tab: Tab, path: string) => {
   if (tab.route.endsWith("/*")) {
