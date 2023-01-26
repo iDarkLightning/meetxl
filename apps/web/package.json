@@ -16,6 +16,7 @@
     "@meetxl/auth": "*",
     "@meetxl/api": "*",
     "@meetxl/shared": "*",
+    "@meetxl/ui": "*",
     "@meetxl/tailwind-config": "*",
     "@formkit/auto-animate": "^1.0.0-beta.3",
     "@headlessui/react": "^1.7.2",

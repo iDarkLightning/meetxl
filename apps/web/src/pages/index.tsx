@@ -15,6 +15,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { FaChevronRight, FaGoogle } from "react-icons/fa";
+import { Button as XLR8Button } from "@meetxl/ui";
 
 const Splash: React.FC = () => (
   <section className="flex h-screen flex-col items-center justify-center p-8">
@@ -209,6 +210,7 @@ const Home: CustomNextPage = () => {
         {session.status === "authenticated" && (
           <SelectOrg session={session.data} />
         )}
+        <XLR8Button />
       </main>
     </>
   );
