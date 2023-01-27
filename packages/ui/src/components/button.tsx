@@ -21,7 +21,7 @@ const buttonHoverStyles = cva(
         secondary: "",
         ghost: "",
         danger:
-          "bg-[radial-gradient(200px_circle_at_var(--mouse-x)_var(--mouse-y),#ffa3a3,transparent_40%)]",
+          "bg-[radial-gradient(200px_circle_at_var(--mouse-x)_var(--mouse-y),#f33f3f,transparent_40%)]",
       },
     },
     compoundVariants: [
@@ -61,7 +61,8 @@ const buttonContentStyles = cva(
       {
         isBusy: false,
         variant: "danger",
-        className: "text-background-primary bg-accent-danger",
+        className:
+          "bg-background-primary text-accent-danger border-[0.025rem] border-accent-danger hover:border-transparent transition-all",
       },
       {
         isBusy: true,
