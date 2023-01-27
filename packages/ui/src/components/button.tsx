@@ -147,6 +147,8 @@ export const Button: React.FC<ButtonProps> = forwardRef<
     }
   }, [props.isLoading]);
 
+  const { variant, size, isLoading, ...rest } = props;
+
   return (
     <button
       style={{
@@ -174,15 +176,15 @@ export const Button: React.FC<ButtonProps> = forwardRef<
         if (props.onMouseMove) props.onMouseMove(e);
       }}
       className={buttonHoverStyles({
-        variant: props.variant,
+        variant: variant,
       })}
-      {...props}
+      {...rest}
     >
       <span
         className={buttonContentStyles({
-          variant: props.variant,
-          size: props.size,
-          isBusy: props.isLoading,
+          variant: variant,
+          size: size,
+          isBusy: isLoading,
         })}
       >
         <span aria-hidden {...(props.isLoading ? { role: "progressbar" } : {})}>
@@ -192,8 +194,8 @@ export const Button: React.FC<ButtonProps> = forwardRef<
       <span
         aria-hidden
         className={buttonLoadingStyles({
-          variant: props.variant,
-          isBusy: props.isLoading,
+          variant: variant,
+          isBusy: isLoading,
         })}
       />
     </button>
