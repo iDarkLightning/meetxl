@@ -9,6 +9,19 @@ module.exports = function tailwindConfig({ content }) {
     ],
     theme: {
       extend: {
+        keyframes: {
+          disco: {
+            from: {
+              transform: "translateY(-50%) rotate(0deg)",
+            },
+            to: {
+              transform: "translateY(-50%) rotate(360deg)",
+            },
+          },
+        },
+        animation: {
+          disco: "disco 1.5s linear infinite",
+        },
         colors: {
           background: {
             primary: "#111",
@@ -16,9 +29,9 @@ module.exports = function tailwindConfig({ content }) {
             dark: "#191919",
           },
           accent: {
-            primary: "#bb71ee",
+            primary: "#3f45c0",
             secondary: "#222",
-            danger: "#F45050",
+            danger: "#f33f3f",
             stroke: "#3E3D40",
           },
         },
@@ -28,6 +41,7 @@ module.exports = function tailwindConfig({ content }) {
       function ({ addVariant }) {
         addVariant("child", "& > *");
       },
+      require("tailwindcss-animate"),
     ],
   };
 };
