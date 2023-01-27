@@ -38,13 +38,13 @@ const buttonHoverStyles = cva(
 );
 
 const buttonContentStyles = cva(
-  "relative z-10 inline-flex w-full justify-center rounded-md text-center font-medium transition-colors will-change-transform",
+  "relative z-10 inline-flex w-full justify-center rounded-md text-center font-medium transition-colors will-change-transform border-[0.025rem]",
   {
     variants: {
       variant: {
-        primary: "bg-accent-primary",
-        secondary: "bg-accent-secondary",
-        ghost: "bg-background-primary",
+        primary: "bg-accent-primary border-transparent",
+        secondary: "bg-accent-secondary border-transparent",
+        ghost: "bg-background-primary border-transparent",
         danger: "",
       },
       isBusy: {
@@ -62,12 +62,13 @@ const buttonContentStyles = cva(
         isBusy: false,
         variant: "danger",
         className:
-          "bg-background-primary text-accent-danger border-[0.025rem] border-accent-danger hover:border-transparent transition-all",
+          "bg-background-primary text-accent-danger border-accent-danger hover:border-transparent transition-all",
       },
       {
         isBusy: true,
         variant: "danger",
-        className: "text-accent-danger bg-background-primary",
+        className:
+          "text-accent-danger bg-background-primary border-transparent",
       },
     ],
     defaultVariants: {
