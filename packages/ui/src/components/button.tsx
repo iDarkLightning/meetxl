@@ -10,7 +10,7 @@ import { cva, VariantProps } from "class-variance-authority";
 
 const buttonHoverStyles = cva(
   cn(
-    "relative m-[-1px] w-max transform-none select-none appearance-none overflow-hidden rounded-lg border-0 p-[1px] text-white will-change-transform",
+    "relative m-[-1px] w-max transform-none select-none appearance-none overflow-hidden rounded-lg border-0 p-[1px] text-white will-change-transform h-[max-content]",
     "hover:brightness-95 active:scale-95",
     "motion-safe:transition-[color_transform_200ms_cubic-bezier(0.4,0,0.2,1)]"
   ),
@@ -28,7 +28,7 @@ const buttonHoverStyles = cva(
       {
         variant: ["primary", "ghost", "secondary"],
         className:
-          "bg-[radial-gradient(200px_circle_at_var(--mouse-x)_var(--mouse-y),rgba(192,192,255,0.6),transparent_40%)]",
+          "bg-[radial-gradient(100px_circle_at_var(--mouse-x)_var(--mouse-y),rgba(192,192,255,0.6),transparent_40%)]",
       },
     ],
     defaultVariants: {
