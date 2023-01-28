@@ -8,27 +8,56 @@ import {
 import { cn } from "../utils";
 import { cva, VariantProps } from "class-variance-authority";
 
+const VARIANT_OPTIONS = {
+  primary: "",
+  secondary: "",
+  ghost: "",
+  danger: "",
+} as const;
+
+const BOOLEAN_OPTIONS = {
+  true: "",
+  false: "",
+};
+
 const buttonHoverStyles = cva(
   cn(
     "relative m-[-1px] w-max transform-none select-none appearance-none overflow-hidden rounded-lg border-0 p-[1px] text-white will-change-transform h-[max-content]",
-    "hover:brightness-95 active:scale-95",
     "motion-safe:transition-[color_transform_200ms_cubic-bezier(0.4,0,0.2,1)]"
   ),
   {
     variants: {
-      variant: {
-        primary: "",
-        secondary: "",
-        ghost: "",
-        danger:
-          "bg-[radial-gradient(200px_circle_at_var(--mouse-x)_var(--mouse-y),#f33f3f,transparent_40%)]",
-      },
+      variant: VARIANT_OPTIONS,
+      isDisabled: BOOLEAN_OPTIONS,
+      isBusy: BOOLEAN_OPTIONS,
     },
     compoundVariants: [
       {
+        isBusy: true,
+        variant: ["primary", "ghost", "secondary", "danger"],
+        className: "hover:cursor-wait",
+      },
+      {
+        isDisabled: true,
+        variant: ["primary", "ghost", "secondary", "danger"],
+        className: "opacity-80 hover:cursor-not-allowed",
+      },
+      {
+        isDisabled: false,
         variant: ["primary", "ghost", "secondary"],
         className:
           "bg-[radial-gradient(100px_circle_at_var(--mouse-x)_var(--mouse-y),rgba(192,192,255,0.6),transparent_40%)]",
+      },
+      {
+        isDisabled: false,
+        variant: "danger",
+        className:
+          "bg-[radial-gradient(200px_circle_at_var(--mouse-x)_var(--mouse-y),#f33f3f,transparent_40%)]",
+      },
+      {
+        isDisabled: false,
+        isBusy: false,
+        className: "hover:brightness-95 active:scale-95",
       },
     ],
     defaultVariants: {
@@ -38,37 +67,43 @@ const buttonHoverStyles = cva(
 );
 
 const buttonContentStyles = cva(
-  "relative z-10 inline-flex w-full justify-center rounded-md text-center font-medium transition-colors will-change-transform border-[0.025rem]",
+  "relative z-10 inline-flex w-full justify-center rounded-md text-center font-medium transition-all will-change-transform border-[0.025rem]",
   {
     variants: {
       variant: {
         primary: "bg-accent-primary border-transparent",
-        secondary: "bg-accent-secondary border-transparent",
+        secondary: "bg-accent-secondary",
         ghost: "bg-background-primary border-transparent",
-        danger: "",
+        danger: "text-accent-danger bg-background-primary",
       },
-      isBusy: {
-        true: "",
-        false: "",
-      },
+      isBusy: BOOLEAN_OPTIONS,
+      isDisabled: BOOLEAN_OPTIONS,
       size: {
-        sm: "py-2 px-3",
+        sm: "py-1 px-3",
         md: "py-2 px-4",
         lg: "py-3 px-6",
       },
     },
     compoundVariants: [
       {
-        isBusy: false,
-        variant: "danger",
-        className:
-          "bg-background-primary text-accent-danger border-accent-danger hover:border-transparent transition-all",
+        isBusy: true,
+        variant: ["danger", "secondary"],
+        className: "border-transparent",
       },
       {
-        isBusy: true,
+        isDisabled: false,
+        variant: ["danger", "secondary"],
+        className: "hover:border-transparent",
+      },
+      {
+        isBusy: false,
         variant: "danger",
-        className:
-          "text-accent-danger bg-background-primary border-transparent",
+        className: "border-accent-danger",
+      },
+      {
+        isBusy: false,
+        variant: "secondary",
+        className: "border-accent-stroke",
       },
     ],
     defaultVariants: {
@@ -90,10 +125,7 @@ const buttonLoadingStyles = cva(
   {
     variants: {
       variant: {
-        primary:
-          "before:bg-[conic-gradient(transparent_135deg,#428cee_180deg,transparent_225deg)]",
-        secondary: "",
-        ghost: "",
+        ...VARIANT_OPTIONS,
         danger:
           "before:bg-[conic-gradient(transparent_135deg,#f33f3f_180deg,transparent_225deg)]",
       },
@@ -104,9 +136,9 @@ const buttonLoadingStyles = cva(
     },
     compoundVariants: [
       {
-        variant: ["secondary", "ghost"],
+        variant: ["secondary", "ghost", "primary"],
         className:
-          "before:bg-[conic-gradient(transparent_135deg,#3f45c0_180deg,transparent_225deg)]",
+          "before:bg-[conic-gradient(transparent_135deg,rgba(192,192,255,0.6)_180deg,transparent_225deg)]",
       },
     ],
     defaultVariants: {
@@ -121,6 +153,8 @@ export interface ButtonProps
   variant?: VariantProps<typeof buttonContentStyles>["variant"];
   size?: VariantProps<typeof buttonContentStyles>["size"];
   isLoading?: boolean;
+  prefixEl?: React.ReactNode;
+  suffixEl?: React.ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = forwardRef<
@@ -149,7 +183,7 @@ export const Button: React.FC<ButtonProps> = forwardRef<
     }
   }, [props.isLoading]);
 
-  const { variant, size, isLoading, ...rest } = props;
+  const { variant, size, isLoading, prefixEl, suffixEl, ...rest } = props;
 
   return (
     <button
@@ -179,7 +213,10 @@ export const Button: React.FC<ButtonProps> = forwardRef<
       }}
       className={buttonHoverStyles({
         variant: variant,
+        isBusy: props.isLoading,
+        isDisabled: props.disabled,
       })}
+      disabled={props.isLoading ?? rest.disabled}
       {...rest}
     >
       <span
@@ -187,10 +224,17 @@ export const Button: React.FC<ButtonProps> = forwardRef<
           variant: variant,
           size: size,
           isBusy: isLoading,
+          isDisabled: props.disabled,
         })}
       >
-        <span aria-hidden {...(props.isLoading ? { role: "progressbar" } : {})}>
+        <span
+          aria-hidden
+          {...(props.isLoading ? { role: "progressbar" } : {})}
+          className="flex items-center gap-3"
+        >
+          {prefixEl}
           {props.children}
+          {suffixEl}
         </span>
       </span>
       <span
