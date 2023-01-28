@@ -1,6 +1,7 @@
 import { Button } from "@meetxl/ui";
 import { useState } from "react";
-import { FaGoogle, FaTrash } from "react-icons/fa";
+// import { FaGoogle, FaTrash } from "react-icons/fa";
+import { Plus, Trash } from "lucide-react";
 
 export const ButtonDocs: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -53,7 +54,7 @@ export const ButtonDocs: React.FC = () => {
         </div>
         <div className="flex gap-2">
           <Button variant="primary" isLoading={loading} disabled={disabled}>
-            Create
+            Create it Now
           </Button>
           <Button variant="secondary" isLoading={loading} disabled={disabled}>
             Create
@@ -70,15 +71,15 @@ export const ButtonDocs: React.FC = () => {
             variant="primary"
             isLoading={loading}
             disabled={disabled}
-            prefixEl={<FaGoogle />}
+            prefixEl={<Plus />}
           >
-            Create
+            Create it Now
           </Button>
           <Button
             variant="secondary"
             isLoading={loading}
             disabled={disabled}
-            suffixEl={<FaGoogle />}
+            suffixEl={<Plus />}
           >
             Create
           </Button>
@@ -86,8 +87,8 @@ export const ButtonDocs: React.FC = () => {
             variant="ghost"
             isLoading={loading}
             disabled={disabled}
-            prefixEl={<FaGoogle />}
-            suffixEl={<FaGoogle />}
+            prefixEl={<Plus />}
+            suffixEl={<Plus />}
           >
             Create
           </Button>
@@ -95,9 +96,9 @@ export const ButtonDocs: React.FC = () => {
             variant="danger"
             isLoading={loading}
             disabled={disabled}
-            prefixEl={<FaTrash />}
+            prefixEl={<Trash />}
           >
-            Create
+            Delete
           </Button>
         </div>
       </div>

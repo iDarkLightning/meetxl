@@ -22,7 +22,7 @@ const BOOLEAN_OPTIONS = {
 
 const buttonHoverStyles = cva(
   cn(
-    "relative m-[-1px] w-max transform-none select-none appearance-none overflow-hidden rounded-lg border-0 p-[1px] text-white will-change-transform h-[max-content]",
+    "min-w-min relative m-[-1px] w-max transform-none select-none appearance-none overflow-hidden rounded-lg border-0 p-[1px] text-white will-change-transform h-max",
     "motion-safe:transition-[color_transform_200ms_cubic-bezier(0.4,0,0.2,1)]"
   ),
   {
@@ -67,7 +67,7 @@ const buttonHoverStyles = cva(
 );
 
 const buttonContentStyles = cva(
-  "relative z-10 inline-flex w-full justify-center rounded-md text-center font-medium transition-all will-change-transform border-[0.025rem]",
+  "whitespace-nowrap relative z-10 inline-flex w-full justify-center rounded-md text-center font-medium transition-all will-change-transform border-[0.025rem]",
   {
     variants: {
       variant: {
@@ -230,7 +230,7 @@ export const Button: React.FC<ButtonProps> = forwardRef<
         <span
           aria-hidden
           {...(props.isLoading ? { role: "progressbar" } : {})}
-          className="flex items-center gap-3"
+          className="flex max-w-max items-center gap-2"
         >
           {prefixEl}
           {props.children}
