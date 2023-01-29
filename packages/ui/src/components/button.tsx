@@ -117,9 +117,9 @@ const buttonContentStyles = cva(
 const buttonLoadingStyles = cva(
   cn(
     "absolute w-full before:absolute before:w-full", // disco, disco::before
-    "inset-0 top-1/2 h-full translate-y-1/2 scale-x-[calc(var(--button-aspect-ratio)_*_0.65)] will-change-transform", // disco,
+    "inset-0 top-1/2 h-full translate-y-[-50%] scale-x-[calc(var(--button-aspect-ratio)_*_0.65)] will-change-transform", // disco,
     "before:left-0 before:top-1/2 before:aspect-square before:min-h-full before:origin-center before:opacity-100", // disco::before
-    "motion-reduce:before:translate-y-1/2 motion-reduce:before:rotate-0", // @media prefers reduced motion
+    "motion-reduce:before:translate-y-[-50%] motion-reduce:before:rotate-0", // @media prefers reduced motion
     "motion-safe:before:animate-disco motion-safe:before:transition-[opacity_200ms_cubic-bezier(0.4,0,0.2,1)]" // @media no motion preference
   ),
   {
