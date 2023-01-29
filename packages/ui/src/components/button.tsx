@@ -79,9 +79,9 @@ const buttonContentStyles = cva(
       isBusy: BOOLEAN_OPTIONS,
       isDisabled: BOOLEAN_OPTIONS,
       size: {
-        sm: "py-1 px-3",
+        sm: "py-1 px-3 text-sm",
         md: "py-2 px-4",
-        lg: "py-3 px-6",
+        lg: "py-3 px-6 text-lg",
       },
     },
     compoundVariants: [
