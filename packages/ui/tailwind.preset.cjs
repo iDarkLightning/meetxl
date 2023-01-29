@@ -28,18 +28,37 @@ module.exports = function tailwindConfig({ content }) {
             secondary: "#1c1c1c",
             dark: "#191919",
           },
-          accent: {
-            primary: "#3f45c0",
-            secondary: "#222",
-            danger: "#f33f3f",
+          neutral: {
+            DEFAULT: "#222222",
             stroke: "#3E3D40",
+            disco: "#c0c0ff99",
           },
+          primary: "#3F45C0",
+          danger: "#f33f3f",
         },
       },
     },
     plugins: [
       function ({ addVariant }) {
         addVariant("child", "& > *");
+      },
+      function ({ addBase, theme }) {
+        function extractColorVars(colorObj, colorGroup = "") {
+          return Object.keys(colorObj).reduce((vars, colorKey) => {
+            const value = colorObj[colorKey];
+
+            const newVars =
+              typeof value === "string"
+                ? { [`--color${colorGroup}-${colorKey}`]: value }
+                : extractColorVars(value, `-${colorKey}`);
+
+            return { ...vars, ...newVars };
+          }, {});
+        }
+
+        addBase({
+          ":root": extractColorVars(theme("colors")),
+        });
       },
       require("tailwindcss-animate"),
     ],

@@ -46,13 +46,13 @@ const buttonHoverStyles = cva(
         isDisabled: false,
         variant: ["primary", "ghost", "secondary"],
         className:
-          "bg-[radial-gradient(100px_circle_at_var(--mouse-x)_var(--mouse-y),rgba(192,192,255,0.6),transparent_40%)]",
+          "bg-[radial-gradient(100px_circle_at_var(--mouse-x)_var(--mouse-y),var(--color-neutral-disco),transparent_40%)]",
       },
       {
         isDisabled: false,
         variant: "danger",
         className:
-          "bg-[radial-gradient(200px_circle_at_var(--mouse-x)_var(--mouse-y),#f33f3f,transparent_40%)]",
+          "bg-[radial-gradient(200px_circle_at_var(--mouse-x)_var(--mouse-y),var(--color-danger),transparent_40%)]",
       },
       {
         isDisabled: false,
@@ -71,10 +71,10 @@ const buttonContentStyles = cva(
   {
     variants: {
       variant: {
-        primary: "bg-accent-primary border-transparent",
-        secondary: "bg-accent-secondary",
+        primary: "bg-primary border-transparent",
+        secondary: "bg-neutral",
         ghost: "bg-background-primary border-transparent",
-        danger: "text-accent-danger bg-background-primary",
+        danger: "text-danger bg-background-primary",
       },
       isBusy: BOOLEAN_OPTIONS,
       isDisabled: BOOLEAN_OPTIONS,
@@ -98,12 +98,12 @@ const buttonContentStyles = cva(
       {
         isBusy: false,
         variant: "danger",
-        className: "border-accent-danger",
+        className: "border-danger",
       },
       {
         isBusy: false,
         variant: "secondary",
-        className: "border-accent-stroke",
+        className: "border-neutral-stroke",
       },
     ],
     defaultVariants: {
@@ -127,7 +127,7 @@ const buttonLoadingStyles = cva(
       variant: {
         ...VARIANT_OPTIONS,
         danger:
-          "before:bg-[conic-gradient(transparent_135deg,#f33f3f_180deg,transparent_225deg)]",
+          "before:bg-[conic-gradient(transparent_135deg,var(--color-danger)_180deg,transparent_225deg)]",
       },
       isBusy: {
         true: "motion-safe:before:running",
@@ -138,7 +138,7 @@ const buttonLoadingStyles = cva(
       {
         variant: ["secondary", "ghost", "primary"],
         className:
-          "before:bg-[conic-gradient(transparent_135deg,rgba(192,192,255,0.6)_180deg,transparent_225deg)]",
+          "before:bg-[conic-gradient(transparent_135deg,var(--color-neutral-disco)_180deg,transparent_225deg)]",
       },
     ],
     defaultVariants: {
