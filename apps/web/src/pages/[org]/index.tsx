@@ -98,7 +98,6 @@ const OrgHome: CustomNextPage = () => {
         {org.member.role === "ADMIN" && <NewMeetingsModal />}
       </div>
       {org.member.role === "ADMIN" ? <AdminListing /> : <MemberListing />}
-      <Input />
     </SectionWrapper>
   );
 };
