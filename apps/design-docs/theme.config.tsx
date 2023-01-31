@@ -9,6 +9,7 @@ const config: DocsThemeConfig = {
   footer: {
     text: "XLR8 by MeetXL",
   },
+  darkMode: false,
 };
 
 export default config;

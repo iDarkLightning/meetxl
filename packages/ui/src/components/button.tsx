@@ -214,7 +214,7 @@ export const Button: React.FC<ButtonProps> = forwardRef<
       className={buttonHoverStyles({
         variant: variant,
         isBusy: props.isLoading,
-        isDisabled: props.disabled,
+        isDisabled: !!props.disabled,
       })}
       disabled={props.isLoading ?? rest.disabled}
       {...rest}
@@ -224,7 +224,7 @@ export const Button: React.FC<ButtonProps> = forwardRef<
           variant: variant,
           size: size,
           isBusy: isLoading,
-          isDisabled: props.disabled,
+          isDisabled: !!props.disabled,
         })}
       >
         <span

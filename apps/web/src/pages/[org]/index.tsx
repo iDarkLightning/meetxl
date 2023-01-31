@@ -9,6 +9,7 @@ import { MeetingCard } from "@/ui/meetings/meeting-card";
 import { NewMeetingsModal } from "@/ui/meetings/new-meetings";
 import { OrgShell, useOrg } from "@/ui/org/org-shell";
 import { trpc } from "@/utils/trpc";
+import { Input } from "@meetxl/ui";
 
 const MemberListing: React.FC = () => {
   const org = useOrg();
@@ -97,6 +98,7 @@ const OrgHome: CustomNextPage = () => {
         {org.member.role === "ADMIN" && <NewMeetingsModal />}
       </div>
       {org.member.role === "ADMIN" ? <AdminListing /> : <MemberListing />}
+      <Input />
     </SectionWrapper>
   );
 };

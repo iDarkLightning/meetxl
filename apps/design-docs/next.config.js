@@ -1,6 +1,5 @@
 const withNextra = require("nextra")({
-  theme: "nextra-theme-docs",
-  themeConfig: "./theme.config.tsx",
+  theme: "./theme.tsx",
 });
 
 module.exports = withNextra({
