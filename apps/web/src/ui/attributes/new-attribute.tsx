@@ -6,6 +6,8 @@ import { trpc } from "@/utils/trpc";
 import { Dialog } from "@headlessui/react";
 import React from "react";
 import { useOrg } from "../org/org-shell";
+import { toast } from "react-toastify";
+import { Button } from "@/shared-components/system/button";
 
 const form = createForm(createAttributeSchema);
 
@@ -15,7 +17,27 @@ export const NewAttributeModal: React.FC<{
 }> = (props) => {
   const org = useOrg();
   const ctx = trpc.useContext();
-  const create = trpc.organization.attribute.create.useMutation();
+  const create = trpc.organization.attribute.create.useMutation({
+    onSuccess: (data) => {
+      if (!data) return;
+
+      toast(() => (
+        <div className="flex flex-col gap-2">
+          <p>
+            Attribute <span className="font-mono">{data.name}</span> created
+            succesfully
+          </p>
+          <Button
+            variant="unstyled"
+            className="text-blue-500 hover:underline"
+            href={`/${org.slug}/attributes/${data.name}`}
+          >
+            View Attribute
+          </Button>
+        </div>
+      ));
+    },
+  });
 
   const methods = form.useForm({
     defaultValues: {

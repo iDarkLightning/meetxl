@@ -15,6 +15,7 @@ const joinOrgForm = createForm(applyLinkSchema);
 
 const CreateOrganization: React.FC = () => {
   const ctx = trpc.useContext();
+  const router = useRouter();
   const create = trpc.organization.create.useMutation();
 
   const methods = createOrgForm.useForm({
@@ -28,8 +29,13 @@ const CreateOrganization: React.FC = () => {
       <createOrgForm.Wrapper
         methods={methods}
         onSubmit={methods.handleSubmit(async (values) => {
-          await create.mutateAsync(values).catch(() => 0);
-          ctx.organization.list.invalidate();
+          const org = await create.mutateAsync(values).catch(() => 0);
+
+          if (typeof org === "number") return;
+
+          ctx.organization.list
+            .invalidate()
+            .then(() => router.push(`/${org.slug}`));
         })}
       >
         <createOrgForm.InputField fieldName="name" />

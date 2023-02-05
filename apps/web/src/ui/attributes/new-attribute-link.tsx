@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useOrg } from "../org/org-shell";
+import { toast } from "react-toastify";
 
 const form = createForm(createAttributeLinkShema.omit({ attributeName: true }));
 
@@ -18,7 +19,25 @@ export const NewAttributeLink: React.FC = () => {
   const router = useRouter();
   const org = useOrg();
   const ctx = trpc.useContext();
-  const createLink = trpc.organization.attribute.links.create.useMutation();
+  const createLink = trpc.organization.attribute.links.create.useMutation({
+    onSuccess: (data) => {
+      toast(() => (
+        <div className="flex flex-col gap-2">
+          <p>
+            Link <span className="font-mono">{data.name}</span> created
+            succesfully
+          </p>
+          <Button
+            variant="unstyled"
+            className="text-blue-500 hover:underline"
+            href={`/${org.slug}/attributes/${data.organizationAttributeName}/redeem/${data.code}`}
+          >
+            View Link
+          </Button>
+        </div>
+      ));
+    },
+  });
   const methods = form.useForm({
     defaultValues: {
       name: "",

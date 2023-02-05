@@ -8,6 +8,7 @@ import { Dialog } from "@headlessui/react";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useOrg } from "../org/org-shell";
+import { toast } from "react-toastify";
 
 const form = createForm(createMeetingSchema);
 
@@ -15,7 +16,25 @@ export const NewMeetingsModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const org = useOrg();
   const ctx = trpc.useContext();
-  const create = trpc.meeting.create.useMutation();
+  const create = trpc.meeting.create.useMutation({
+    onSuccess: (data) => {
+      toast(() => (
+        <div className="flex flex-col gap-2">
+          <p>
+            Meeting <span className="font-mono">{data.name}</span> created
+            succesfully
+          </p>
+          <Button
+            variant="unstyled"
+            className="text-blue-500 hover:underline"
+            href={`/${org.slug}/${data.slug}`}
+          >
+            View Meeting
+          </Button>
+        </div>
+      ));
+    },
+  });
 
   const methods = form.useForm({
     defaultValues: {

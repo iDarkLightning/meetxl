@@ -11,6 +11,8 @@ import { AttendanceLinkAction } from "@prisma/client";
 import clsx from "clsx";
 import Link from "next/link";
 import { FaExternalLinkAlt, FaPlus } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { useOrg } from "@/ui/org/org-shell";
 
 const form = createForm(applyLinkSchema);
 
@@ -68,13 +70,34 @@ export const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (
 export const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (
   props
 ) => {
+  const org = useOrg();
   const meeting = useMeeting();
   const checkingLinks = trpc.meeting.attendance.links.list.useQuery({
     meetingId: meeting.id,
     orgId: meeting.organizationSlug,
     action: props.action,
   });
-  const newLink = trpc.meeting.attendance.links.create.useMutation();
+  const newLink = trpc.meeting.attendance.links.create.useMutation({
+    onSuccess: (data) => {
+      toast(() => (
+        <div className="flex flex-col gap-2">
+          <p>
+            Link <span className="font-mono">{data.code}</span> created
+            succesfully
+          </p>
+          <Button
+            variant="unstyled"
+            className="text-blue-500 hover:underline"
+            href={`/${org.slug}/${meeting.slug}/participants/check-${
+              props.action === "CHECKIN" ? "in" : "out"
+            }/${data.code}`}
+          >
+            View Link
+          </Button>
+        </div>
+      ));
+    },
+  });
 
   return (
     <div className="flex flex-col gap-4">
