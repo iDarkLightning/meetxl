@@ -62,6 +62,7 @@ const MemberView: React.FC<{ link: AttendanceLink }> = (props) => {
   const meeting = useMeeting();
   const router = useRouter();
   const applyLink = trpc.meeting.attendance.links.apply.useMutation();
+  const register = trpc.meeting.participant.register.useMutation();
   const ctx = trpc.useContext();
   const controls = useAnimationControls();
 
@@ -81,7 +82,7 @@ const MemberView: React.FC<{ link: AttendanceLink }> = (props) => {
                 sub={`${meeting.name} hosted by ${org.name}`}
               />
             </motion.div>
-            {!meeting.participant && (
+            {/* {!meeting.participant && (
               <div className="text-xl font-medium">
                 Please{" "}
                 <Link
@@ -92,41 +93,46 @@ const MemberView: React.FC<{ link: AttendanceLink }> = (props) => {
                 </Link>{" "}
                 to check in
               </div>
-            )}
-            {meeting.participant && (
-              <>
-                <CodeDisplay code={props.link.code} />
-                {((!meeting.participant?.checkedIn &&
-                  props.link.action === "CHECKIN") ||
-                  (!meeting.participant?.checkedOut &&
-                    props.link.action === "CHECKOUT")) && (
-                  <motion.div animate={controls}>
-                    <div className="flex gap-2">
-                      <Button
-                        size="md"
-                        className="w-min"
-                        variant="primary"
-                        onClick={() =>
-                          applyLink
-                            .mutateAsync({
-                              code: router.query.code as string,
-                              meetingId: meeting.id,
-                              orgId: org.id,
-                            })
-                            .then(() => ctx.meeting.get.invalidate())
-                            .then(() => controls.start({ opacity: 1 }))
-                            .catch(() => 0)
-                        }
-                      >
-                        {heading}
-                      </Button>
-                      <Button size="md" href={`/${org.slug}/${meeting.slug}`}>
-                        Cancel
-                      </Button>
-                    </div>
-                  </motion.div>
-                )}
-              </>
+            )} */}
+            <CodeDisplay code={props.link.code} />
+            {((!meeting.participant?.checkedIn &&
+              props.link.action === "CHECKIN") ||
+              (!meeting.participant?.checkedOut &&
+                props.link.action === "CHECKOUT")) && (
+              <motion.div animate={controls}>
+                <div className="flex gap-2">
+                  <Button
+                    size="md"
+                    className="w-min"
+                    variant="primary"
+                    loading={register.isLoading || applyLink.isLoading}
+                    onClick={async () => {
+                      await register
+                        .mutateAsync({
+                          meetingId: meeting.id,
+                          orgId: org.id,
+                        })
+                        .catch(() => 0);
+
+                      applyLink
+                        .mutateAsync({
+                          code: router.query.code as string,
+                          meetingId: meeting.id,
+                          orgId: org.id,
+                        })
+                        .then(() => ctx.meeting.get.invalidate())
+                        .then(() => controls.start({ opacity: 1 }))
+                        .catch(() => 0);
+                    }}
+                  >
+                    {meeting.participant ? "" : "Register and "}
+                    {heading}
+                  </Button>
+                  <Button size="md" href={`/${org.slug}/${meeting.slug}`}>
+                    Cancel
+                  </Button>
+                </div>
+              </motion.div>
             )}
           </div>
           {((meeting.participant?.checkedIn &&
@@ -153,7 +159,7 @@ const MemberView: React.FC<{ link: AttendanceLink }> = (props) => {
                 icon={<FaChevronLeft size="0.75rem" />}
                 href={`/${org.slug}/${meeting.slug}`}
               >
-                Return to Overview
+                Return to Meeting Overview
               </Button>
             </motion.div>
           )}
