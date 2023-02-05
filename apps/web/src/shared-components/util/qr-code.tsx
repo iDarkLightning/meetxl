@@ -6,7 +6,7 @@ import { useState } from "react";
 import { FaQrcode } from "react-icons/fa";
 import Code from "react-qr-code";
 
-export const QRCode: React.FC = () => {
+export const QRCode: React.FC<{ code?: string }> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -15,11 +15,18 @@ export const QRCode: React.FC = () => {
         QR Code
       </Button>
       <DialogWrapper isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <div className="flex flex-col gap-3">
-          <Dialog.Title as={Heading} level="h2">
-            QR Code
+        <div className="flex flex-col gap-4">
+          <Dialog.Title
+            as={Heading}
+            level="h2"
+            className="flex justify-between gap-2"
+          >
+            <span>QR Code</span>
+            {props.code && (
+              <span className="font-mono text-green-500">{props.code}</span>
+            )}
           </Dialog.Title>
-          <Code value={window.location.href} bgColor="#111" fgColor="#fff" />
+          <Code value={window.location.href} bgColor="#1C1C1C" fgColor="#fff" />
         </div>
       </DialogWrapper>
     </>

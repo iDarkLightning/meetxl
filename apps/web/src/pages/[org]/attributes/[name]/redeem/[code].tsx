@@ -146,7 +146,7 @@ const AdminView: React.FC = () => {
                 >
                   Delete
                 </Button>
-                <QRCode />
+                <QRCode code={data.code} />
               </div>
             </div>
             {data.redeemedBy.length === 0 && (

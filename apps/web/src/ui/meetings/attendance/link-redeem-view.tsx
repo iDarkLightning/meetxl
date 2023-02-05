@@ -7,11 +7,10 @@ import { useOrg } from "@/ui/org/org-shell";
 import { trpc } from "@/utils/trpc";
 import { AttendanceLink, AttendanceLinkAction } from "@prisma/client";
 import { motion, useAnimationControls } from "framer-motion";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaChevronLeft, FaTrash } from "react-icons/fa";
-import { useMeeting } from "../meeting-shell";
 import { QRCode } from "../../../shared-components/util/qr-code";
+import { useMeeting } from "../meeting-shell";
 import { CodeDisplay } from "./code-display";
 import { LinkRedeemList } from "./link-redeem-list";
 
@@ -49,7 +48,7 @@ const AdminView: React.FC<{ link: AttendanceLink }> = (props) => {
           >
             Delete
           </Button>
-          <QRCode />
+          <QRCode code={props.link.code} />
         </div>
       </div>
       <LinkRedeemList id={props.link.id} />
@@ -82,18 +81,6 @@ const MemberView: React.FC<{ link: AttendanceLink }> = (props) => {
                 sub={`${meeting.name} hosted by ${org.name}`}
               />
             </motion.div>
-            {/* {!meeting.participant && (
-              <div className="text-xl font-medium">
-                Please{" "}
-                <Link
-                  href={`/${org.slug}/${meeting.slug}`}
-                  className="text-purple-500"
-                >
-                  register
-                </Link>{" "}
-                to check in
-              </div>
-            )} */}
             <CodeDisplay code={props.link.code} />
             {((!meeting.participant?.checkedIn &&
               props.link.action === "CHECKIN") ||
