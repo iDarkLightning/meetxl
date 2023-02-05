@@ -49,7 +49,12 @@ export const NewMeetingsModal: React.FC = () => {
             methods={methods}
             onSubmit={methods.handleSubmit(async (values) => {
               await create
-                .mutateAsync({ orgId: org.id, ...values })
+                .mutateAsync({
+                  orgId: org.id,
+                  name: values.name,
+                  startTime: new Date(values.startTime).toISOString(),
+                  endTime: new Date(values.endTime).toISOString(),
+                })
                 .catch(() => 0);
               ctx.meeting.list.invalidate();
               setIsOpen(false);
