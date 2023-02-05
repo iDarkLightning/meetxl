@@ -13,7 +13,7 @@ import { Session } from "next-auth";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import { FaChevronRight, FaGoogle } from "react-icons/fa";
+import { FaChevronRight, FaGoogle, FaPlus } from "react-icons/fa";
 
 const Splash: React.FC = () => (
   <section className="flex h-screen flex-col items-center justify-center p-8">
@@ -92,6 +92,20 @@ const SelectOrg: React.FC<{ session: Session }> = (props) => {
                   </p>
                 </div>
                 <Card className="shadow-accent-stroke w-full max-w-md p-0 shadow-md">
+                  <div>
+                    <NewOrganizationModal
+                      customButton={(setIsOpen, setMode) => (
+                        <Button
+                          onClick={() => setIsOpen(true)}
+                          variant="ghost"
+                          className="border-accent-stroke w-full flex-row-reverse justify-between rounded-none border-b-[0.025rem] py-3 pr-4 active:scale-100"
+                          icon={<FaPlus />}
+                        >
+                          New Organization
+                        </Button>
+                      )}
+                    />
+                  </div>
                   <ScrollArea className="h-96 w-full">
                     <ul className="flex flex-col gap-2">
                       {data.map((org, idx) => (
@@ -99,7 +113,7 @@ const SelectOrg: React.FC<{ session: Session }> = (props) => {
                           <Link href={`/${org.slug}`}>
                             <div
                               className={clsx(
-                                "hover:bg-background-dark flex items-center justify-between px-4 py-3 transition-colors",
+                                "flex items-center justify-between px-4 py-3 transition-colors hover:bg-background-dark",
                                 idx !== data.length &&
                                   "border-accent-stroke border-b-[0.025rem]"
                               )}
