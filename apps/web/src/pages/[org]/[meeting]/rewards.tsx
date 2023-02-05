@@ -79,7 +79,7 @@ const RewardList: React.FC = () => {
         query={rewardsQuery}
         success={({ data }) => (
           <table className="w-full text-left">
-            <thead className="rounded-md border-[0.025rem] border-accent-stroke bg-background-secondary">
+            <thead className="border-accent-stroke rounded-md border-[0.025rem] bg-background-secondary">
               <tr className="bordered">
                 <th>Key</th>
                 <th>Value</th>
@@ -91,10 +91,7 @@ const RewardList: React.FC = () => {
             </thead>
             <tbody ref={parent}>
               {data.map((reward) => (
-                <tr
-                  key={reward.id}
-                  className="transition-colors hover:bg-accent-secondary"
-                >
+                <tr key={reward.id}>
                   <td className="font-mono font-medium text-green-400">
                     {reward.attributeName}
                   </td>
