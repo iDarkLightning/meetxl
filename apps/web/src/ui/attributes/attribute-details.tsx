@@ -146,28 +146,49 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
                       <div className="p-4 pb-0">
                         <Heading level="h4">Referenced Meetings</Heading>
                       </div>
-                      <table className="w-full table-fixed text-left">
+
+                      <table className="w-full text-left">
                         <thead>
-                          <tr className="child:border-b-[0.0125rem] child:border-accent-stroke child:p-4">
+                          <tr className="child:border-accent-stroke child:border-b-[0.0125rem] child:p-4">
                             <th>Meeting</th>
                             <th>Action</th>
                             <th>Value</th>
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="w-full">
                           {data.rewards.map((reward) => (
-                            <Link
+                            <tr
+                              className="cursor-pointer child:p-4"
                               key={reward.id}
-                              href={`/${org.slug}/${reward.meeting.slug}/rewards`}
-                              passHref
-                              className="cursor-pointer"
                             >
-                              <tr className="cursor-pointer child:p-4">
-                                <td>{reward.meeting.name}</td>
-                                <td>{reward.action}</td>
-                                <td>{reward.value}</td>
-                              </tr>
-                            </Link>
+                              <td>
+                                <Link
+                                  href={`/${org.slug}/${reward.meeting.slug}/rewards`}
+                                  passHref
+                                  className="block h-full cursor-pointer"
+                                >
+                                  {reward.meeting.name}
+                                </Link>
+                              </td>
+                              <td>
+                                <Link
+                                  href={`/${org.slug}/${reward.meeting.slug}/rewards`}
+                                  passHref
+                                  className="block cursor-pointer"
+                                >
+                                  {reward.action}
+                                </Link>
+                              </td>
+                              <td>
+                                <Link
+                                  href={`/${org.slug}/${reward.meeting.slug}/rewards`}
+                                  passHref
+                                  className="block cursor-pointer"
+                                >
+                                  {reward.value}
+                                </Link>
+                              </td>
+                            </tr>
                           ))}
                         </tbody>
                       </table>
@@ -182,7 +203,7 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
                   </div>
                   <table className="w-full text-left">
                     <thead>
-                      <tr className="child:border-b-[0.0125rem] child:border-accent-stroke child:p-4">
+                      <tr className="child:border-accent-stroke child:border-b-[0.0125rem] child:p-4">
                         <th>Name</th>
                         <th>Value</th>
                       </tr>
