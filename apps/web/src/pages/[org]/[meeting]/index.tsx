@@ -129,7 +129,7 @@ const ParticipantIndex: React.FC = () => {
             </div>
           </div>
         </Card>
-        <Card className="flex w-full flex-col gap-6 border-accent-danger hover:bg-opacity-100">
+        <Card className="border-accent-danger flex w-full flex-col gap-6 hover:bg-opacity-100">
           <div className="flex flex-col gap-2">
             <Heading level="h5">Leave</Heading>
             <p className="text-sm opacity-75">
@@ -194,7 +194,10 @@ const EditMeetingForm: React.FC = () => {
           .mutateAsync({
             orgId: meeting.organizationSlug,
             meetingId: meeting.id,
-            ...values,
+            name: values.name,
+            location: values.location,
+            startTime: new Date(values.startTime).toISOString(),
+            endTime: new Date(values.endTime).toISOString(),
           })
           .catch(() => 0);
 
@@ -205,7 +208,7 @@ const EditMeetingForm: React.FC = () => {
       <editMeetingForm.InputField fieldName="location" />
       <editMeetingForm.InputField fieldName="startTime" type="datetime-local" />
       <editMeetingForm.InputField fieldName="endTime" type="datetime-local" />
-      <editMeetingForm.SubmitButton className="mt-4">
+      <editMeetingForm.SubmitButton className="mt-4" loading={update.isLoading}>
         Save
       </editMeetingForm.SubmitButton>
     </editMeetingForm.Wrapper>
@@ -241,7 +244,7 @@ const MeetingIndex: CustomNextPage = () => {
                   <EditMeetingForm />
                 </div>
               </Card>
-              <Card className="flex flex-col gap-6 border-accent-danger hover:bg-opacity-100">
+              <Card className="border-accent-danger flex flex-col gap-6 hover:bg-opacity-100">
                 <div className="flex flex-col gap-2">
                   <Heading level="h5">Delete</Heading>
                   <p className="text-sm opacity-75">
