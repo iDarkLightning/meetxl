@@ -20,6 +20,7 @@ import { BiExit, BiGift, BiTime } from "react-icons/bi";
 import { FaEye, FaTrash } from "react-icons/fa";
 import { GoLocation } from "react-icons/go";
 import { IoMdPeople } from "react-icons/io";
+import { DeleteButton } from "@/shared-components/util/delete-button";
 
 dayjs.extend(relativeTime);
 
@@ -254,11 +255,10 @@ const MeetingIndex: CustomNextPage = () => {
                     already attended the meeting.
                   </p>
                 </div>
-                <Button
-                  variant="danger"
-                  icon={<FaTrash />}
-                  className="w-min"
-                  onClick={() =>
+                <DeleteButton
+                  confirmationText={meeting.name}
+                  loading={deleteMeeting.isLoading}
+                  onConfirm={() =>
                     deleteMeeting
                       .mutateAsync({
                         meetingId: meeting.id,
@@ -267,9 +267,7 @@ const MeetingIndex: CustomNextPage = () => {
                       .then(() => router.push(`/${org.slug}`))
                       .catch(() => 0)
                   }
-                >
-                  Delete
-                </Button>
+                />
               </Card>
             </>
           )}

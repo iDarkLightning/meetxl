@@ -3,6 +3,7 @@ import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
+import { DeleteButton } from "@/shared-components/util/delete-button";
 import { useOrg } from "@/ui/org/org-shell";
 import { trpc } from "@/utils/trpc";
 import { AttendanceLink, AttendanceLinkAction } from "@prisma/client";
@@ -30,10 +31,10 @@ const AdminView: React.FC<{ link: AttendanceLink }> = (props) => {
           sub={`${heading} Via Code: ${props.link.code}`}
         />
         <div className="flex items-center gap-4">
-          <Button
-            variant="danger"
-            icon={<FaTrash />}
-            onClick={() =>
+          <DeleteButton
+            confirmationText={props.link.code}
+            loading={deleteLink.isLoading}
+            onConfirm={() =>
               deleteLink
                 .mutateAsync({
                   id: props.link.id,
@@ -45,9 +46,7 @@ const AdminView: React.FC<{ link: AttendanceLink }> = (props) => {
                 )
                 .catch(() => 0)
             }
-          >
-            Delete
-          </Button>
+          />
           <QRCode code={props.link.code} />
         </div>
       </div>

@@ -3,6 +3,7 @@ import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { Button } from "@/shared-components/system/button";
 import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
+import { DeleteButton } from "@/shared-components/util/delete-button";
 import { EmptyContent } from "@/shared-components/util/empty-content";
 import { QRCode } from "@/shared-components/util/qr-code";
 import { CustomNextPage } from "@/types/next-page";
@@ -130,10 +131,10 @@ const AdminView: React.FC = () => {
                 sub={`Code: ${data.code} Action: ${data.action} Value: ${data.value}`}
               />
               <div className="flex items-center gap-4">
-                <Button
-                  variant="danger"
-                  icon={<FaTrash />}
-                  onClick={() =>
+                <DeleteButton
+                  confirmationText={data.name}
+                  loading={deleteLink.isLoading}
+                  onConfirm={() =>
                     deleteLink
                       .mutateAsync({ linkId: data.id, orgId: org.id })
                       .then(() =>
@@ -143,9 +144,7 @@ const AdminView: React.FC = () => {
                       )
                       .catch(() => 0)
                   }
-                >
-                  Delete
-                </Button>
+                />
                 <QRCode code={data.code} />
               </div>
             </div>

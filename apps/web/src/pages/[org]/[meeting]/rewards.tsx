@@ -2,6 +2,7 @@ import { SectionHeading } from "@/shared-components/layout/section-heading";
 import { SectionWrapper } from "@/shared-components/layout/section-wrapper";
 import { Button } from "@/shared-components/system/button";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
+import { DeleteButton } from "@/shared-components/util/delete-button";
 import { EmptyContent } from "@/shared-components/util/empty-content";
 import { CustomNextPage } from "@/types/next-page";
 import { MeetingShell, useMeeting } from "@/ui/meetings/meeting-shell";
@@ -99,8 +100,10 @@ const RewardList: React.FC = () => {
                   <td>{reward.action}</td>
                   {org.member.role === "ADMIN" && (
                     <td className="flex justify-end text-end">
-                      <Button
-                        onClick={() =>
+                      <DeleteButton
+                        confirmationText={reward.attributeName}
+                        loading={deleteReward.isLoading}
+                        onConfirm={() =>
                           deleteReward
                             .mutateAsync({
                               id: reward.id,
@@ -110,10 +113,16 @@ const RewardList: React.FC = () => {
                             .then(() => ctx.meeting.reward.list.invalidate())
                             .catch(() => 0)
                         }
-                        icon={<AiOutlineClose />}
-                        variant="ghost"
-                        className="hover:bg-background-dark"
+                        buttonElement={(setIsOpen) => (
+                          <Button
+                            onClick={() => setIsOpen(true)}
+                            icon={<AiOutlineClose />}
+                            variant="ghost"
+                            className="hover:bg-background-dark"
+                          />
+                        )}
                       />
+                      {/*  */}
                     </td>
                   )}
                 </tr>

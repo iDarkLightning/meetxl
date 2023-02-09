@@ -13,6 +13,7 @@ import { useOrg } from "../org/org-shell";
 import { NewAttributeLink } from "./new-attribute-link";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
+import { DeleteButton } from "@/shared-components/util/delete-button";
 
 const ValueEditable: React.FC<{
   initialValue: string;
@@ -120,21 +121,18 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
             <div className="flex flex-1 flex-col gap-6">
               <Card className="flex items-center justify-between hover:bg-opacity-100">
                 <Heading level="h3">{data.name}</Heading>
-                <Button
-                  variant="danger"
-                  icon={<FaTrash />}
+                <DeleteButton
+                  confirmationText={data.name}
                   loading={deleteAttr.isLoading}
-                  onClick={() =>
+                  onConfirm={() =>
                     deleteAttr
                       .mutateAsync({ name: data.name, orgId: org.id })
-                      .then(() => ctx.organization.attribute.get.invalidate())
                       .then(() => ctx.organization.attribute.list.invalidate())
                       .then(() => router.push(`/${org.slug}/attributes`))
+                      .then(() => ctx.organization.attribute.get.invalidate())
                       .catch(() => 0)
                   }
-                >
-                  Delete
-                </Button>
+                />
               </Card>
               <AttributeLinks />
             </div>
