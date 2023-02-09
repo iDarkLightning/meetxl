@@ -100,6 +100,9 @@ export const orgAttributeRouter = t.router({
                 },
               },
             },
+            orderBy: {
+              value: "desc",
+            },
           },
         },
       });
