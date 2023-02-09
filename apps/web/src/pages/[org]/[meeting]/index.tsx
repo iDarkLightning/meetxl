@@ -109,7 +109,7 @@ const ParticipantIndex: React.FC = () => {
           <div className="flex flex-col gap-2">
             <Heading level="h5">Attendance Details</Heading>
             <div className="flex justify-between">
-              <p className="font-medium">Check Out</p>
+              <p className="font-medium">Check In</p>
               <p className="font-mono text-green-400">
                 {meeting.participant.checkedIn
                   ? dayjs(meeting.participant.checkInTime).format(
