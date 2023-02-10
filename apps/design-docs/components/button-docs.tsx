@@ -71,7 +71,7 @@ export const ButtonDocs: React.FC = () => {
             variant="primary"
             isLoading={loading}
             disabled={disabled}
-            prefixEl={<Plus />}
+            prefixEl={<Plus size="1rem" />}
           >
             Create it Now
           </Button>
@@ -79,7 +79,7 @@ export const ButtonDocs: React.FC = () => {
             variant="secondary"
             isLoading={loading}
             disabled={disabled}
-            suffixEl={<Plus />}
+            suffixEl={<Plus size="1rem" />}
           >
             Create
           </Button>
@@ -87,8 +87,8 @@ export const ButtonDocs: React.FC = () => {
             variant="ghost"
             isLoading={loading}
             disabled={disabled}
-            prefixEl={<Plus />}
-            suffixEl={<Plus />}
+            prefixEl={<Plus size="1rem" />}
+            suffixEl={<Plus size="1rem" />}
           >
             Create
           </Button>
@@ -96,7 +96,7 @@ export const ButtonDocs: React.FC = () => {
             variant="danger"
             isLoading={loading}
             disabled={disabled}
-            prefixEl={<Trash />}
+            prefixEl={<Trash size="1rem" />}
           >
             Delete
           </Button>

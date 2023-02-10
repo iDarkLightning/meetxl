@@ -58,7 +58,7 @@ export const DeleteButton: React.FC<Props> = (props) => {
         }}
       >
         <Dialog.Title as={Heading} level="h3">
-          New Meeting
+          Confirm Delete
         </Dialog.Title>
         <div className="mt-3 md:w-96">
           <form.Wrapper
