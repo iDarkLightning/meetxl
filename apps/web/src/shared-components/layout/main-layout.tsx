@@ -72,7 +72,7 @@ const OptionsMenu: React.FC<{ className: string }> = (props) => {
         />
       </Menu.Button>
       <Transition as={Fragment} {...transitionClasses}>
-        <Menu.Items className="absolute right-0 z-10 mt-2 w-64 divide-y divide-red-400 rounded-md border-[0.0125rem] border-accent-stroke bg-background-dark shadow-xl">
+        <Menu.Items className="border-accent-stroke absolute right-0 z-10 mt-2 w-64 divide-y divide-red-400 rounded-md border-[0.0125rem] bg-background-dark shadow-xl">
           <div className="flex flex-col gap-2 p-2">
             <Menu.Item as="div" className="flex items-center gap-2 p-2">
               <Avatar
@@ -155,7 +155,9 @@ export const MainLayout: React.FC<
                         className="flex gap-3"
                       >
                         <span className="text-md font-light opacity-30">/</span>
-                        <span>{router.query.meeting}</span>
+                        <span className="max-w-[16ch] truncate">
+                          {router.query.meeting}
+                        </span>
                       </Link>
                     )}
                   </Heading>
@@ -195,7 +197,7 @@ export const MainLayout: React.FC<
                             isSelected(item, router.pathname) &&
                               " bg-accent-primary bg-opacity-30",
                             !isSelected(item, router.pathname) &&
-                              "opacity-70 hover:bg-accent-secondary hover:opacity-100"
+                              "hover:bg-accent-secondary opacity-70 hover:opacity-100"
                           )}
                         >
                           <li>{item.name}</li>
