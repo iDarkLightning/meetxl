@@ -257,3 +257,5 @@ export const Button: React.FC<ButtonProps> = forwardRef<
     </button>
   );
 });
+
+Button.displayName = "Button";

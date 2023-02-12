@@ -1,8 +1,6 @@
 import { cva, VariantProps } from "class-variance-authority";
+import React, { forwardRef } from "react";
 import { cn } from "../utils";
-import { Button } from "./button";
-import { Trash } from "lucide-react";
-import React from "react";
 
 const getElementVariant = (
   leftElement: React.ReactNode,
@@ -65,7 +63,10 @@ export interface InputProps
   rightElement?: React.ReactNode;
 }
 
-export const Input: React.FC<InputProps> = (props) => {
+export const Input: React.FC<InputProps> = forwardRef<
+  HTMLInputElement,
+  InputProps
+>((props, ref) => {
   const { size, disabled, leftElement, rightElement, ...rest } = props;
 
   return (
@@ -79,6 +80,7 @@ export const Input: React.FC<InputProps> = (props) => {
         <AdjacentElement orientation="left">{leftElement}</AdjacentElement>
       )}
       <input
+        ref={ref}
         disabled={disabled}
         autoComplete="off"
         className={inputStyles({
@@ -93,4 +95,6 @@ export const Input: React.FC<InputProps> = (props) => {
       )}
     </div>
   );
-};
+});
+
+Input.displayName = "Input";
