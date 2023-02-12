@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 body {
+  color-scheme: dark;
   color: theme("colors.white");
   background-color: theme("colors.background.primary");
 }

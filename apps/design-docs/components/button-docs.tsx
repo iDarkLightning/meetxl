@@ -1,4 +1,4 @@
-import { Button } from "@meetxl/ui";
+import { Button, Checkbox } from "@meetxl/ui";
 import { useState } from "react";
 // import { FaGoogle, FaTrash } from "react-icons/fa";
 import { Plus, Trash } from "lucide-react";
@@ -10,18 +10,16 @@ export const ButtonDocs: React.FC = () => {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex gap-2">
-        <div>
+        <div className="flex flex-row items-center gap-2">
           <p>Loading?</p>
-          <input
-            type="checkbox"
-            onChange={(e) => setLoading(e.target.checked)}
+          <Checkbox
+            onCheckedChange={(state) => setLoading(state.valueOf() as boolean)}
           />
         </div>
-        <div>
+        <div className="flex flex-row items-center gap-2">
           <p>Disabled?</p>
-          <input
-            type="checkbox"
-            onChange={(e) => setDisabled(e.target.checked)}
+          <Checkbox
+            onCheckedChange={(state) => setDisabled(state.valueOf() as boolean)}
           />
         </div>
       </div>

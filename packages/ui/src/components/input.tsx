@@ -57,7 +57,8 @@ const AdjacentElement: React.FC<
 );
 
 export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "type"> {
+  type: Exclude<React.HTMLInputTypeAttribute, "checkbox">;
   size?: VariantProps<typeof inputStyles>["size"];
   leftElement?: React.ReactNode;
   rightElement?: React.ReactNode;
@@ -67,7 +68,7 @@ export const Input: React.FC<InputProps> = forwardRef<
   HTMLInputElement,
   InputProps
 >((props, ref) => {
-  const { size, disabled, leftElement, rightElement, ...rest } = props;
+  const { size, disabled, leftElement, rightElement, type, ...rest } = props;
 
   return (
     <div
@@ -80,6 +81,7 @@ export const Input: React.FC<InputProps> = forwardRef<
         <AdjacentElement orientation="left">{leftElement}</AdjacentElement>
       )}
       <input
+        type={type as string}
         ref={ref}
         disabled={disabled}
         autoComplete="off"
