@@ -30,6 +30,7 @@ module.exports = function tailwindConfig({ content }) {
           },
           neutral: {
             DEFAULT: "#222222",
+            secondary: "#2A2A2A",
             stroke: "#3E3D40",
             disco: "#c0c0ff99",
           },

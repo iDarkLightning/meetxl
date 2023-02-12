@@ -23,22 +23,18 @@ const BOOLEAN_OPTIONS = {
 const buttonHoverStyles = cva(
   cn(
     "min-w-min relative m-[-1px] w-max transform-none select-none appearance-none overflow-hidden rounded-[7px] border-0 p-[1px] text-white will-change-transform h-max",
-    "motion-safe:transition-[color_transform_200ms_cubic-bezier(0.4,0,0.2,1)]",
-    "focus:outline-none focus-visible:ring-1 <focus-visible:ring-opacity-4></focus-visible:ring-opacity-4>0"
+    "focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-40"
   ),
   {
     variants: {
-      variant: {
-        ...VARIANT_OPTIONS,
-        danger: "focus-visible:ring-danger",
-      },
+      variant: VARIANT_OPTIONS,
       isDisabled: BOOLEAN_OPTIONS,
       isBusy: BOOLEAN_OPTIONS,
     },
     compoundVariants: [
       {
-        variant: ["ghost", "primary", "secondary"],
-        className: " focus-visible:ring-neutral-disco",
+        variant: ["ghost", "primary", "secondary", "danger"],
+        className: "focus-visible:ring-neutral-disco",
       },
       {
         isBusy: true,
@@ -70,13 +66,16 @@ const buttonHoverStyles = cva(
     ],
     defaultVariants: {
       variant: "secondary",
+      isDisabled: false,
+      isBusy: false,
     },
   }
 );
 
 const buttonContentStyles = cva(
   cn(
-    "whitespace-nowrap relative z-10 inline-flex w-full justify-center rounded-md text-center font-medium transition-all will-change-transform border-[0.025rem]"
+    "whitespace-nowrap relative z-10 inline-flex w-full justify-center rounded-md text-center font-medium transition-all will-change-transform border-[0.025rem]",
+    "group-focus-visible:border-transparent"
   ),
   {
     variants: {
@@ -120,6 +119,7 @@ const buttonContentStyles = cva(
       variant: "secondary",
       size: "sm",
       isBusy: false,
+      isDisabled: false,
     },
   }
 );
