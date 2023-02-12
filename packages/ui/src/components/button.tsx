@@ -22,7 +22,7 @@ const BOOLEAN_OPTIONS = {
 
 const buttonHoverStyles = cva(
   cn(
-    "min-w-min relative m-[-1px] w-max transform-none select-none appearance-none overflow-hidden rounded-[7px] border-0 p-[1px] text-white will-change-transform h-max",
+    "min-w-min relative m-[-1px] transform-none select-none appearance-none overflow-hidden rounded-[7px] border-0 p-[1px] text-white will-change-transform h-max",
     "focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-40"
   ),
   {
@@ -30,6 +30,10 @@ const buttonHoverStyles = cva(
       variant: VARIANT_OPTIONS,
       isDisabled: BOOLEAN_OPTIONS,
       isBusy: BOOLEAN_OPTIONS,
+      fullWidth: {
+        true: "w-full",
+        false: "w-max",
+      },
     },
     compoundVariants: [
       {
@@ -68,6 +72,7 @@ const buttonHoverStyles = cva(
       variant: "secondary",
       isDisabled: false,
       isBusy: false,
+      fullWidth: false,
     },
   }
 );
@@ -162,6 +167,7 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: VariantProps<typeof buttonContentStyles>["variant"];
   size?: VariantProps<typeof buttonContentStyles>["size"];
+  fullWidth?: boolean;
   isLoading?: boolean;
   prefixEl?: React.ReactNode;
   suffixEl?: React.ReactNode;
@@ -193,7 +199,8 @@ export const Button: React.FC<ButtonProps> = forwardRef<
     }
   }, [props.isLoading]);
 
-  const { variant, size, isLoading, prefixEl, suffixEl, ...rest } = props;
+  const { variant, size, fullWidth, isLoading, prefixEl, suffixEl, ...rest } =
+    props;
 
   return (
     <button
@@ -222,7 +229,8 @@ export const Button: React.FC<ButtonProps> = forwardRef<
         if (props.onMouseMove) props.onMouseMove(e);
       }}
       className={buttonHoverStyles({
-        variant: variant,
+        variant,
+        fullWidth,
         isBusy: props.isLoading,
         isDisabled: !!props.disabled,
       })}
@@ -231,8 +239,8 @@ export const Button: React.FC<ButtonProps> = forwardRef<
     >
       <span
         className={buttonContentStyles({
-          variant: variant,
-          size: size,
+          variant,
+          size,
           isBusy: isLoading,
           isDisabled: !!props.disabled,
         })}
@@ -250,7 +258,7 @@ export const Button: React.FC<ButtonProps> = forwardRef<
       <span
         aria-hidden
         className={buttonLoadingStyles({
-          variant: variant,
+          variant,
           isBusy: isLoading,
         })}
       />
