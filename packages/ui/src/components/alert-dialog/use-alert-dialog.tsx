@@ -1,3 +1,4 @@
+import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Button } from "../button";
 import {
@@ -46,33 +47,37 @@ export const AlertDialog: React.FC<{
       open={props.config.isOpen}
       onOpenChange={(open) => props.config.setIsOpen(open)}
     >
-      <AlertDialogContent setIsOpen={props.config.setIsOpen}>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{props.config.content.header}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {props.config.content.description}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel
-            onClick={props.config.onCancel}
-            buttonProps={props.config.cancelButtonProps}
-          >
-            {props.config.content.cancelText ?? "Cancel"}
-          </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={async (event) => {
-              event.preventDefault();
+      <AnimatePresence>
+        {props.config.isOpen ? (
+          <AlertDialogContent setIsOpen={props.config.setIsOpen}>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{props.config.content.header}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {props.config.content.description}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel
+                onClick={props.config.onCancel}
+                buttonProps={props.config.cancelButtonProps}
+              >
+                {props.config.content.cancelText ?? "Cancel"}
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={async (event) => {
+                  event.preventDefault();
 
-              await props.config.onAction();
-              props.config.close();
-            }}
-            buttonProps={props.config.actionButtonProps}
-          >
-            {props.config.content.actionText}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
+                  await props.config.onAction();
+                  props.config.close();
+                }}
+                buttonProps={props.config.actionButtonProps}
+              >
+                {props.config.content.actionText}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        ) : null}
+      </AnimatePresence>
     </AlertDialogWrapper>
   );
 };

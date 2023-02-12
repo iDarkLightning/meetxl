@@ -15,11 +15,16 @@ type ContentForwarded = {
 
 export const AlertDialogWrapper = AlertDialogPrimitive.Root;
 const MotionDialogContent = motion(AlertDialogPrimitive.Content);
+const MotionDialogOverlay = motion(AlertDialogPrimitive.Overlay);
 
 export const AlertDialogPortal: React.FC<
   AlertDialogPrimitive.AlertDialogPortalProps
 > = (props) => (
-  <AlertDialogPrimitive.Portal className={cn(props.className)} {...props}>
+  <AlertDialogPrimitive.Portal
+    className={cn(props.className)}
+    {...props}
+    forceMount
+  >
     <div className="fixed inset-0 z-50 flex w-screen items-end justify-center sm:items-center">
       {props.children}
     </div>
@@ -29,11 +34,17 @@ AlertDialogPortal.displayName = AlertDialogPrimitive.Portal.displayName;
 
 export const AlertDialogOverlay = forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
+  React.ComponentPropsWithoutRef<typeof MotionDialogOverlay>
 >((props, ref) => (
-  <AlertDialogPrimitive.Overlay
+  <MotionDialogOverlay
     ref={ref}
-    className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity animate-in fade-in"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1, transitionTimingFunction: "ease-in-out" }}
+    exit={{
+      opacity: 0,
+      transitionTimingFunction: "ease-in-out",
+    }}
+    className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity"
     {...props}
   />
 ));
@@ -48,7 +59,7 @@ const DialogContentMobile = forwardRef<
 
   useImperativeHandle(ref, () => innerRef.current as HTMLDivElement);
   useEffect(() => {
-    controls.start({ y: 0, transition: transitionProps });
+    controls.start({ y: "0", transition: transitionProps });
   }, []);
 
   const transitionProps = { type: "spring", stiffness: 500, damping: 30 };
@@ -71,7 +82,7 @@ const DialogContentMobile = forwardRef<
   return (
     <MotionDialogContent
       ref={innerRef}
-      initial={{ y: "10%" }}
+      initial={{ y: "100%" }}
       animate={controls}
       exit={{ y: "100%" }}
       transition={transitionProps}
@@ -102,8 +113,14 @@ const DialogContentDesktop = forwardRef<
   return (
     <MotionDialogContent
       ref={ref}
-      initial={{ y: "-10%" }}
-      animate={{ y: "0", transitionTimingFunction: "ease-in-out" }}
+      initial={{ y: "-5%", opacity: 0 }}
+      animate={{ y: "0", opacity: 1, transitionTimingFunction: "ease-out" }}
+      exit={{
+        y: "-5%",
+        opacity: 0,
+        transitionTimingFunction: "ease-in",
+      }}
+      transition={{ duration: 0.15 }}
       className="fixed z-50 flex max-w-lg flex-col gap-6 rounded-md border-[0.025rem] border-neutral-stroke bg-background-primary p-8"
       {...rest}
     />

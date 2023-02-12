@@ -1,4 +1,5 @@
 import { AlertDialog, Button, useAlertDialog } from "@meetxl/ui";
+import { Trash } from "lucide-react";
 import { useState } from "react";
 
 export const AlertDialogDocs: React.FC = () => {
@@ -22,6 +23,7 @@ export const AlertDialogDocs: React.FC = () => {
     },
     actionButtonProps: {
       isLoading,
+      prefixEl: <Trash size="1rem" />,
       variant: "danger",
     },
   });
