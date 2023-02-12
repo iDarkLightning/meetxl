@@ -6,23 +6,28 @@ import useWindowSize from "../../hooks/use-window-size";
 import { cn } from "../../utils";
 import { Button } from "../button";
 
-const AlertDialogWrapper = AlertDialogPrimitive.Root;
+type ContentForwarded = {
+  ref: React.ElementRef<typeof AlertDialogPrimitive.Content>;
+  props: React.ComponentPropsWithoutRef<typeof MotionDialogContent> & {
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+};
+
+export const AlertDialogWrapper = AlertDialogPrimitive.Root;
 const MotionDialogContent = motion(AlertDialogPrimitive.Content);
 
-const AlertDialogPortal = ({
-  className,
-  children,
-  ...props
-}: AlertDialogPrimitive.AlertDialogPortalProps) => (
-  <AlertDialogPrimitive.Portal className={cn(className)} {...props}>
+export const AlertDialogPortal: React.FC<
+  AlertDialogPrimitive.AlertDialogPortalProps
+> = (props) => (
+  <AlertDialogPrimitive.Portal className={cn(props.className)} {...props}>
     <div className="fixed inset-0 z-50 flex w-screen items-end justify-center sm:items-center">
-      {children}
+      {props.children}
     </div>
   </AlertDialogPrimitive.Portal>
 );
 AlertDialogPortal.displayName = AlertDialogPrimitive.Portal.displayName;
 
-const AlertDialogOverlay = forwardRef<
+export const AlertDialogOverlay = forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
 >((props, ref) => (
@@ -34,15 +39,6 @@ const AlertDialogOverlay = forwardRef<
 ));
 AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
 
-const transitionProps = { type: "spring", stiffness: 500, damping: 30 };
-
-type ContentForwarded = {
-  ref: React.ElementRef<typeof AlertDialogPrimitive.Content>;
-  props: React.ComponentPropsWithoutRef<typeof MotionDialogContent> & {
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  };
-};
-
 const DialogContentMobile = forwardRef<
   ContentForwarded["ref"],
   ContentForwarded["props"]
@@ -51,10 +47,12 @@ const DialogContentMobile = forwardRef<
   const controls = useAnimation();
 
   useImperativeHandle(ref, () => innerRef.current as HTMLDivElement);
-
   useEffect(() => {
     controls.start({ y: 0, transition: transitionProps });
   }, []);
+
+  const transitionProps = { type: "spring", stiffness: 500, damping: 30 };
+  const { children, setIsOpen, ...rest } = props;
 
   const handleDragEnd = (info: PanInfo) => {
     const offset = info.offset.y;
@@ -64,13 +62,11 @@ const DialogContentMobile = forwardRef<
     if (offset > height / 2 || velocity > 800) {
       controls
         .start({ y: "100%", transition: transitionProps })
-        .then(() => props.setIsOpen(false));
+        .then(() => setIsOpen(false));
     } else {
       controls.start({ y: 0, transition: transitionProps });
     }
   };
-
-  const { children, ...rest } = props;
 
   return (
     <MotionDialogContent
@@ -85,7 +81,7 @@ const DialogContentMobile = forwardRef<
       onDragEnd={((_: any, info: any) => handleDragEnd(info)) as any}
       dragElastic={{ top: 0, bottom: 1 }}
       dragConstraints={{ top: 0, bottom: 0 }}
-      className="group fixed z-50 flex flex-col gap-6 rounded-md border-[0.025rem] border-neutral-stroke bg-background-primary p-8"
+      className="group fixed z-50 flex w-screen flex-col gap-6 rounded-md border-[0.025rem] border-neutral-stroke bg-background-primary p-8"
       {...rest}
     >
       <div className={`rounded-t-4xl flex w-full items-center justify-center`}>
@@ -100,17 +96,21 @@ const DialogContentMobile = forwardRef<
 const DialogContentDesktop = forwardRef<
   ContentForwarded["ref"],
   ContentForwarded["props"]
->((props, ref) => (
-  <MotionDialogContent
-    ref={ref}
-    initial={{ y: "-10%" }}
-    animate={{ y: "0", transitionTimingFunction: "ease-in-out" }}
-    className="fixed z-50 flex max-w-lg flex-col gap-6 rounded-md border-[0.025rem] border-neutral-stroke bg-background-primary p-8"
-    {...props}
-  />
-));
+>((props, ref) => {
+  const { setIsOpen: _, ...rest } = props;
 
-const AlertDialogContent = forwardRef<
+  return (
+    <MotionDialogContent
+      ref={ref}
+      initial={{ y: "-10%" }}
+      animate={{ y: "0", transitionTimingFunction: "ease-in-out" }}
+      className="fixed z-50 flex max-w-lg flex-col gap-6 rounded-md border-[0.025rem] border-neutral-stroke bg-background-primary p-8"
+      {...rest}
+    />
+  );
+});
+
+export const AlertDialogContent = forwardRef<
   ContentForwarded["ref"],
   ContentForwarded["props"]
 >((props, ref) => {
@@ -129,12 +129,12 @@ const AlertDialogContent = forwardRef<
 });
 AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName;
 
-const AlertDialogHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = (
-  props
-) => <div className="flex flex-col gap-2 text-center" {...props} />;
+export const AlertDialogHeader: React.FC<
+  React.HTMLAttributes<HTMLDivElement>
+> = (props) => <div className="flex flex-col gap-2 text-center" {...props} />;
 AlertDialogHeader.displayName = "AlertDialogHeader";
 
-const AlertDialogTitle = forwardRef<
+export const AlertDialogTitle = forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title>
 >((props, ref) => (
@@ -146,7 +146,7 @@ const AlertDialogTitle = forwardRef<
 ));
 AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName;
 
-const AlertDialogDescription = forwardRef<
+export const AlertDialogDescription = forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Description>
 >((props, ref) => (
@@ -159,20 +159,22 @@ const AlertDialogDescription = forwardRef<
 AlertDialogDescription.displayName =
   AlertDialogPrimitive.Description.displayName;
 
-const AlertDialogFooter: React.FC<React.HTMLAttributes<HTMLDivElement>> = (
-  props
-) => (
+export const AlertDialogFooter: React.FC<
+  React.HTMLAttributes<HTMLDivElement>
+> = (props) => (
   <div className="flex w-full flex-col-reverse gap-2 sm:flex-row" {...props} />
 );
 AlertDialogFooter.displayName = "AlertDialogFooter";
 
-const AlertDialogAction = forwardRef<
+export const AlertDialogAction = forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Action>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action> & {
+    buttonProps?: React.ComponentPropsWithoutRef<typeof Button>;
+  }
 >((props, ref) => (
   <AlertDialogPrimitive.Action ref={ref} asChild className="flex-1" {...props}>
     <span className="w-full">
-      <Button variant="primary" size="md" fullWidth>
+      <Button variant="primary" size="md" fullWidth {...props.buttonProps}>
         {props.children}
       </Button>
     </span>
@@ -180,42 +182,18 @@ const AlertDialogAction = forwardRef<
 ));
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName;
 
-const AlertDialogCancel = forwardRef<
+export const AlertDialogCancel = forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Cancel>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel>
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel> & {
+    buttonProps?: React.ComponentPropsWithoutRef<typeof Button>;
+  }
 >((props, ref) => (
   <AlertDialogPrimitive.Cancel ref={ref} asChild className="flex-1" {...props}>
     <span className="w-full">
-      <Button variant="secondary" size="md" fullWidth>
+      <Button variant="secondary" size="md" fullWidth {...props.buttonProps}>
         {props.children}
       </Button>
     </span>
   </AlertDialogPrimitive.Cancel>
 ));
 AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName;
-
-export const AlertDialog: React.FC<{
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}> = (props) => {
-  return (
-    <AlertDialogWrapper
-      open={props.isOpen}
-      onOpenChange={(open) => props.setIsOpen(open)}
-    >
-      <AlertDialogContent setIsOpen={props.setIsOpen}>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialogWrapper>
-  );
-};

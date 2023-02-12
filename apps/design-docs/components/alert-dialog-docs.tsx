@@ -1,13 +1,35 @@
-import { AlertDialog, Button } from "@meetxl/ui";
+import { AlertDialog, Button, useAlertDialog } from "@meetxl/ui";
 import { useState } from "react";
 
 export const AlertDialogDocs: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const dialog = useAlertDialog({
+    content: {
+      header: "Are you sure?",
+      description:
+        "This action cannot be undone, and will remove all data from our servers. Please make sure that that is OK before proceeding.",
+      actionText: "Delete",
+    },
+    onAction: async () => {
+      setIsLoading(true);
+
+      await new Promise((resolve) =>
+        setTimeout(() => {
+          resolve(setIsLoading(false));
+        }, 500)
+      );
+    },
+    actionButtonProps: {
+      isLoading,
+      variant: "danger",
+    },
+  });
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>Open</Button>
-      <AlertDialog isOpen={isOpen} setIsOpen={setIsOpen} />
+      <Button onClick={dialog.open}>Open</Button>
+      <AlertDialog config={dialog} />
     </>
   );
 };
