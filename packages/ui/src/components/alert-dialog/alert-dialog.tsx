@@ -1,6 +1,12 @@
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { motion, PanInfo, useAnimation } from "framer-motion";
-import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import useWindowSize from "../../hooks/use-window-size";
 
 import { cn } from "../../utils";
@@ -54,15 +60,21 @@ const DialogContentMobile = forwardRef<
   ContentForwarded["ref"],
   ContentForwarded["props"]
 >((props, ref) => {
+  const [exitY, setExitY] = useState("5%");
   const innerRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
 
   useImperativeHandle(ref, () => innerRef.current as HTMLDivElement);
   useEffect(() => {
-    controls.start({ y: "0", transition: transitionProps });
+    controls.start({ y: "0", opacity: 1, transition: transitionProps });
   }, []);
 
-  const transitionProps = { type: "spring", stiffness: 500, damping: 30 };
+  const transitionProps = {
+    type: "spring",
+    stiffness: 500,
+    damping: 30,
+    duration: 0.15,
+  };
   const { children, setIsOpen, ...rest } = props;
 
   const handleDragEnd = (info: PanInfo) => {
@@ -72,8 +84,11 @@ const DialogContentMobile = forwardRef<
 
     if (offset > height / 2 || velocity > 800) {
       controls
-        .start({ y: "100%", transition: transitionProps })
-        .then(() => setIsOpen(false));
+        .start({ y: "100%", opacity: 0, transition: transitionProps })
+        .then(() => {
+          setExitY("100%");
+          setIsOpen(false);
+        });
     } else {
       controls.start({ y: 0, transition: transitionProps });
     }
@@ -82,9 +97,9 @@ const DialogContentMobile = forwardRef<
   return (
     <MotionDialogContent
       ref={innerRef}
-      initial={{ y: "100%" }}
+      initial={{ y: "5%", opacity: 0 }}
       animate={controls}
-      exit={{ y: "100%" }}
+      exit={{ y: exitY, opacity: 0, transitionTimingFunction: "ease-in" }}
       transition={transitionProps}
       drag="y"
       dragDirectionLock
