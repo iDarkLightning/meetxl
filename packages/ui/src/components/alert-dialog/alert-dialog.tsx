@@ -45,11 +45,8 @@ export const AlertDialogOverlay = forwardRef<
   <MotionDialogOverlay
     ref={ref}
     initial={{ opacity: 0 }}
-    animate={{ opacity: 1, transitionTimingFunction: "ease-in-out" }}
-    exit={{
-      opacity: 0,
-      transitionTimingFunction: "ease-in-out",
-    }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
     className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity"
     {...props}
   />
@@ -203,10 +200,10 @@ export const AlertDialogAction = forwardRef<
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action> & {
     buttonProps?: React.ComponentPropsWithoutRef<typeof Button>;
   }
->((props, ref) => (
+>(({ buttonProps, ...props }, ref) => (
   <AlertDialogPrimitive.Action ref={ref} asChild className="flex-1" {...props}>
     <span className="w-full">
-      <Button variant="primary" size="md" fullWidth {...props.buttonProps}>
+      <Button variant="primary" size="md" fullWidth {...buttonProps}>
         {props.children}
       </Button>
     </span>
@@ -219,10 +216,10 @@ export const AlertDialogCancel = forwardRef<
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel> & {
     buttonProps?: React.ComponentPropsWithoutRef<typeof Button>;
   }
->((props, ref) => (
+>(({ buttonProps, ...props }, ref) => (
   <AlertDialogPrimitive.Cancel ref={ref} asChild className="flex-1" {...props}>
     <span className="w-full">
-      <Button variant="secondary" size="md" fullWidth {...props.buttonProps}>
+      <Button variant="secondary" size="md" fullWidth {...buttonProps}>
         {props.children}
       </Button>
     </span>
