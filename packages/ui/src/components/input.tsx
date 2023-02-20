@@ -34,11 +34,16 @@ const inputStyles = cva(
         true: "cursor-not-allowed",
         false: "",
       },
+      fullWidth: {
+        true: "w-full",
+        false: "",
+      },
     },
     defaultVariants: {
       size: "sm",
       isDisabled: false,
       element: "none",
+      fullWidth: false,
     },
   }
 );
@@ -58,8 +63,9 @@ const AdjacentElement: React.FC<
 
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "type"> {
-  type: Exclude<React.HTMLInputTypeAttribute, "checkbox">;
+  type?: Exclude<React.HTMLInputTypeAttribute, "checkbox">;
   size?: VariantProps<typeof inputStyles>["size"];
+  fullWidth?: VariantProps<typeof inputStyles>["fullWidth"];
   leftElement?: React.ReactNode;
   rightElement?: React.ReactNode;
 }
@@ -68,7 +74,15 @@ export const Input: React.FC<InputProps> = forwardRef<
   HTMLInputElement,
   InputProps
 >((props, ref) => {
-  const { size, disabled, leftElement, rightElement, type, ...rest } = props;
+  const {
+    size,
+    disabled,
+    leftElement,
+    rightElement,
+    type,
+    fullWidth,
+    ...rest
+  } = props;
 
   return (
     <div
@@ -86,7 +100,8 @@ export const Input: React.FC<InputProps> = forwardRef<
         disabled={disabled}
         autoComplete="off"
         className={inputStyles({
-          size: size,
+          size,
+          fullWidth,
           element: getElementVariant(leftElement, rightElement),
           isDisabled: disabled,
         })}

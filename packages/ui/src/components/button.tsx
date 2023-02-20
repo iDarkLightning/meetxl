@@ -1,4 +1,4 @@
-import {
+import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
@@ -165,6 +165,7 @@ const buttonLoadingStyles = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  ref?: React.Ref<HTMLButtonElement>;
   variant?: VariantProps<typeof buttonContentStyles>["variant"];
   size?: VariantProps<typeof buttonContentStyles>["size"];
   fullWidth?: boolean;
