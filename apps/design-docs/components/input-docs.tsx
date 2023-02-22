@@ -1,4 +1,4 @@
-import { Checkbox, Input } from "@meetxl/ui";
+import { Checkbox, Input, Label } from "@meetxl/ui";
 import { Trash } from "lucide-react";
 import { useState } from "react";
 
@@ -9,8 +9,9 @@ export const InputDocs: React.FC = () => {
     <div className="flex flex-col gap-4 p-4">
       <div className="flex gap-2">
         <div className="flex flex-row items-center gap-2">
-          <p>Disabled?</p>
+          <Label htmlFor="disabled">Disabled</Label>
           <Checkbox
+            name="disabled"
             onCheckedChange={(state) => setDisabled(state.valueOf() as boolean)}
           />
         </div>

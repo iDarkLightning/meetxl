@@ -1,4 +1,4 @@
-import { Checkbox } from "@meetxl/ui";
+import { Checkbox, Label } from "@meetxl/ui";
 import { useState } from "react";
 
 export const CheckboxDocs: React.FC = () => {
@@ -8,8 +8,9 @@ export const CheckboxDocs: React.FC = () => {
     <div className="flex flex-col gap-4 p-4">
       <div className="flex gap-2 ">
         <div className="flex flex-row items-center gap-2">
-          <p>Disabled?</p>
+          <Label htmlFor="disabled">Disabled?</Label>
           <Checkbox
+            name="disabled"
             onCheckedChange={(state) => setDisabled(state.valueOf() as boolean)}
           />
         </div>
