@@ -20,7 +20,7 @@ export default function Layout({ children, pageOpts }: NextraThemeLayoutProps) {
         <meta name="og:image" content={pageOpts.frontMatter.image} />
       </Head>
       <div className="flex flex-col gap-4 p-8">
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4">
           {[...pages, ...folderChildren].map((item: PageMapItem) => {
             if (item.kind === "MdxPage") {
               return (
