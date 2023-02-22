@@ -9,3 +9,4 @@ export { Dialog, useDialog } from "./dialog/use-dialog";
 export * from "./avatar";
 export * from "./aspect-ratio";
 export * from "./label";
+export * from "./switch";
