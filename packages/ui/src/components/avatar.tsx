@@ -1,5 +1,6 @@
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { cva, VariantProps } from "class-variance-authority";
+import React, { forwardRef } from "react";
 
 const avatarStyles = cva(
   "relative flex shrink-0 overflow-hidden rounded-full",
@@ -30,7 +31,8 @@ const avatarFallbackStyles = cva(
   }
 );
 
-export interface AvatarProps extends AvatarPrimitive.AvatarProps {
+export interface AvatarProps
+  extends React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> {
   src: string;
   name: string;
   size?: VariantProps<typeof avatarStyles>["size"];
@@ -41,20 +43,27 @@ export interface AvatarProps extends AvatarPrimitive.AvatarProps {
   >;
 }
 
-export const Avatar: React.FC<AvatarProps> = (props) => {
+export const Avatar: React.FC<AvatarProps> = forwardRef<
+  React.ElementRef<typeof AvatarPrimitive.Root>,
+  AvatarProps
+>(({ size, src, imageProps, fallbackProps, name, ...props }, ref) => {
   return (
-    <AvatarPrimitive.Root className={avatarStyles({ size: props.size })}>
+    <AvatarPrimitive.Root
+      ref={ref}
+      className={avatarStyles({ size: size })}
+      {...props}
+    >
       <AvatarPrimitive.Image
-        src={props.src}
+        src={src}
         className="aspect-square h-full w-full"
-        {...props.imageProps}
+        {...imageProps}
       />
       <AvatarPrimitive.Fallback
-        className={avatarFallbackStyles({ size: props.size })}
-        {...props.fallbackProps}
+        className={avatarFallbackStyles({ size: size })}
+        {...fallbackProps}
       >
-        {props.name}
+        {name}
       </AvatarPrimitive.Fallback>
     </AvatarPrimitive.Root>
   );
-};
+});
