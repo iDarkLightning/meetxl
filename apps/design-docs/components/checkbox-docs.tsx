@@ -15,8 +15,9 @@ export const CheckboxDocs: React.FC = () => {
           />
         </div>
       </div>
-      <div className="flex flex-col gap-2">
-        <Checkbox disabled={disabled} />
+      <div className="flex gap-2">
+        <Checkbox disabled={disabled} variant="primary" />
+        <Checkbox disabled={disabled} variant="secondary" />
       </div>
     </div>
   );
