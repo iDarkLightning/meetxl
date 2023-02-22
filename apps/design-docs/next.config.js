@@ -4,4 +4,7 @@ const withNextra = require("nextra")({
 
 module.exports = withNextra({
   transpilePackages: ["@meetxl/ui"],
+  images: {
+    domains: ["images.unsplash.com"],
+  },
 });

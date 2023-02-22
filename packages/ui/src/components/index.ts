@@ -7,3 +7,4 @@ export {
 } from "./dialog/alert-dialog/use-alert-dialog";
 export { Dialog, useDialog } from "./dialog/use-dialog";
 export * from "./avatar";
+export * from "./aspect-ratio";
