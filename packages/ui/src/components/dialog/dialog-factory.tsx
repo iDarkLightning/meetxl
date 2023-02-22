@@ -14,7 +14,6 @@ import React, {
 } from "react";
 import useWindowSize from "../../hooks/use-window-size";
 import { cn } from "../../utils";
-import { Button } from "../button";
 
 type ContentForwarded<
   T extends CustomDomComponent<
@@ -115,7 +114,7 @@ export const createDialogContent = (
         onDragEnd={((_: any, info: any) => handleDragEnd(info)) as any}
         dragElastic={{ top: 0, bottom: 1 }}
         dragConstraints={{ top: 0, bottom: 0 }}
-        className="group fixed z-50 flex w-screen flex-col gap-6 rounded-md border-[0.025rem] border-neutral-stroke bg-background-primary p-8"
+        className="group fixed z-50 flex w-screen flex-col gap-6 rounded-md border-[0.025rem] border-neutral-stroke bg-background-primary px-8 py-6"
         {...rest}
       >
         <div
@@ -193,6 +192,4 @@ export const createDialogDescription = (
 
 export const SharedDialogFooter: React.FC<
   React.HTMLAttributes<HTMLDivElement>
-> = (props) => (
-  <div className="flex w-full flex-col-reverse gap-2 sm:flex-row" {...props} />
-);
+> = (props) => <div className="flex w-full gap-2" {...props} />;
