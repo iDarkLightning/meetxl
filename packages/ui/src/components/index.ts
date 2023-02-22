@@ -10,3 +10,4 @@ export * from "./avatar";
 export * from "./aspect-ratio";
 export * from "./label";
 export * from "./switch";
+export * from "./divider";
