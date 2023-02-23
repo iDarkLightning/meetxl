@@ -41,7 +41,7 @@ export const SelectMobile = forwardRef<
       <SelectPrimitive.Content
         ref={ref}
         className={cn(
-          "z-50 h-max overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-neutral animate-in slide-out-to-bottom-5",
+          "z-50 h-1/2 overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-neutral animate-in slide-out-to-bottom-5",
           className
         )}
         {...props}
@@ -59,7 +59,7 @@ export const SelectDesktop = forwardRef<
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
   return (
-    <SelectPrimitive.Portal className="">
+    <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         ref={ref}
         className={cn(
