@@ -67,6 +67,13 @@ export const createDialogContent = (
     ContentForwarded<typeof MotionPrimitive>["ref"],
     ContentForwarded<typeof MotionPrimitive>["props"]
   >((props, ref) => {
+    const transitionProps = {
+      type: "spring",
+      stiffness: 500,
+      damping: 30,
+      duration: 0.15,
+    };
+
     const [exitY, setExitY] = useState("5%");
     const innerRef = useRef<HTMLDivElement>(null);
     const controls = useAnimation();
@@ -76,12 +83,6 @@ export const createDialogContent = (
       controls.start({ y: "0", opacity: 1, transition: transitionProps });
     }, []);
 
-    const transitionProps = {
-      type: "spring",
-      stiffness: 500,
-      damping: 30,
-      duration: 0.15,
-    };
     const { children, setIsOpen, ...rest } = props;
 
     const handleDragEnd = (info: PanInfo) => {

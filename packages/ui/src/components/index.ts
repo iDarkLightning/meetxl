@@ -12,3 +12,4 @@ export * from "./label";
 export * from "./switch";
 export * from "./divider";
 export * from "./radio-group";
+export * from "./select";
