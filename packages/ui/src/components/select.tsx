@@ -1,17 +1,9 @@
-import * as SelectPrimitive from "./select-primitive";
-import React, { forwardRef, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronDown } from "lucide-react";
-import { cn } from "../utils";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import useWindowSize from "../hooks/use-window-size";
-import { AnimatePresence, motion, useAnimation } from "framer-motion";
-import { Portal as PortalPrimitive } from "@radix-ui/react-portal";
-import type { Scope } from "@radix-ui/react-context";
-import { DialogPortal } from "@radix-ui/react-dialog";
-import { DialogContent, DialogOverlay, DialogWrapper } from "./dialog/dialog";
-
-const MotionSelectContent = motion(SelectPrimitive.Content);
-const MotionViewport = motion(SelectPrimitive.Viewport);
-const MotionPortal = motion(SelectPrimitive.Portal);
+import { cn } from "../utils";
+import * as SelectPrimitive from "./select-primitive";
 
 export const Select = SelectPrimitive.Root;
 
@@ -20,6 +12,24 @@ export const SelectGroup = SelectPrimitive.Group;
 export const SelectValue = SelectPrimitive.Value;
 
 export const SelectPortal = SelectPrimitive.Portal;
+
+const SelectOverlay = forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Overlay>
+>((props, ref) => (
+  <SelectPrimitive.Overlay
+    ref={ref}
+    className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity"
+    asChild
+    {...props}
+  >
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    />
+  </SelectPrimitive.Overlay>
+));
 
 export const SelectTrigger = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
@@ -41,19 +51,15 @@ SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 export const SelectMobile = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content> & {
-    isOpen: boolean;
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  }
->(({ className, children, isOpen, setIsOpen, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
+>(({ className, children, ...props }, ref) => {
   return (
-    <SelectPortal>
+    <SelectPortal className="fixed bottom-0 left-0 right-0 z-50 flex h-full items-center">
       <SelectPrimitive.Content
         className={cn(
-          "relative z-50 mt-1 h-max overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-neutral shadow-md",
+          "z-50 h-max overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-background-primary py-2",
           className
         )}
-        position="popper"
         ref={ref}
         asChild
         {...props}
@@ -64,7 +70,7 @@ export const SelectMobile = forwardRef<
           exit={{ opacity: 0, y: "5%" }}
           transition={{ duration: 0.15 }}
         >
-          <SelectPrimitive.Viewport className="">
+          <SelectPrimitive.Viewport className="w-full">
             {children}
           </SelectPrimitive.Viewport>
         </motion.div>
@@ -75,16 +81,19 @@ export const SelectMobile = forwardRef<
 
 export const SelectDesktop = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
->(({ className, children, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content> & {
+    width: string | null;
+  }
+>(({ className, children, width, ...props }, ref) => {
   return (
-    <SelectPortal forceMount>
+    <SelectPortal style={{ ["--width" as string]: width }}>
       <SelectPrimitive.Content
         className={cn(
-          "relative z-50 mt-1 h-max overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-neutral shadow-md",
+          "relative z-50 mt-1 h-max max-h-48 w-[var(--width)] overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-neutral p-1 shadow-md",
           className
         )}
         position="popper"
+        align="end"
         ref={ref}
         asChild
         {...props}
@@ -95,9 +104,7 @@ export const SelectDesktop = forwardRef<
           exit={{ opacity: 0, y: "-5%" }}
           transition={{ duration: 0.15 }}
         >
-          <SelectPrimitive.Viewport className="p-1">
-            {children}
-          </SelectPrimitive.Viewport>
+          <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
         </motion.div>
       </SelectPrimitive.Content>
     </SelectPortal>
@@ -107,14 +114,13 @@ export const SelectDesktop = forwardRef<
 export const SelectContent = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content> & {
-    isOpen: boolean;
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    width: string | null;
   }
 >((props, ref) => {
   const { isMobile } = useWindowSize();
 
   if (isMobile) return <SelectMobile {...props} ref={ref} />;
-  return <SelectDesktop {...props} ref={ref} />;
+  return <SelectDesktop {...props} ref={ref} width={props.width} />;
 });
 SelectContent.displayName = SelectPrimitive.Content.displayName;
 
@@ -140,7 +146,7 @@ export const SelectItem = forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded-md py-1.5 px-8 text-sm font-medium outline-none hover:bg-neutral-700 data-[highlighted]:bg-neutral-700",
+      "relative flex cursor-default select-none items-center py-1.5 px-8 text-sm font-medium outline-none hover:bg-neutral-700 data-[highlighted]:bg-neutral-700 sm:rounded-md",
       className
     )}
     {...props}
@@ -168,9 +174,12 @@ export const SelectSeparator = forwardRef<
 ));
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
-export const SelectTest = () => {
+export const SelectTest: React.FC<{ dialogClose?: any }> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState<string | undefined>(undefined);
+  const { isMobile } = useWindowSize();
+
+  const ref = useRef<HTMLButtonElement>(null);
 
   return (
     <Select
@@ -179,21 +188,49 @@ export const SelectTest = () => {
       value={value}
       onValueChange={(value) => setValue(value)}
     >
-      <SelectTrigger>
-        <SelectValue placeholder="Theme">{value}</SelectValue>
+      <SelectTrigger ref={ref}>
+        <SelectValue placeholder="Theme" />
       </SelectTrigger>
       <AnimatePresence>
         {isOpen && (
-          <SelectContent isOpen={isOpen} setIsOpen={setIsOpen}>
-            <SelectGroup>
-              <SelectLabel>Fruits</SelectLabel>
-              <SelectItem value="apple">Apple</SelectItem>
-              <SelectItem value="banana">Banana</SelectItem>
-              <SelectItem value="blueberry">Blueberry</SelectItem>
-              <SelectItem value="grapes">Grapes</SelectItem>
-              <SelectItem value="pineapple">Pineapple</SelectItem>
-            </SelectGroup>
-          </SelectContent>
+          <>
+            {isMobile && <SelectOverlay />}
+            <SelectContent
+              width={
+                ref.current?.clientWidth
+                  ? ref.current.clientWidth + 3 + "px"
+                  : null
+              }
+            >
+              <SelectGroup>
+                <SelectLabel>Fruits</SelectLabel>
+                <SelectItem value="apple">Apple</SelectItem>
+                <SelectItem value="banana">Banana</SelectItem>
+                <SelectItem value="blueberry">Blueberry</SelectItem>
+                <SelectItem value="grapes">Grapes</SelectItem>
+                <SelectItem value="pineapple">Pineapple</SelectItem>
+              </SelectGroup>
+              <SelectSeparator />
+              <SelectGroup>
+                <SelectLabel>Vegetables</SelectLabel>
+                <SelectItem value="aubergine">Aubergine</SelectItem>
+                <SelectItem value="broccoli">Broccoli</SelectItem>
+                <SelectItem value="carrot" disabled>
+                  Carrot
+                </SelectItem>
+                <SelectItem value="courgette">Courgette</SelectItem>
+                <SelectItem value="leek">Leek</SelectItem>
+              </SelectGroup>
+              <SelectSeparator />
+              <SelectGroup>
+                <SelectLabel>Meat</SelectLabel>
+                <SelectItem value="beef">Beef</SelectItem>
+                <SelectItem value="chicken">Chicken</SelectItem>
+                <SelectItem value="lamb">Lamb</SelectItem>
+                <SelectItem value="pork">Pork</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </>
         )}
       </AnimatePresence>
     </Select>

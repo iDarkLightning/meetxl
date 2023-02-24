@@ -1,4 +1,11 @@
-import { Button, Dialog, Input, Label, useDialog } from "@meetxl/ui";
+import {
+  Button,
+  Dialog,
+  Input,
+  Label,
+  SelectTest,
+  useDialog,
+} from "@meetxl/ui";
 import { DialogAction } from "@meetxl/ui/src/components/dialog/dialog";
 import { useState } from "react";
 
@@ -51,6 +58,10 @@ export const DialogDocs: React.FC = () => {
           <div className="flex flex-col gap-2">
             <Label htmlFor="endTime">End Time</Label>
             <Input name="endTime" type="datetime-local" fullWidth />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label>Attribute</Label>
+            <SelectTest />
           </div>
         </div>
       </Dialog>

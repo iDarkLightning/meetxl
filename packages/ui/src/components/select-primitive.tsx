@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable no-inner-declarations */
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { clamp } from "@radix-ui/number";
@@ -26,7 +27,7 @@ import { RemoveScroll } from "react-remove-scroll";
 
 import type * as Radix from "@radix-ui/react-primitive";
 import type { Scope } from "@radix-ui/react-context";
-import { Presence } from "@radix-ui/react-presence";
+import { useEffect } from "react";
 
 type Direction = "ltr" | "rtl";
 
@@ -71,6 +72,9 @@ type SelectContextValue = {
     y: number;
   } | null>;
   disabled?: boolean;
+
+  valueContent: string;
+  onValueContentChange(value: string): void;
 };
 
 const [SelectProvider, useSelectContext] =
@@ -123,6 +127,7 @@ const Select: React.FC<SelectProps> = (props: ScopedProps<SelectProps>) => {
   const [valueNode, setValueNode] = React.useState<SelectValueElement | null>(
     null
   );
+  const [valueContent, setValueContent] = React.useState("");
   const [valueNodeHasChildren, setValueNodeHasChildren] = React.useState(false);
   const direction = useDirection(dir);
   const [open = false, setOpen] = useControllableState({
@@ -162,10 +167,10 @@ const Select: React.FC<SelectProps> = (props: ScopedProps<SelectProps>) => {
         scope={__scopeSelect}
         trigger={trigger}
         onTriggerChange={setTrigger}
+        valueContent={valueContent}
+        onValueContentChange={setValueContent}
         valueNode={valueNode}
-        onValueNodeChange={() => {
-          setValueNode;
-        }}
+        onValueNodeChange={setValueNode}
         valueNodeHasChildren={valueNodeHasChildren}
         onValueNodeHasChildrenChange={setValueNodeHasChildren}
         contentId={useId()}
@@ -372,7 +377,7 @@ const SelectValue = React.forwardRef<SelectValueElement, SelectValueProps>(
         // through the item they came from
         style={{ pointerEvents: "none" }}
       >
-        {children ?? placeholder}
+        {context.valueContent || placeholder}
       </Primitive.span>
     );
   }
@@ -408,36 +413,49 @@ SelectIcon.displayName = ICON_NAME;
 
 const PORTAL_NAME = "SelectPortal";
 
-type PortalContextValue = { forceMount?: true };
-const [PortalProvider, usePortalContext] =
-  createSelectContext<PortalContextValue>(PORTAL_NAME, {
-    forceMount: undefined,
-  });
-
 type PortalProps = React.ComponentPropsWithoutRef<typeof PortalPrimitive>;
 interface SelectPortalProps extends Omit<PortalProps, "asChild"> {
   children?: React.ReactNode;
-  forceMount?: true;
 }
 
 const SelectPortal: React.FC<SelectPortalProps> = (
   props: ScopedProps<SelectPortalProps>
 ) => {
-  const { __scopeSelect, forceMount, children, ...portalProps } = props;
-  const context = useSelectContext(PORTAL_NAME, __scopeSelect);
-
-  return (
-    <PortalProvider scope={__scopeSelect} forceMount={forceMount}>
-      <Presence present={forceMount || context.open}>
-        <PortalPrimitive asChild {...portalProps}>
-          {children}
-        </PortalPrimitive>
-      </Presence>
-    </PortalProvider>
-  );
+  return <PortalPrimitive asChild {...props} />;
 };
 
 SelectPortal.displayName = PORTAL_NAME;
+
+/* -------------------------------------------------------------------------------------------------
+ * SelectOverlay
+ * -----------------------------------------------------------------------------------------------*/
+
+const OVERLAY_NAME = "SelectOverlay";
+
+type SelectOverlayElement = React.ElementRef<typeof Primitive.div>;
+interface SelectOverlayProps
+  extends Radix.ComponentPropsWithoutRef<typeof Primitive.div> {}
+
+const SelectOverlay = React.forwardRef<
+  SelectOverlayElement,
+  SelectOverlayProps
+>((props: ScopedProps<SelectOverlayProps>, forwardedRef) => {
+  const context = useSelectContext(OVERLAY_NAME, props.__scopeSelect);
+
+  if (context.open) {
+    return (
+      <RemoveScroll as={Slot} allowPinchZoom>
+        <Primitive.div
+          {...props}
+          ref={forwardedRef}
+          style={{ pointerEvents: "auto", ...props.style }}
+        />
+      </RemoveScroll>
+    );
+  }
+
+  return null;
+});
 
 /* -------------------------------------------------------------------------------------------------
  * SelectContent
@@ -446,23 +464,13 @@ SelectPortal.displayName = PORTAL_NAME;
 const CONTENT_NAME = "SelectContent";
 
 type SelectContentElement = SelectContentImplElement;
-interface SelectContentProps extends SelectContentImplProps {
-  forceMount?: true;
-}
+interface SelectContentProps extends SelectContentImplProps {}
 
 const SelectContent = React.forwardRef<
   SelectContentElement,
   SelectContentProps
 >((props: ScopedProps<SelectContentProps>, forwardedRef) => {
-  const portalContext = usePortalContext(CONTENT_NAME, props.__scopeSelect);
-  const context = useSelectContext(CONTENT_NAME, props.__scopeSelect);
-  const { forceMount = portalContext.forceMount, ...contentProps } = props;
-
-  return (
-    <Presence present={forceMount || context.open}>
-      <SelectContentImpl {...contentProps} ref={forwardedRef} />
-    </Presence>
-  );
+  return <SelectContentImpl {...props} ref={forwardedRef} />;
 });
 
 SelectContent.displayName = CONTENT_NAME;
@@ -1160,21 +1168,13 @@ const VIEWPORT_NAME = "SelectViewport";
 
 type SelectViewportElement = React.ElementRef<typeof Primitive.div>;
 type PrimitiveDivProps = Radix.ComponentPropsWithoutRef<typeof Primitive.div>;
-interface SelectViewportProps extends PrimitiveDivProps {
-  forceMount?: true;
-}
+interface SelectViewportProps extends PrimitiveDivProps {}
 
 const SelectViewport = React.forwardRef<
   SelectViewportElement,
   SelectViewportProps
 >((props: ScopedProps<SelectViewportProps>, forwardedRef) => {
-  const portalContext = usePortalContext(VIEWPORT_NAME, props.__scopeSelect);
-  const {
-    forceMount = portalContext.forceMount,
-    __scopeSelect,
-    ...viewportProps
-  } = props;
-  const selectContext = useSelectContext(VIEWPORT_NAME, __scopeSelect);
+  const { __scopeSelect, ...viewportProps } = props;
   const contentContext = useSelectContentContext(VIEWPORT_NAME, __scopeSelect);
   const viewportContext = useSelectViewportContext(
     VIEWPORT_NAME,
@@ -1193,61 +1193,55 @@ const SelectViewport = React.forwardRef<
           __html: `[data-radix-select-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-radix-select-viewport]::-webkit-scrollbar{display:none}`,
         }}
       />
-      <Presence present={forceMount || selectContext.open}>
-        <Collection.Slot scope={__scopeSelect}>
-          <Primitive.div
-            data-radix-select-viewport=""
-            role="presentation"
-            {...viewportProps}
-            ref={composedRefs}
-            style={{
-              // we use position: 'relative' here on the `viewport` so that when we call
-              // `selectedItem.offsetTop` in calculations, the offset is relative to the viewport
-              // (independent of the scrollUpButton).
-              position: "relative",
-              flex: 1,
-              overflow: "auto",
-              ...viewportProps.style,
-            }}
-            onScroll={composeEventHandlers(viewportProps.onScroll, (event) => {
-              const viewport = event.currentTarget;
-              const { contentWrapper, shouldExpandOnScrollRef } =
-                viewportContext;
-              if (shouldExpandOnScrollRef?.current && contentWrapper) {
-                const scrolledBy = Math.abs(
-                  prevScrollTopRef.current - viewport.scrollTop
-                );
-                if (scrolledBy > 0) {
-                  const availableHeight =
-                    window.innerHeight - CONTENT_MARGIN * 2;
-                  const cssMinHeight = parseFloat(
-                    contentWrapper.style.minHeight
+      <Collection.Slot scope={__scopeSelect}>
+        <Primitive.div
+          data-radix-select-viewport=""
+          role="presentation"
+          {...viewportProps}
+          ref={composedRefs}
+          style={{
+            // we use position: 'relative' here on the `viewport` so that when we call
+            // `selectedItem.offsetTop` in calculations, the offset is relative to the viewport
+            // (independent of the scrollUpButton).
+            position: "relative",
+            flex: 1,
+            overflow: "auto",
+            ...viewportProps.style,
+          }}
+          onScroll={composeEventHandlers(viewportProps.onScroll, (event) => {
+            const viewport = event.currentTarget;
+            const { contentWrapper, shouldExpandOnScrollRef } = viewportContext;
+            if (shouldExpandOnScrollRef?.current && contentWrapper) {
+              const scrolledBy = Math.abs(
+                prevScrollTopRef.current - viewport.scrollTop
+              );
+              if (scrolledBy > 0) {
+                const availableHeight = window.innerHeight - CONTENT_MARGIN * 2;
+                const cssMinHeight = parseFloat(contentWrapper.style.minHeight);
+                const cssHeight = parseFloat(contentWrapper.style.height);
+                const prevHeight = Math.max(cssMinHeight, cssHeight);
+
+                if (prevHeight < availableHeight) {
+                  const nextHeight = prevHeight + scrolledBy;
+                  const clampedNextHeight = Math.min(
+                    availableHeight,
+                    nextHeight
                   );
-                  const cssHeight = parseFloat(contentWrapper.style.height);
-                  const prevHeight = Math.max(cssMinHeight, cssHeight);
+                  const heightDiff = nextHeight - clampedNextHeight;
 
-                  if (prevHeight < availableHeight) {
-                    const nextHeight = prevHeight + scrolledBy;
-                    const clampedNextHeight = Math.min(
-                      availableHeight,
-                      nextHeight
-                    );
-                    const heightDiff = nextHeight - clampedNextHeight;
-
-                    contentWrapper.style.height = clampedNextHeight + "px";
-                    if (contentWrapper.style.bottom === "0px") {
-                      viewport.scrollTop = heightDiff > 0 ? heightDiff : 0;
-                      // ensure the content stays pinned to the bottom
-                      contentWrapper.style.justifyContent = "flex-end";
-                    }
+                  contentWrapper.style.height = clampedNextHeight + "px";
+                  if (contentWrapper.style.bottom === "0px") {
+                    viewport.scrollTop = heightDiff > 0 ? heightDiff : 0;
+                    // ensure the content stays pinned to the bottom
+                    contentWrapper.style.justifyContent = "flex-end";
                   }
                 }
               }
-              prevScrollTopRef.current = viewport.scrollTop;
-            })}
-          />
-        </Collection.Slot>
-      </Presence>
+            }
+            prevScrollTopRef.current = viewport.scrollTop;
+          })}
+        />
+      </Collection.Slot>
     </>
   );
 });
@@ -1491,6 +1485,12 @@ const SelectItemText = React.forwardRef<
     return () => onNativeOptionRemove(nativeOption);
   }, [onNativeOptionAdd, onNativeOptionRemove, nativeOption]);
 
+  useEffect(() => {
+    if (itemContext.isSelected) {
+      context.onValueContentChange(itemTextProps.children?.toString() ?? "");
+    }
+  }, [itemContext.isSelected]);
+
   return (
     <>
       <Primitive.span
@@ -1500,11 +1500,11 @@ const SelectItemText = React.forwardRef<
       />
 
       {/* Portal the select item text into the trigger value node */}
-      {itemContext.isSelected &&
+      {/* {itemContext.isSelected &&
       context.valueNode &&
       !context.valueNodeHasChildren
         ? ReactDOM.createPortal(itemTextProps.children, context.valueNode)
-        : null}
+        : null} */}
     </>
   );
 });
@@ -1561,17 +1561,16 @@ const SelectScrollUpButton = React.forwardRef<
     viewportContext.onScrollButtonChange
   );
 
-  function handleScroll(viewport: HTMLDivElement) {
-    const canScrollUp = viewport.scrollTop > 0;
-    setCanScrollUp(canScrollUp);
-  }
   useLayoutEffect(() => {
     if (contentContext.viewport && contentContext.isPositioned) {
       const viewport = contentContext.viewport;
-      handleScroll(viewport);
-      viewport.addEventListener("scroll", () => handleScroll(viewport));
-      return () =>
-        viewport.removeEventListener("scroll", () => handleScroll(viewport));
+      function handleScroll() {
+        const canScrollUp = viewport.scrollTop > 0;
+        setCanScrollUp(canScrollUp);
+      }
+      handleScroll();
+      viewport.addEventListener("scroll", handleScroll);
+      return () => viewport.removeEventListener("scroll", handleScroll);
     }
   }, [contentContext.viewport, contentContext.isPositioned]);
 
@@ -1619,21 +1618,19 @@ const SelectScrollDownButton = React.forwardRef<
     viewportContext.onScrollButtonChange
   );
 
-  function handleScroll(viewport: HTMLDivElement) {
-    const maxScroll = viewport.scrollHeight - viewport.clientHeight;
-    // we use Math.ceil here because if the UI is zoomed-in
-    // `scrollTop` is not always reported as an integer
-    const canScrollDown = Math.ceil(viewport.scrollTop) < maxScroll;
-    setCanScrollDown(canScrollDown);
-  }
-
   useLayoutEffect(() => {
     if (contentContext.viewport && contentContext.isPositioned) {
       const viewport = contentContext.viewport;
-      handleScroll(viewport);
-      viewport.addEventListener("scroll", () => handleScroll(viewport));
-      return () =>
-        viewport.removeEventListener("scroll", () => handleScroll(viewport));
+      function handleScroll() {
+        const maxScroll = viewport.scrollHeight - viewport.clientHeight;
+        // we use Math.ceil here because if the UI is zoomed-in
+        // `scrollTop` is not always reported as an integer
+        const canScrollDown = Math.ceil(viewport.scrollTop) < maxScroll;
+        setCanScrollDown(canScrollDown);
+      }
+      handleScroll();
+      viewport.addEventListener("scroll", handleScroll);
+      return () => viewport.removeEventListener("scroll", handleScroll);
     }
   }, [contentContext.viewport, contentContext.isPositioned]);
 
@@ -1898,6 +1895,7 @@ const Trigger = SelectTrigger;
 const Value = SelectValue;
 const Icon = SelectIcon;
 const Portal = SelectPortal;
+const Overlay = SelectOverlay;
 const Content = SelectContent;
 const Viewport = SelectViewport;
 const Group = SelectGroup;
@@ -1918,6 +1916,7 @@ export {
   SelectValue,
   SelectIcon,
   SelectPortal,
+  SelectOverlay,
   SelectContent,
   SelectViewport,
   SelectGroup,
@@ -1935,6 +1934,7 @@ export {
   Value,
   Icon,
   Portal,
+  Overlay,
   Content,
   Viewport,
   Group,
@@ -1953,6 +1953,7 @@ export type {
   SelectValueProps,
   SelectIconProps,
   SelectPortalProps,
+  SelectOverlayProps,
   SelectContentProps,
   SelectViewportProps,
   SelectGroupProps,
