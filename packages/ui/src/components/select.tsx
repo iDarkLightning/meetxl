@@ -147,6 +147,7 @@ export const SelectItem = forwardRef<
     ref={ref}
     className={cn(
       "relative flex cursor-default select-none items-center py-1.5 px-8 text-sm font-medium outline-none hover:bg-neutral-700 data-[highlighted]:bg-neutral-700 sm:rounded-md",
+      props.disabled && "opacity-40",
       className
     )}
     {...props}
