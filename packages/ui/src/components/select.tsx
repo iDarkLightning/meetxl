@@ -1,18 +1,25 @@
-import * as SelectPrimitive from "@radix-ui/react-select";
-import { forwardRef, useEffect } from "react";
+import * as SelectPrimitive from "./select-primitive";
+import React, { forwardRef, useEffect, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "../utils";
 import useWindowSize from "../hooks/use-window-size";
-import { motion, useAnimation } from "framer-motion";
+import { AnimatePresence, motion, useAnimation } from "framer-motion";
+import { Portal as PortalPrimitive } from "@radix-ui/react-portal";
+import type { Scope } from "@radix-ui/react-context";
+import { DialogPortal } from "@radix-ui/react-dialog";
+import { DialogContent, DialogOverlay, DialogWrapper } from "./dialog/dialog";
 
 const MotionSelectContent = motion(SelectPrimitive.Content);
 const MotionViewport = motion(SelectPrimitive.Viewport);
+const MotionPortal = motion(SelectPrimitive.Portal);
 
 export const Select = SelectPrimitive.Root;
 
 export const SelectGroup = SelectPrimitive.Group;
 
 export const SelectValue = SelectPrimitive.Value;
+
+export const SelectPortal = SelectPrimitive.Portal;
 
 export const SelectTrigger = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
@@ -21,7 +28,7 @@ export const SelectTrigger = forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex min-w-[8rem] items-center justify-between rounded-md border border-neutral-stroke bg-neutral py-1 px-3 font-medium disabled:cursor-not-allowed disabled:opacity-80",
+      "flex min-w-[8rem] items-center justify-between rounded-md border border-neutral-stroke bg-neutral py-1.5 px-3 text-sm focus:outline-none focus-visible:ring-1 focus-visible:ring-neutral-disco focus-visible:ring-opacity-40 disabled:cursor-not-allowed disabled:opacity-80",
       className
     )}
     {...props}
@@ -34,23 +41,35 @@ SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 export const SelectMobile = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
->(({ className, children, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content> & {
+    isOpen: boolean;
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  }
+>(({ className, children, isOpen, setIsOpen, ...props }, ref) => {
   return (
-    <SelectPrimitive.Portal className="fixed bottom-0 left-0 right-0 z-50 flex h-full items-center">
+    <SelectPortal>
       <SelectPrimitive.Content
-        ref={ref}
         className={cn(
-          "z-50 h-1/2 overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-neutral animate-in slide-out-to-bottom-5",
+          "relative z-50 mt-1 h-max overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-neutral shadow-md",
           className
         )}
+        position="popper"
+        ref={ref}
+        asChild
         {...props}
       >
-        <SelectPrimitive.Viewport className="w-full p-1">
-          {children}
-        </SelectPrimitive.Viewport>
+        <motion.div
+          initial={{ opacity: 0, y: "5%" }}
+          animate={{ opacity: 1, y: "0" }}
+          exit={{ opacity: 0, y: "5%" }}
+          transition={{ duration: 0.15 }}
+        >
+          <SelectPrimitive.Viewport className="">
+            {children}
+          </SelectPrimitive.Viewport>
+        </motion.div>
       </SelectPrimitive.Content>
-    </SelectPrimitive.Portal>
+    </SelectPortal>
   );
 });
 
@@ -59,26 +78,38 @@ export const SelectDesktop = forwardRef<
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
   return (
-    <SelectPrimitive.Portal>
+    <SelectPortal forceMount>
       <SelectPrimitive.Content
-        ref={ref}
         className={cn(
-          "relative z-50 h-max overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-neutral animate-in slide-out-to-bottom-5",
+          "relative z-50 mt-1 h-max overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-neutral shadow-md",
           className
         )}
+        position="popper"
+        ref={ref}
+        asChild
         {...props}
       >
-        <SelectPrimitive.Viewport className="w-full p-1">
-          {children}
-        </SelectPrimitive.Viewport>
+        <motion.div
+          initial={{ opacity: 0, y: "-5%" }}
+          animate={{ opacity: 1, y: "0" }}
+          exit={{ opacity: 0, y: "-5%" }}
+          transition={{ duration: 0.15 }}
+        >
+          <SelectPrimitive.Viewport className="p-1">
+            {children}
+          </SelectPrimitive.Viewport>
+        </motion.div>
       </SelectPrimitive.Content>
-    </SelectPrimitive.Portal>
+    </SelectPortal>
   );
 });
 
 export const SelectContent = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content> & {
+    isOpen: boolean;
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  }
 >((props, ref) => {
   const { isMobile } = useWindowSize();
 
@@ -94,7 +125,7 @@ export const SelectLabel = forwardRef<
   <SelectPrimitive.Label
     ref={ref}
     className={cn(
-      "py-1.5 pr-2 pl-8 text-sm font-semibold text-neutral-400",
+      "py-1.5 px-8 text-sm font-semibold text-neutral-400",
       className
     )}
     {...props}
@@ -109,7 +140,7 @@ export const SelectItem = forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded-md py-1.5 pr-2 pl-8 text-sm font-medium outline-none hover:bg-neutral-700 data-[highlighted]:bg-neutral-700 data-[state=checked]:bg-neutral-700",
+      "relative flex cursor-default select-none items-center rounded-md py-1.5 px-8 text-sm font-medium outline-none hover:bg-neutral-700 data-[highlighted]:bg-neutral-700",
       className
     )}
     {...props}
@@ -136,3 +167,35 @@ export const SelectSeparator = forwardRef<
   />
 ));
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
+
+export const SelectTest = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [value, setValue] = useState<string | undefined>(undefined);
+
+  return (
+    <Select
+      open={isOpen}
+      onOpenChange={(open) => setIsOpen(open)}
+      value={value}
+      onValueChange={(value) => setValue(value)}
+    >
+      <SelectTrigger>
+        <SelectValue placeholder="Theme">{value}</SelectValue>
+      </SelectTrigger>
+      <AnimatePresence>
+        {isOpen && (
+          <SelectContent isOpen={isOpen} setIsOpen={setIsOpen}>
+            <SelectGroup>
+              <SelectLabel>Fruits</SelectLabel>
+              <SelectItem value="apple">Apple</SelectItem>
+              <SelectItem value="banana">Banana</SelectItem>
+              <SelectItem value="blueberry">Blueberry</SelectItem>
+              <SelectItem value="grapes">Grapes</SelectItem>
+              <SelectItem value="pineapple">Pineapple</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        )}
+      </AnimatePresence>
+    </Select>
+  );
+};
