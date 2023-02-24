@@ -49,15 +49,30 @@ export const DialogDocs: React.FC = () => {
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-2">
             <Label htmlFor="name">Name</Label>
-            <Input name="name" placeholder="Meeting Name" fullWidth />
+            <Input
+              name="name"
+              placeholder="Meeting Name"
+              fullWidth
+              autoFocus={false}
+            />
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="startTime">Start Time</Label>
-            <Input name="startTime" type="datetime-local" fullWidth />
+            <Input
+              name="startTime"
+              type="datetime-local"
+              fullWidth
+              autoFocus={false}
+            />
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="endTime">End Time</Label>
-            <Input name="endTime" type="datetime-local" fullWidth />
+            <Input
+              name="endTime"
+              type="datetime-local"
+              fullWidth
+              autoFocus={false}
+            />
           </div>
           <div className="flex flex-col gap-2">
             <Label>Attribute</Label>
