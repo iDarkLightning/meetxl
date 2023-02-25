@@ -1,8 +1,8 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Check, ChevronDown } from "lucide-react";
-import React, { forwardRef, useEffect, useRef, useState } from "react";
-import useWindowSize from "../hooks/use-window-size";
-import { cn } from "../utils";
+import React, { forwardRef } from "react";
+import useWindowSize from "../../hooks/use-window-size";
+import { cn } from "../../utils";
 import * as SelectPrimitive from "./select-primitive";
 
 export const Select = SelectPrimitive.Root;
@@ -13,7 +13,7 @@ export const SelectValue = SelectPrimitive.Value;
 
 export const SelectPortal = SelectPrimitive.Portal;
 
-const SelectOverlay = forwardRef<
+export const SelectOverlay = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Overlay>
 >((props, ref) => (
@@ -175,65 +175,65 @@ export const SelectSeparator = forwardRef<
 ));
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
-export const SelectTest: React.FC<{ dialogClose?: any }> = (props) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState<string | undefined>(undefined);
-  const { isMobile } = useWindowSize();
+// export const SelectTest: React.FC<{ dialogClose?: any }> = (props) => {
+//   const [isOpen, setIsOpen] = useState(false);
+//   const [value, setValue] = useState<string | undefined>(undefined);
+//   const { isMobile } = useWindowSize();
 
-  const ref = useRef<HTMLButtonElement>(null);
+//   const ref = useRef<HTMLButtonElement>(null);
 
-  return (
-    <Select
-      open={isOpen}
-      onOpenChange={(open) => setIsOpen(open)}
-      value={value}
-      onValueChange={(value) => setValue(value)}
-    >
-      <SelectTrigger ref={ref}>
-        <SelectValue placeholder="Theme" />
-      </SelectTrigger>
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            {isMobile && <SelectOverlay />}
-            <SelectContent
-              width={
-                ref.current?.clientWidth
-                  ? ref.current.clientWidth + 3 + "px"
-                  : null
-              }
-            >
-              <SelectGroup>
-                <SelectLabel>Fruits</SelectLabel>
-                <SelectItem value="apple">Apple</SelectItem>
-                <SelectItem value="banana">Banana</SelectItem>
-                <SelectItem value="blueberry">Blueberry</SelectItem>
-                <SelectItem value="grapes">Grapes</SelectItem>
-                <SelectItem value="pineapple">Pineapple</SelectItem>
-              </SelectGroup>
-              <SelectSeparator />
-              <SelectGroup>
-                <SelectLabel>Vegetables</SelectLabel>
-                <SelectItem value="aubergine">Aubergine</SelectItem>
-                <SelectItem value="broccoli">Broccoli</SelectItem>
-                <SelectItem value="carrot" disabled>
-                  Carrot
-                </SelectItem>
-                <SelectItem value="courgette">Courgette</SelectItem>
-                <SelectItem value="leek">Leek</SelectItem>
-              </SelectGroup>
-              <SelectSeparator />
-              <SelectGroup>
-                <SelectLabel>Meat</SelectLabel>
-                <SelectItem value="beef">Beef</SelectItem>
-                <SelectItem value="chicken">Chicken</SelectItem>
-                <SelectItem value="lamb">Lamb</SelectItem>
-                <SelectItem value="pork">Pork</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </>
-        )}
-      </AnimatePresence>
-    </Select>
-  );
-};
+//   return (
+//     <Select
+//       open={isOpen}
+//       onOpenChange={(open) => setIsOpen(open)}
+//       value={value}
+//       onValueChange={(value) => setValue(value)}
+//     >
+//       <SelectTrigger ref={ref}>
+//         <SelectValue placeholder="Theme" />
+//       </SelectTrigger>
+//       <AnimatePresence>
+//         {isOpen && (
+//           <>
+//             {isMobile && <SelectOverlay />}
+//             <SelectContent
+//               width={
+//                 ref.current?.clientWidth
+//                   ? ref.current.clientWidth + 3 + "px"
+//                   : null
+//               }
+//             >
+//               <SelectGroup>
+//                 <SelectLabel>Fruits</SelectLabel>
+//                 <SelectItem value="apple">Apple</SelectItem>
+//                 <SelectItem value="banana">Banana</SelectItem>
+//                 <SelectItem value="blueberry">Blueberry</SelectItem>
+//                 <SelectItem value="grapes">Grapes</SelectItem>
+//                 <SelectItem value="pineapple">Pineapple</SelectItem>
+//               </SelectGroup>
+//               <SelectSeparator />
+//               <SelectGroup>
+//                 <SelectLabel>Vegetables</SelectLabel>
+//                 <SelectItem value="aubergine">Aubergine</SelectItem>
+//                 <SelectItem value="broccoli">Broccoli</SelectItem>
+//                 <SelectItem value="carrot" disabled>
+//                   Carrot
+//                 </SelectItem>
+//                 <SelectItem value="courgette">Courgette</SelectItem>
+//                 <SelectItem value="leek">Leek</SelectItem>
+//               </SelectGroup>
+//               <SelectSeparator />
+//               <SelectGroup>
+//                 <SelectLabel>Meat</SelectLabel>
+//                 <SelectItem value="beef">Beef</SelectItem>
+//                 <SelectItem value="chicken">Chicken</SelectItem>
+//                 <SelectItem value="lamb">Lamb</SelectItem>
+//                 <SelectItem value="pork">Pork</SelectItem>
+//               </SelectGroup>
+//             </SelectContent>
+//           </>
+//         )}
+//       </AnimatePresence>
+//     </Select>
+//   );
+// };

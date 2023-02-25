@@ -1,26 +1,37 @@
-import {
-  Button,
-  Input,
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectPortal,
-  SelectSeparator,
-  SelectTest,
-  SelectTrigger,
-  SelectValue,
-} from "@meetxl/ui";
-import { useState } from "react";
-import { AnimatePresence } from "framer-motion";
+import { Select } from "@meetxl/ui";
 
 export const SelectDocs: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <div className="flex items-start gap-2">
-      <SelectTest />
+      <Select
+        placeholder="Attributes"
+        items={[
+          {
+            label: "Fruits",
+            items: [
+              { display: "Apple", value: "apple" },
+              { display: "Banana", value: "banana" },
+              { display: "Blueberry", value: "blueberry" },
+            ],
+          },
+          {
+            label: "Vegetables",
+            items: [
+              { display: "Broccoli", value: "broccoli" },
+              { display: "Cabbage", value: "cabbage" },
+              { display: "Carrot", value: "carrot" },
+            ],
+          },
+          {
+            label: "Meat",
+            items: [
+              { display: "Beef", value: "beef" },
+              { display: "Chicken", value: "chicken" },
+              { display: "Lamb", value: "lamb" },
+            ],
+          },
+        ]}
+      />
     </div>
   );
 };

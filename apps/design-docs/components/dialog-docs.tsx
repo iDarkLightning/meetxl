@@ -1,11 +1,4 @@
-import {
-  Button,
-  Dialog,
-  Input,
-  Label,
-  SelectTest,
-  useDialog,
-} from "@meetxl/ui";
+import { Button, Dialog, Input, Label, Select, useDialog } from "@meetxl/ui";
 import { DialogAction } from "@meetxl/ui/src/components/dialog/dialog";
 import { useState } from "react";
 
@@ -76,7 +69,35 @@ export const DialogDocs: React.FC = () => {
           </div>
           <div className="flex flex-col gap-2">
             <Label>Attribute</Label>
-            <SelectTest />
+            <Select
+              placeholder="Attributes"
+              items={[
+                {
+                  label: "Fruits",
+                  items: [
+                    { display: "Apple", value: "apple" },
+                    { display: "Banana", value: "banana" },
+                    { display: "Blueberry", value: "blueberry" },
+                  ],
+                },
+                {
+                  label: "Vegetables",
+                  items: [
+                    { display: "Broccoli", value: "broccoli" },
+                    { display: "Cabbage", value: "cabbage" },
+                    { display: "Carrot", value: "carrot" },
+                  ],
+                },
+                {
+                  label: "Meat",
+                  items: [
+                    { display: "Beef", value: "beef" },
+                    { display: "Chicken", value: "chicken" },
+                    { display: "Lamb", value: "lamb" },
+                  ],
+                },
+              ]}
+            />
           </div>
         </div>
       </Dialog>

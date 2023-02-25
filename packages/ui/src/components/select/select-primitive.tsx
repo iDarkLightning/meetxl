@@ -1,7 +1,11 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable no-inner-declarations */
+/*
+ * Mofidy https://github.com/radix-ui/primitives/blob/main/packages/react/select/src/Select.tsx
+ * to allow for exit animations, since it is not supported by default.
+ *
+ * Will be replace once this issue is resolved: https://github.com/radix-ui/primitives/issues/1893
+ */
+
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { clamp } from "@radix-ui/number";
 import { composeEventHandlers } from "@radix-ui/primitive";
 import { createCollection } from "@radix-ui/react-collection";
@@ -234,7 +238,7 @@ type SelectTriggerElement = React.ElementRef<typeof Primitive.button>;
 type PrimitiveButtonProps = Radix.ComponentPropsWithoutRef<
   typeof Primitive.button
 >;
-interface SelectTriggerProps extends PrimitiveButtonProps {}
+type SelectTriggerProps = PrimitiveButtonProps;
 
 const SelectTrigger = React.forwardRef<
   SelectTriggerElement,
@@ -351,8 +355,8 @@ const SelectValue = React.forwardRef<SelectValueElement, SelectValueProps>(
     // We ignore `className` and `style` as this part shouldn't be styled.
     const {
       __scopeSelect,
-      className,
-      style,
+      className: _className,
+      style: _style,
       children,
       placeholder,
       ...valueProps
@@ -392,7 +396,7 @@ SelectValue.displayName = VALUE_NAME;
 const ICON_NAME = "SelectIcon";
 
 type SelectIconElement = React.ElementRef<typeof Primitive.span>;
-interface SelectIconProps extends PrimitiveSpanProps {}
+type SelectIconProps = PrimitiveSpanProps;
 
 const SelectIcon = React.forwardRef<SelectIconElement, SelectIconProps>(
   (props: ScopedProps<SelectIconProps>, forwardedRef) => {
@@ -433,8 +437,7 @@ SelectPortal.displayName = PORTAL_NAME;
 const OVERLAY_NAME = "SelectOverlay";
 
 type SelectOverlayElement = React.ElementRef<typeof Primitive.div>;
-interface SelectOverlayProps
-  extends Radix.ComponentPropsWithoutRef<typeof Primitive.div> {}
+type SelectOverlayProps = Radix.ComponentPropsWithoutRef<typeof Primitive.div>;
 
 const SelectOverlay = React.forwardRef<
   SelectOverlayElement,
@@ -464,7 +467,7 @@ const SelectOverlay = React.forwardRef<
 const CONTENT_NAME = "SelectContent";
 
 type SelectContentElement = SelectContentImplElement;
-interface SelectContentProps extends SelectContentImplProps {}
+type SelectContentProps = SelectContentImplProps;
 
 const SelectContent = React.forwardRef<
   SelectContentElement,
@@ -825,7 +828,7 @@ const SelectContentImpl = React.forwardRef<
                     ["ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)
                   ) {
                     const items = getItems().filter((item) => !item.disabled);
-                    let candidateNodes = items.map((item) => item.ref.current!);
+                    let candidateNodes = items.map((item) => item.ref.current);
 
                     if (["ArrowUp", "End"].includes(event.key)) {
                       candidateNodes = candidateNodes.slice().reverse();
@@ -1168,7 +1171,7 @@ const VIEWPORT_NAME = "SelectViewport";
 
 type SelectViewportElement = React.ElementRef<typeof Primitive.div>;
 type PrimitiveDivProps = Radix.ComponentPropsWithoutRef<typeof Primitive.div>;
-interface SelectViewportProps extends PrimitiveDivProps {}
+type SelectViewportProps = PrimitiveDivProps;
 
 const SelectViewport = React.forwardRef<
   SelectViewportElement,
@@ -1260,7 +1263,7 @@ const [SelectGroupContextProvider, useSelectGroupContext] =
   createSelectContext<SelectGroupContextValue>(GROUP_NAME);
 
 type SelectGroupElement = React.ElementRef<typeof Primitive.div>;
-interface SelectGroupProps extends PrimitiveDivProps {}
+type SelectGroupProps = PrimitiveDivProps;
 
 const SelectGroup = React.forwardRef<SelectGroupElement, SelectGroupProps>(
   (props: ScopedProps<SelectGroupProps>, forwardedRef) => {
@@ -1288,7 +1291,7 @@ SelectGroup.displayName = GROUP_NAME;
 const LABEL_NAME = "SelectLabel";
 
 type SelectLabelElement = React.ElementRef<typeof Primitive.div>;
-interface SelectLabelProps extends PrimitiveDivProps {}
+type SelectLabelProps = PrimitiveDivProps;
 
 const SelectLabel = React.forwardRef<SelectLabelElement, SelectLabelProps>(
   (props: ScopedProps<SelectLabelProps>, forwardedRef) => {
@@ -1436,14 +1439,19 @@ SelectItem.displayName = ITEM_NAME;
 const ITEM_TEXT_NAME = "SelectItemText";
 
 type SelectItemTextElement = React.ElementRef<typeof Primitive.span>;
-interface SelectItemTextProps extends PrimitiveSpanProps {}
+type SelectItemTextProps = PrimitiveSpanProps;
 
 const SelectItemText = React.forwardRef<
   SelectItemTextElement,
   SelectItemTextProps
 >((props: ScopedProps<SelectItemTextProps>, forwardedRef) => {
   // We ignore `className` and `style` as this part shouldn't be styled.
-  const { __scopeSelect, className, style, ...itemTextProps } = props;
+  const {
+    __scopeSelect,
+    className: _className,
+    style: _style,
+    ...itemTextProps
+  } = props;
   const context = useSelectContext(ITEM_TEXT_NAME, __scopeSelect);
   const contentContext = useSelectContentContext(ITEM_TEXT_NAME, __scopeSelect);
   const itemContext = useSelectItemContext(ITEM_TEXT_NAME, __scopeSelect);
@@ -1518,7 +1526,7 @@ SelectItemText.displayName = ITEM_TEXT_NAME;
 const ITEM_INDICATOR_NAME = "SelectItemIndicator";
 
 type SelectItemIndicatorElement = React.ElementRef<typeof Primitive.span>;
-interface SelectItemIndicatorProps extends PrimitiveSpanProps {}
+type SelectItemIndicatorProps = PrimitiveSpanProps;
 
 const SelectItemIndicator = React.forwardRef<
   SelectItemIndicatorElement,
@@ -1540,8 +1548,10 @@ SelectItemIndicator.displayName = ITEM_INDICATOR_NAME;
 const SCROLL_UP_BUTTON_NAME = "SelectScrollUpButton";
 
 type SelectScrollUpButtonElement = SelectScrollButtonImplElement;
-interface SelectScrollUpButtonProps
-  extends Omit<SelectScrollButtonImplProps, "onAutoScroll"> {}
+type SelectScrollUpButtonProps = Omit<
+  SelectScrollButtonImplProps,
+  "onAutoScroll"
+>;
 
 const SelectScrollUpButton = React.forwardRef<
   SelectScrollUpButtonElement,
@@ -1561,16 +1571,18 @@ const SelectScrollUpButton = React.forwardRef<
     viewportContext.onScrollButtonChange
   );
 
+  function handleScroll(viewport: HTMLDivElement) {
+    const canScrollUp = viewport.scrollTop > 0;
+    setCanScrollUp(canScrollUp);
+  }
+
   useLayoutEffect(() => {
     if (contentContext.viewport && contentContext.isPositioned) {
       const viewport = contentContext.viewport;
-      function handleScroll() {
-        const canScrollUp = viewport.scrollTop > 0;
-        setCanScrollUp(canScrollUp);
-      }
-      handleScroll();
-      viewport.addEventListener("scroll", handleScroll);
-      return () => viewport.removeEventListener("scroll", handleScroll);
+      handleScroll(viewport);
+      viewport.addEventListener("scroll", () => handleScroll(viewport));
+      return () =>
+        viewport.removeEventListener("scroll", () => handleScroll(viewport));
     }
   }, [contentContext.viewport, contentContext.isPositioned]);
 
@@ -1597,8 +1609,10 @@ SelectScrollUpButton.displayName = SCROLL_UP_BUTTON_NAME;
 const SCROLL_DOWN_BUTTON_NAME = "SelectScrollDownButton";
 
 type SelectScrollDownButtonElement = SelectScrollButtonImplElement;
-interface SelectScrollDownButtonProps
-  extends Omit<SelectScrollButtonImplProps, "onAutoScroll"> {}
+type SelectScrollDownButtonProps = Omit<
+  SelectScrollButtonImplProps,
+  "onAutoScroll"
+>;
 
 const SelectScrollDownButton = React.forwardRef<
   SelectScrollDownButtonElement,
@@ -1618,19 +1632,21 @@ const SelectScrollDownButton = React.forwardRef<
     viewportContext.onScrollButtonChange
   );
 
+  function handleScroll(viewport: HTMLDivElement) {
+    const maxScroll = viewport.scrollHeight - viewport.clientHeight;
+    // we use Math.ceil here because if the UI is zoomed-in
+    // `scrollTop` is not always reported as an integer
+    const canScrollDown = Math.ceil(viewport.scrollTop) < maxScroll;
+    setCanScrollDown(canScrollDown);
+  }
+
   useLayoutEffect(() => {
     if (contentContext.viewport && contentContext.isPositioned) {
       const viewport = contentContext.viewport;
-      function handleScroll() {
-        const maxScroll = viewport.scrollHeight - viewport.clientHeight;
-        // we use Math.ceil here because if the UI is zoomed-in
-        // `scrollTop` is not always reported as an integer
-        const canScrollDown = Math.ceil(viewport.scrollTop) < maxScroll;
-        setCanScrollDown(canScrollDown);
-      }
-      handleScroll();
-      viewport.addEventListener("scroll", handleScroll);
-      return () => viewport.removeEventListener("scroll", handleScroll);
+      handleScroll(viewport);
+      viewport.addEventListener("scroll", () => handleScroll(viewport));
+      return () =>
+        viewport.removeEventListener("scroll", () => handleScroll(viewport));
     }
   }, [contentContext.viewport, contentContext.isPositioned]);
 
@@ -1721,7 +1737,7 @@ const SelectScrollButtonImpl = React.forwardRef<
 const SEPARATOR_NAME = "SelectSeparator";
 
 type SelectSeparatorElement = React.ElementRef<typeof Primitive.div>;
-interface SelectSeparatorProps extends PrimitiveDivProps {}
+type SelectSeparatorProps = PrimitiveDivProps;
 
 const SelectSeparator = React.forwardRef<
   SelectSeparatorElement,
@@ -1743,7 +1759,7 @@ type SelectArrowElement = React.ElementRef<typeof PopperPrimitive.Arrow>;
 type PopperArrowProps = Radix.ComponentPropsWithoutRef<
   typeof PopperPrimitive.Arrow
 >;
-interface SelectArrowProps extends PopperArrowProps {}
+type SelectArrowProps = PopperArrowProps;
 
 const SelectArrow = React.forwardRef<SelectArrowElement, SelectArrowProps>(
   (props: ScopedProps<SelectArrowProps>, forwardedRef) => {
@@ -1776,7 +1792,7 @@ const BubbleSelect = React.forwardRef<
 
   // Bubble value change to parents (e.g form change event)
   React.useEffect(() => {
-    const select = ref.current!;
+    const select = ref.current;
     const selectProto = window.HTMLSelectElement.prototype;
     const descriptor = Object.getOwnPropertyDescriptor(
       selectProto,
@@ -1786,7 +1802,7 @@ const BubbleSelect = React.forwardRef<
     if (prevValue !== value && setValue) {
       const event = new Event("change", { bubbles: true });
       setValue.call(select, value);
-      select.dispatchEvent(event);
+      select?.dispatchEvent(event);
     }
   }, [prevValue, value]);
 
