@@ -3,12 +3,13 @@ import {
   Select as SelectWrapper,
   SelectTrigger,
   SelectValue,
-  SelectOverlay,
+  // SelectOverlay,
   SelectContent,
   SelectGroup,
   SelectLabel,
   SelectItem,
   SelectSeparator,
+  SelectOverlay,
 } from "./select-impl";
 import { AnimatePresence } from "framer-motion";
 import useWindowSize from "../../hooks/use-window-size";

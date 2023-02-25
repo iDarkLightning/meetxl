@@ -80,22 +80,22 @@ export const DialogDocs: React.FC = () => {
                     { display: "Blueberry", value: "blueberry" },
                   ],
                 },
-                {
-                  label: "Vegetables",
-                  items: [
-                    { display: "Broccoli", value: "broccoli" },
-                    { display: "Cabbage", value: "cabbage" },
-                    { display: "Carrot", value: "carrot" },
-                  ],
-                },
-                {
-                  label: "Meat",
-                  items: [
-                    { display: "Beef", value: "beef" },
-                    { display: "Chicken", value: "chicken" },
-                    { display: "Lamb", value: "lamb" },
-                  ],
-                },
+                // {
+                //   label: "Vegetables",
+                //   items: [
+                //     { display: "Broccoli", value: "broccoli" },
+                //     { display: "Cabbage", value: "cabbage" },
+                //     { display: "Carrot", value: "carrot" },
+                //   ],
+                // },
+                // {
+                //   label: "Meat",
+                //   items: [
+                //     { display: "Beef", value: "beef" },
+                //     { display: "Chicken", value: "chicken" },
+                //     { display: "Lamb", value: "lamb" },
+                //   ],
+                // },
               ]}
             />
           </div>

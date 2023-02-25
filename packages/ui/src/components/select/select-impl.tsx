@@ -19,7 +19,7 @@ export const SelectOverlay = forwardRef<
 >((props, ref) => (
   <SelectPrimitive.Overlay
     ref={ref}
-    className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity"
+    className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
     asChild
     {...props}
   >
@@ -54,10 +54,10 @@ export const SelectMobile = forwardRef<
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
   return (
-    <SelectPortal className="fixed bottom-0 left-0 right-0 z-50 flex h-full items-center">
+    <SelectPortal className="fixed bottom-0 left-0 right-0 z-50 flex items-center">
       <SelectPrimitive.Content
         className={cn(
-          "z-50 h-max overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-background-primary py-2",
+          "z-50 overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-background-primary py-2",
           className
         )}
         ref={ref}
@@ -117,8 +117,9 @@ export const SelectContent = forwardRef<
     width: string | null;
   }
 >((props, ref) => {
-  const { isMobile } = useWindowSize();
+  const { isMobile, loading } = useWindowSize();
 
+  if (loading) return null;
   if (isMobile) return <SelectMobile {...props} ref={ref} />;
   return <SelectDesktop {...props} ref={ref} width={props.width} />;
 });
@@ -174,66 +175,3 @@ export const SelectSeparator = forwardRef<
   />
 ));
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
-
-// export const SelectTest: React.FC<{ dialogClose?: any }> = (props) => {
-//   const [isOpen, setIsOpen] = useState(false);
-//   const [value, setValue] = useState<string | undefined>(undefined);
-//   const { isMobile } = useWindowSize();
-
-//   const ref = useRef<HTMLButtonElement>(null);
-
-//   return (
-//     <Select
-//       open={isOpen}
-//       onOpenChange={(open) => setIsOpen(open)}
-//       value={value}
-//       onValueChange={(value) => setValue(value)}
-//     >
-//       <SelectTrigger ref={ref}>
-//         <SelectValue placeholder="Theme" />
-//       </SelectTrigger>
-//       <AnimatePresence>
-//         {isOpen && (
-//           <>
-//             {isMobile && <SelectOverlay />}
-//             <SelectContent
-//               width={
-//                 ref.current?.clientWidth
-//                   ? ref.current.clientWidth + 3 + "px"
-//                   : null
-//               }
-//             >
-//               <SelectGroup>
-//                 <SelectLabel>Fruits</SelectLabel>
-//                 <SelectItem value="apple">Apple</SelectItem>
-//                 <SelectItem value="banana">Banana</SelectItem>
-//                 <SelectItem value="blueberry">Blueberry</SelectItem>
-//                 <SelectItem value="grapes">Grapes</SelectItem>
-//                 <SelectItem value="pineapple">Pineapple</SelectItem>
-//               </SelectGroup>
-//               <SelectSeparator />
-//               <SelectGroup>
-//                 <SelectLabel>Vegetables</SelectLabel>
-//                 <SelectItem value="aubergine">Aubergine</SelectItem>
-//                 <SelectItem value="broccoli">Broccoli</SelectItem>
-//                 <SelectItem value="carrot" disabled>
-//                   Carrot
-//                 </SelectItem>
-//                 <SelectItem value="courgette">Courgette</SelectItem>
-//                 <SelectItem value="leek">Leek</SelectItem>
-//               </SelectGroup>
-//               <SelectSeparator />
-//               <SelectGroup>
-//                 <SelectLabel>Meat</SelectLabel>
-//                 <SelectItem value="beef">Beef</SelectItem>
-//                 <SelectItem value="chicken">Chicken</SelectItem>
-//                 <SelectItem value="lamb">Lamb</SelectItem>
-//                 <SelectItem value="pork">Pork</SelectItem>
-//               </SelectGroup>
-//             </SelectContent>
-//           </>
-//         )}
-//       </AnimatePresence>
-//     </Select>
-//   );
-// };
