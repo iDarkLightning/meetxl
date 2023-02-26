@@ -14,7 +14,7 @@ const getElementVariant = (
 
 const inputStyles = cva(
   cn(
-    "bg-neutral z-10 border-neutral-stroke border-[0.025rem] rounded-md",
+    "bg-neutral z-10 border-neutral-stroke border-[0.025rem] rounded-md text-neutral-300 placeholder:text-neutral-300",
     "focus:outline-none focus-visible:ring-1 focus-visible:ring-neutral-disco focus-visible:ring-opacity-40",
     "autofill:bg-neutral"
   ),
