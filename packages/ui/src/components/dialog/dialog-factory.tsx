@@ -14,6 +14,7 @@ import React, {
 } from "react";
 import useWindowSize from "../../hooks/use-window-size";
 import { cn } from "../../utils";
+import { DragHandle } from "../../utils/drag-handle";
 
 type ContentForwarded<
   T extends CustomDomComponent<
@@ -118,12 +119,7 @@ export const createDialogContent = (
         className="group fixed z-50 flex w-screen flex-col gap-6 rounded-md border-[0.025rem] border-neutral-stroke bg-background-primary px-8 py-6"
         {...rest}
       >
-        <div
-          className={`rounded-t-4xl flex w-full items-center justify-center`}
-        >
-          <div className="-mr-1 h-1 w-6 rounded-full bg-neutral-500 transition-all group-active:rotate-12" />
-          <div className="h-1 w-6 rounded-full bg-neutral-500 transition-all group-active:-rotate-12" />
-        </div>
+        <DragHandle />
         {children}
       </MotionPrimitive>
     );
