@@ -14,3 +14,4 @@ export * from "./divider";
 export * from "./radio-group";
 export * from "./select";
 export * from "./popover";
+export * from "./toast";
