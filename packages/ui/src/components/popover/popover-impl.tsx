@@ -1,4 +1,7 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
+import type * as Radix from "@radix-ui/react-primitive";
+import { Primitive } from "@radix-ui/react-primitive";
+import { PanInfo, motion, useAnimation } from "framer-motion";
 import React, {
   forwardRef,
   useEffect,
@@ -6,16 +9,11 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { AnimatePresence, motion, PanInfo, useAnimation } from "framer-motion";
-import { Avatar } from "./avatar";
-import useWindowSize from "../hooks/use-window-size";
-import { DragHandle } from "../utils/drag-handle";
-import { Slot } from "@radix-ui/react-slot";
-import { Primitive } from "@radix-ui/react-primitive";
-import { RemoveScroll } from "react-remove-scroll";
-import type * as Radix from "@radix-ui/react-primitive";
+import useWindowSize from "../../hooks/use-window-size";
+import { useScrollBlock } from "../../utils/block-scroll";
+import { DragHandle } from "../../utils/drag-handle";
 
-export const Popover = PopoverPrimitive.Root;
+export const PopoverWrapper = PopoverPrimitive.Root;
 
 export const PopoverTrigger = PopoverPrimitive.Trigger;
 
@@ -37,18 +35,28 @@ const PopoverOverlayImpl = forwardRef<
   PopoverOverlayImplElement,
   PopoverOverlayImplProps
 >((props, forwardedRef) => {
+  const [blockScroll, allowScroll] = useScrollBlock();
+
+  useEffect(() => {
+    if (props.isOpen) {
+      blockScroll();
+    } else {
+      allowScroll();
+    }
+
+    return () => allowScroll();
+  }, [props.isOpen]);
+
   if (props.isOpen) {
     return (
-      <RemoveScroll as={Slot} allowPinchZoom>
-        <Primitive.div
-          {...props}
-          ref={forwardedRef}
-          style={{
-            pointerEvents: "auto",
-            ...props.style,
-          }}
-        />
-      </RemoveScroll>
+      <Primitive.div
+        {...props}
+        ref={forwardedRef}
+        style={{
+          pointerEvents: "auto",
+          ...props.style,
+        }}
+      />
     );
   }
 
@@ -95,7 +103,7 @@ const PopoverContentDesktop = forwardRef<
           }}
           exit={{ y: "-5%", opacity: 0, transitionTimingFunction: "ease-in" }}
           transition={{ duration: 0.15 }}
-          className="group z-50 m-2 w-max overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-background-secondary p-6"
+          className="group z-50 m-2 w-max overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-background-secondary p-4"
         >
           {props.children}
         </motion.div>
@@ -152,7 +160,7 @@ const PopoverContentMobile = forwardRef<
           onDragEnd={((_: any, info: any) => handleDragEnd(info)) as any}
           dragElastic={{ top: 0, bottom: 1 }}
           dragConstraints={{ top: 0, bottom: 0 }}
-          className="group z-50 w-screen overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-background-secondary p-6"
+          className="transform-[translate3d(0,500px,0)] group z-50 w-screen overflow-hidden rounded-md border-[0.025rem] border-neutral-stroke bg-background-secondary p-6"
         >
           <DragHandle />
           {children}
@@ -175,39 +183,4 @@ export const PopoverContent = forwardRef<
   );
 });
 
-export const PopoverTest = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { isMobile } = useWindowSize();
-
-  return (
-    <>
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger>
-          <Avatar src="https://i.pravatar.cc/300" name="NN" size="lg" />
-        </PopoverTrigger>
-        {isMobile && (
-          <PopoverPrimitive.Anchor className="absolute bottom-0 left-0 right-0" />
-        )}
-        <AnimatePresence>
-          {isOpen && (
-            <>
-              <PopoverContent setIsOpen={setIsOpen}>
-                <div className="flex flex-col gap-2">
-                  <h1 className="text-xl font-medium">Nirjhor Nath</h1>
-                  <p className="max-w-md text-neutral-300">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Debitis harum, earum laboriosam accusamus vitae distinctio
-                    officia alias, corrupti aperiam necessitatibus quisquam
-                    repellat quo ipsam est reiciendis maxime inventore rerum!
-                    Optio?
-                  </p>
-                </div>
-              </PopoverContent>
-              {isMobile && <PopoverOverlay isOpen={isOpen} />}
-            </>
-          )}
-        </AnimatePresence>
-      </Popover>
-    </>
-  );
-};
+export const PopoverAnchor = PopoverPrimitive.Anchor;
