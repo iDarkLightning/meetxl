@@ -16,3 +16,4 @@ export * from "./select";
 export * from "./popover";
 export * from "./toast";
 export * from "./card";
+export * from "./accordion";
