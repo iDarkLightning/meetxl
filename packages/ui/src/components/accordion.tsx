@@ -33,7 +33,7 @@ export const AccordionTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        "flex flex-1 items-center justify-between rounded-md border-[0.025rem] border-neutral-stroke bg-neutral p-3 font-medium transition-all [&[data-state=open]>svg]:rotate-180",
+        "flex flex-1 items-center justify-between rounded-md border-[0.025rem] border-neutral-stroke bg-neutral p-3 font-medium [&[data-state=open]>svg]:rotate-180",
         className
       )}
       {...props}
@@ -52,12 +52,12 @@ export const AccordionContent = React.forwardRef<
   <AccordionPrimitive.Content
     ref={ref}
     className={cn(
-      "data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden p-3 text-sm transition-all",
+      "data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden text-sm",
       className
     )}
     {...props}
   >
-    <div className="pb-4 pt-0">{children}</div>
+    <div className="p-3">{children}</div>
   </AccordionPrimitive.Content>
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
@@ -77,10 +77,10 @@ export const Accordion: React.FC<AccordionProps> = (props) => {
   const { items } = props;
 
   return (
-    <AccordionWrapper {...props}>
+    <AccordionWrapper type="single" collapsible>
       {items.map(
         ({ header, content, triggerProps, contentProps, ...itemProps }) => (
-          <AccordionItem {...itemProps}>
+          <AccordionItem key={itemProps.value} {...itemProps}>
             <AccordionTrigger {...triggerProps}>{header}</AccordionTrigger>
             <AccordionContent {...contentProps}>{content}</AccordionContent>
           </AccordionItem>

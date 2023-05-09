@@ -1,25 +1,36 @@
-import { Accordion } from "@meetxl/ui";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionWrapper,
+} from "@meetxl/ui";
 import React from "react";
 
 export const AccordionDocs: React.FC = () => {
   return (
     <div>
-      <Accordion
-        type="single"
-        collapsible
-        items={[
-          {
-            header: "Header 1",
-            content: "Content 1",
-            value: "1",
-          },
-          {
-            header: "Header 2",
-            content: "Content 2",
-            value: "2",
-          },
-        ]}
-      />
+      <AccordionWrapper type="single" collapsible className="w-full">
+        <AccordionItem value="item-1">
+          <AccordionTrigger>Is it accessible?</AccordionTrigger>
+          <AccordionContent>
+            Yes. It adheres to the WAI-ARIA design pattern.
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-2">
+          <AccordionTrigger>Is it styled?</AccordionTrigger>
+          <AccordionContent>
+            Yes. It comes with default styles that matches the other components'
+            aesthetic.
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-3">
+          <AccordionTrigger>Is it animated?</AccordionTrigger>
+          <AccordionContent>
+            Yes. It's animated by default, but you can disable it if you prefer.
+          </AccordionContent>
+        </AccordionItem>
+      </AccordionWrapper>
     </div>
   );
 };
