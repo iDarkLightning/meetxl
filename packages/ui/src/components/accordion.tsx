@@ -6,7 +6,7 @@ import { ChevronDown } from "lucide-react";
 
 import { cn } from "../utils";
 
-export const Accordion = React.forwardRef<
+export const AccordionWrapper = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Root>
 >(({ className, ...props }, ref) => (
@@ -61,3 +61,31 @@ export const AccordionContent = React.forwardRef<
   </AccordionPrimitive.Content>
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
+
+type AccordionItemProps = {
+  header: string;
+  content: string;
+  triggerProps?: React.ComponentPropsWithoutRef<typeof AccordionTrigger>;
+  contentProps?: React.ComponentPropsWithoutRef<typeof AccordionContent>;
+} & React.ComponentPropsWithoutRef<typeof AccordionItem>;
+
+type AccordionProps = {
+  items: AccordionItemProps[];
+} & React.ComponentPropsWithoutRef<typeof AccordionWrapper>;
+
+export const Accordion: React.FC<AccordionProps> = (props) => {
+  const { items } = props;
+
+  return (
+    <AccordionWrapper {...props}>
+      {items.map(
+        ({ header, content, triggerProps, contentProps, ...itemProps }) => (
+          <AccordionItem {...itemProps}>
+            <AccordionTrigger {...triggerProps}>{header}</AccordionTrigger>
+            <AccordionContent {...contentProps}>{content}</AccordionContent>
+          </AccordionItem>
+        )
+      )}
+    </AccordionWrapper>
+  );
+};
