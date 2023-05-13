@@ -21,3 +21,4 @@ export * from "./alert";
 export * from "./badge";
 export * from "./tooltip";
 export * from "./toggle";
+export * from "./textarea";
