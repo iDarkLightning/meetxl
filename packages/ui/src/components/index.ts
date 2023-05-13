@@ -20,3 +20,4 @@ export * from "./accordion";
 export * from "./alert";
 export * from "./badge";
 export * from "./tooltip";
+export * from "./toggle";
