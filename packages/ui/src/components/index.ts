@@ -18,3 +18,4 @@ export * from "./toast";
 export * from "./card";
 export * from "./accordion";
 export * from "./alert";
+export * from "./badge";
