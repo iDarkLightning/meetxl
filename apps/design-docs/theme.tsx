@@ -120,7 +120,7 @@ export default function Layout({ children, pageOpts }: NextraThemeLayoutProps) {
                   pageMeta.data[
                     folderChildren.find(
                       (item) => item.route === router.pathname
-                    ).name
+                    )?.name
                   ]
                 }
               </h2>
