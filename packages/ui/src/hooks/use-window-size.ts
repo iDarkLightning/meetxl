@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export default function useWindowSize() {
+export default function useWindowSize(breakpoint = 640) {
   const [windowSize, setWindowSize] = useState<{
     width: number | undefined;
     height: number | undefined;
@@ -34,8 +34,9 @@ export default function useWindowSize() {
   return {
     windowSize,
     loading: windowSize.width === undefined,
-    isMobile: typeof windowSize?.width === "number" && windowSize?.width < 640,
+    isMobile:
+      typeof windowSize?.width === "number" && windowSize?.width < breakpoint,
     isDesktop:
-      typeof windowSize?.width === "number" && windowSize?.width >= 640,
+      typeof windowSize?.width === "number" && windowSize?.width >= breakpoint,
   };
 }
