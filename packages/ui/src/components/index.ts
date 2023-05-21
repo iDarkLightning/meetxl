@@ -23,3 +23,4 @@ export * from "./tooltip";
 export * from "./toggle";
 export * from "./textarea";
 export * from "./scroll-area";
+export * from "./skeleton";

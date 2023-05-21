@@ -26,6 +26,11 @@ module.exports = function tailwindConfig({ content }) {
             from: { height: "var(--radix-accordion-content-height)" },
             to: { height: 0 },
           },
+          shimmer: {
+            "100%": {
+              transform: "translateX(100%)",
+            },
+          },
         },
         animation: {
           disco: "disco 1.5s linear infinite",
