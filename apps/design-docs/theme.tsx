@@ -76,7 +76,12 @@ export default function Layout({ children, pageOpts }: NextraThemeLayoutProps) {
         <title>{pageOpts.title}</title>
         <meta name="og:image" content={pageOpts.frontMatter.image} />
       </Head>
-      <div className="flex flex-col md:flex-row">
+      <div
+        className="flex flex-col md:flex-row"
+        style={{
+          ["--header-height" as string]: `${bounds.height}px`,
+        }}
+      >
         {isMobile && (
           <div>
             <header
@@ -91,11 +96,7 @@ export default function Layout({ children, pageOpts }: NextraThemeLayoutProps) {
                 />
                 <p className="text-[#8a8f98]">Design</p>
               </div>
-              <div
-                style={{
-                  ["--header-height" as string]: `${bounds.height}px`,
-                }}
-              >
+              <div>
                 <div className="flex items-center justify-between">
                   <h2 className="font-medium">{currentRoute}</h2>
                   <Hamburger size={24} toggled={isOpen} onToggle={setIsOpen} />
@@ -111,8 +112,8 @@ export default function Layout({ children, pageOpts }: NextraThemeLayoutProps) {
           </div>
         )}
         {!isMobile && (
-          <div className="h-screen w-56 border-r-[0.025rem] border-neutral-stroke px-4 py-4">
-            <header className="sticky top-0 flex items-center gap-2 py-3 px-3">
+          <div className="h-screen w-56 overflow-auto border-r-[0.025rem] border-neutral-stroke px-4 py-4">
+            <header className="flex items-center gap-2 py-3 px-3">
               <p className="text-xl font-medium">Evently</p>
               <Divider
                 orientation="vertical"
