@@ -77,6 +77,7 @@ module.exports = function tailwindConfig({ content }) {
         });
       },
       require("tailwindcss-animate"),
+      require("tailwind-scrollbar"),
     ],
   };
 };

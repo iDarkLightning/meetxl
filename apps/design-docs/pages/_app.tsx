@@ -8,7 +8,6 @@ const inter = Inter({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  console.log(inter.className);
   return (
     <main className={inter.className}>
       <Component {...pageProps} />
