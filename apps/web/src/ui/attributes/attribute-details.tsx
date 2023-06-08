@@ -125,6 +125,7 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
                 <Heading level="h3">{data.name}</Heading>
                 <div className="flex gap-3">
                   <Button
+                    loading={toggleAllLinks.isLoading}
                     onClick={() =>
                       toggleAllLinks.mutateAsync({
                         name: data.name,
@@ -136,10 +137,11 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
                     Enable All
                   </Button>
                   <Button
+                    loading={toggleAllLinks.isLoading}
                     onClick={() =>
                       toggleAllLinks.mutateAsync({
                         name: data.name,
-                        orgId: org.id,
+                        orgId: org.id, 
                         enabled: false,
                       })
                     }
