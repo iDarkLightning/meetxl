@@ -113,6 +113,7 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
   const router = useRouter();
   const toggleAllLinks =
     trpc.organization.attribute.toggleAllLinks.useMutation();
+  const manualSync = trpc.organization.attribute.manualSync.useMutation();
 
   return (
     <BaseQueryCell
@@ -124,6 +125,17 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
               <Card className="flex items-center justify-between hover:bg-opacity-100">
                 <Heading level="h3">{data.name}</Heading>
                 <div className="flex gap-3">
+                  <Button
+                    loading={manualSync.isLoading}
+                    onClick={() =>
+                      manualSync.mutateAsync({
+                        name: data.name,
+                        orgId: org.id,
+                      })
+                    }
+                  >
+                    Manually Sync Members
+                  </Button>
                   <Button
                     loading={toggleAllLinks.isLoading}
                     onClick={() =>
@@ -141,7 +153,7 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
                     onClick={() =>
                       toggleAllLinks.mutateAsync({
                         name: data.name,
-                        orgId: org.id, 
+                        orgId: org.id,
                         enabled: false,
                       })
                     }

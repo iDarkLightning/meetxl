@@ -68,6 +68,51 @@ export const orgAttributeRouter = t.router({
       }
     }),
 
+  manualSync: orgAdminProcedure
+    .input(z.object({ name: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const members = await ctx.prisma.organizationMember.findMany({
+        where: {
+          organizationId: ctx.org.id,
+          attributes: {
+            every: {
+              NOT: {
+                organizationAttributeName: input.name,
+              },
+            },
+          },
+        },
+      });
+
+      await ctx.prisma.$transaction(
+        members.map((member) =>
+          ctx.prisma.organizationMember.update({
+            where: {
+              organizationId_userId: {
+                organizationId: ctx.org.id,
+                userId: member.userId,
+              },
+            },
+            data: {
+              attributes: {
+                create: {
+                  attribute: {
+                    connect: {
+                      name_organizationId: {
+                        name: input.name,
+                        organizationId: ctx.org.id,
+                      },
+                    },
+                  },
+                  value: 0,
+                },
+              },
+            },
+          })
+        )
+      );
+    }),
+
   list: orgAdminProcedure.query(({ ctx }) => {
     return ctx.prisma.organizationAttribute.findMany({
       where: {
@@ -117,21 +162,23 @@ export const orgAttributeRouter = t.router({
     });
   }),
 
-  toggleAllLinks: orgAdminProcedure.input(z.object({
-    name: z.string(),
-    enabled: z.boolean(),
-  })).mutation(
-    async ({ ctx, input }) => {
+  toggleAllLinks: orgAdminProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        enabled: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       await ctx.prisma.attributeLink.updateMany({
         where: {
           organizationAttributeName: input.name,
         },
         data: {
           enabled: input.enabled,
-        }
-      })
-    }
-  ),
+        },
+      });
+    }),
 
   delete: orgAdminProcedure
     .input(z.object({ name: z.string() }))
