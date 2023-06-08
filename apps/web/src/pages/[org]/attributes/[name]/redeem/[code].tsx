@@ -107,6 +107,7 @@ const MemberView: React.FC = () => {
 const AdminView: React.FC = () => {
   const router = useRouter();
   const org = useOrg();
+  const ctx = trpc.useContext();
   const link = trpc.organization.attribute.links.getDetailed.useQuery(
     {
       attributeName: router.query.name as string,
@@ -118,6 +119,7 @@ const AdminView: React.FC = () => {
     }
   );
   const deleteLink = trpc.organization.attribute.links.delete.useMutation();
+  const toggleLink = trpc.organization.attribute.links.toggle.useMutation();
 
   return (
     <div className="flex flex-col gap-4">
@@ -145,6 +147,23 @@ const AdminView: React.FC = () => {
                       .catch(() => 0)
                   }
                 />
+                <Button
+                  onClick={() =>
+                    toggleLink
+                      .mutateAsync({
+                        linkId: data.id,
+                        newValue: !data.enabled,
+                        orgId: org.id,
+                      })
+                      .then(() =>
+                        ctx.organization.attribute.links.getDetailed.invalidate()
+                      )
+                      .catch(() => 0)
+                  }
+                  loading={toggleLink.isLoading}
+                >
+                  {data.enabled ? "Disable" : "Enable"}
+                </Button>
                 <QRCode code={data.code} />
               </div>
             </div>

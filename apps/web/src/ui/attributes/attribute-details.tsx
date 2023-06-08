@@ -111,6 +111,8 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
   const ctx = trpc.useContext();
   const editValue = trpc.organization.attribute.set.useMutation();
   const router = useRouter();
+  const toggleAllLinks =
+    trpc.organization.attribute.toggleAllLinks.useMutation();
 
   return (
     <BaseQueryCell
@@ -121,18 +123,44 @@ export const AttributeDetails: React.FC<{ name: string }> = (props) => {
             <div className="flex flex-1 flex-col gap-6">
               <Card className="flex items-center justify-between hover:bg-opacity-100">
                 <Heading level="h3">{data.name}</Heading>
-                <DeleteButton
-                  confirmationText={data.name}
-                  loading={deleteAttr.isLoading}
-                  onConfirm={() =>
-                    deleteAttr
-                      .mutateAsync({ name: data.name, orgId: org.id })
-                      .then(() => ctx.organization.attribute.list.invalidate())
-                      .then(() => router.push(`/${org.slug}/attributes`))
-                      .then(() => ctx.organization.attribute.get.invalidate())
-                      .catch(() => 0)
-                  }
-                />
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() =>
+                      toggleAllLinks.mutateAsync({
+                        name: data.name,
+                        orgId: org.id,
+                        enabled: true,
+                      })
+                    }
+                  >
+                    Enable All
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      toggleAllLinks.mutateAsync({
+                        name: data.name,
+                        orgId: org.id,
+                        enabled: false,
+                      })
+                    }
+                  >
+                    Disable All
+                  </Button>
+                  <DeleteButton
+                    confirmationText={data.name}
+                    loading={deleteAttr.isLoading}
+                    onConfirm={() =>
+                      deleteAttr
+                        .mutateAsync({ name: data.name, orgId: org.id })
+                        .then(() =>
+                          ctx.organization.attribute.list.invalidate()
+                        )
+                        .then(() => router.push(`/${org.slug}/attributes`))
+                        .then(() => ctx.organization.attribute.get.invalidate())
+                        .catch(() => 0)
+                    }
+                  />
+                </div>
               </Card>
               <AttributeLinks />
             </div>

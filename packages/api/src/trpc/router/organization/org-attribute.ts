@@ -117,6 +117,22 @@ export const orgAttributeRouter = t.router({
     });
   }),
 
+  toggleAllLinks: orgAdminProcedure.input(z.object({
+    name: z.string(),
+    enabled: z.boolean(),
+  })).mutation(
+    async ({ ctx, input }) => {
+      await ctx.prisma.attributeLink.updateMany({
+        where: {
+          organizationAttributeName: input.name,
+        },
+        data: {
+          enabled: input.enabled,
+        }
+      })
+    }
+  ),
+
   delete: orgAdminProcedure
     .input(z.object({ name: z.string() }))
     .mutation(({ ctx, input }) => {

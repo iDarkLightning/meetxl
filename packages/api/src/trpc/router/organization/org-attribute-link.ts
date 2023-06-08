@@ -126,6 +126,9 @@ export const orgAttributeLinkRouter = t.router({
         },
       });
 
+      if (!link.enabled)
+        throw new TRPCError({ code: "FORBIDDEN", message: "Disabled link" });
+
       if (link.redeemedBy.length > 0) {
         throw new TRPCError({ code: "FORBIDDEN", message: "Already redeemed" });
       }
@@ -173,6 +176,19 @@ export const orgAttributeLinkRouter = t.router({
               },
             },
           },
+        },
+      });
+    }),
+
+  toggle: orgAdminProcedure
+    .input(z.object({ linkId: z.string().cuid(), newValue: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.attributeLink.update({
+        where: {
+          id: input.linkId,
+        },
+        data: {
+          enabled: input.newValue,
         },
       });
     }),

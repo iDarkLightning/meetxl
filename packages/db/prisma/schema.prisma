@@ -150,6 +150,7 @@ model AttributeLink {
     issuer                    OrganizationMember      @relation(fields: [orgId, organizationMemberUserId], references: [organizationId, userId])
     organizationMemberUserId  String
     redeemedBy                AttributeLinkRedeem[]
+    enabled                   Boolean                 @default(true)
 
     @@unique([organizationAttributeName, orgId, code])
 }
