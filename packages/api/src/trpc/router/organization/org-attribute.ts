@@ -71,16 +71,19 @@ export const orgAttributeRouter = t.router({
   manualSync: orgAdminProcedure
     .input(z.object({ name: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      console.log(input.name);
       const members = await ctx.prisma.organizationMember.findMany({
         where: {
           organizationId: ctx.org.id,
           attributes: {
-            every: {
-              NOT: {
-                organizationAttributeName: input.name,
-              },
+            none: {
+              organizationAttributeName: input.name,
             },
           },
+        },
+        include: {
+          user: true,
+          attributes: true,
         },
       });
 
