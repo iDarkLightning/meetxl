@@ -9,6 +9,7 @@ import {
   meetingMemberProcedure,
 } from "../../procedures/meeting-procedures";
 import { t } from "../../trpc";
+import { PrismaPromise } from "@meetxl/db";
 
 export const meetingAttendanceLinkRouter = t.router({
   list: meetingAdminProcedure
@@ -130,27 +131,36 @@ export const meetingAttendanceLinkRouter = t.router({
         }
       );
 
+      const tx: PrismaPromise<unknown>[] = [];
+
       if (link.action === "CHECKIN") {
         const status = ctx.meeting.requireCheckOut ? "REGISTERED" : "ATTENDED";
 
         if (status === "ATTENDED") {
-          grantRewards(ctx, participant.memberUserId);
+          for (const promise of await grantRewards(
+            ctx,
+            participant.memberUserId
+          )) {
+            tx.push(promise);
+          }
         }
 
-        await ctx.prisma.meetingParticipant.update({
-          where: {
-            meetingId_memberOrganizationId_memberUserId: {
-              meetingId: ctx.meeting.id,
-              memberOrganizationId: ctx.org.id,
-              memberUserId: ctx.session.user.id,
+        tx.push(
+          ctx.prisma.meetingParticipant.update({
+            where: {
+              meetingId_memberOrganizationId_memberUserId: {
+                meetingId: ctx.meeting.id,
+                memberOrganizationId: ctx.org.id,
+                memberUserId: ctx.session.user.id,
+              },
             },
-          },
-          data: {
-            status,
-            checkedIn: true,
-            checkInTime: new Date(),
-          },
-        });
+            data: {
+              status,
+              checkedIn: true,
+              checkInTime: new Date(),
+            },
+          })
+        );
       } else if (link.action === "CHECKOUT") {
         if (ctx.meeting.requireCheckIn && !participant.checkedIn) {
           throw new TRPCError({
@@ -159,43 +169,55 @@ export const meetingAttendanceLinkRouter = t.router({
           });
         }
 
-        grantRewards(ctx, participant.memberUserId);
-        await ctx.prisma.meetingParticipant.update({
-          where: {
-            meetingId_memberOrganizationId_memberUserId: {
-              meetingId: ctx.meeting.id,
-              memberOrganizationId: ctx.org.id,
-              memberUserId: ctx.session.user.id,
+        for (const promise of await grantRewards(
+          ctx,
+          participant.memberUserId
+        )) {
+          tx.push(promise);
+        }
+
+        tx.push(
+          ctx.prisma.meetingParticipant.update({
+            where: {
+              meetingId_memberOrganizationId_memberUserId: {
+                meetingId: ctx.meeting.id,
+                memberOrganizationId: ctx.org.id,
+                memberUserId: ctx.session.user.id,
+              },
             },
-          },
-          data: {
-            status: "ATTENDED",
-            checkedOut: true,
-            checkOutTime: new Date(),
-          },
-        });
+            data: {
+              status: "ATTENDED",
+              checkedOut: true,
+              checkOutTime: new Date(),
+            },
+          })
+        );
       }
 
-      await ctx.prisma.attendanceLink.update({
-        where: {
-          id: link.id,
-        },
-        data: {
-          redeemedBy: {
-            create: {
-              participant: {
-                connect: {
-                  meetingId_memberOrganizationId_memberUserId: {
-                    meetingId: ctx.meeting.id,
-                    memberOrganizationId: ctx.org.id,
-                    memberUserId: ctx.session.user.id,
+      tx.push(
+        ctx.prisma.attendanceLink.update({
+          where: {
+            id: link.id,
+          },
+          data: {
+            redeemedBy: {
+              create: {
+                participant: {
+                  connect: {
+                    meetingId_memberOrganizationId_memberUserId: {
+                      meetingId: ctx.meeting.id,
+                      memberOrganizationId: ctx.org.id,
+                      memberUserId: ctx.session.user.id,
+                    },
                   },
                 },
               },
             },
           },
-        },
-      });
+        })
+      );
+
+      await ctx.prisma.$transaction(tx);
     }),
 
   delete: meetingAdminProcedure

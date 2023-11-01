@@ -11,37 +11,33 @@ export const grantRewards = async (
     },
   });
 
-  return ctx.prisma.$transaction(
-    rewards.map((reward) =>
-      ctx.prisma.organizationMember.update({
-        where: {
-          organizationId_userId: {
-            organizationId: ctx.org.id,
-            userId,
-          },
+  return rewards.map((reward) =>
+    ctx.prisma.organizationMember.update({
+      where: {
+        organizationId_userId: {
+          organizationId: ctx.org.id,
+          userId,
         },
-        data: {
-          attributes: {
-            update: {
-              where: {
-                organizationAttributeName_orgId_userId: {
-                  organizationAttributeName: reward.attributeName,
-                  orgId: ctx.org.id,
-                  userId,
-                },
+      },
+      data: {
+        attributes: {
+          update: {
+            where: {
+              organizationAttributeName_orgId_userId: {
+                organizationAttributeName: reward.attributeName,
+                orgId: ctx.org.id,
+                userId,
               },
-              data: {
-                value: {
-                  [reward.action === "SET" ? "set" : "increment"]:
-                    reward.action === "DECREMENT"
-                      ? -reward.value
-                      : reward.value,
-                },
+            },
+            data: {
+              value: {
+                [reward.action === "SET" ? "set" : "increment"]:
+                  reward.action === "DECREMENT" ? -reward.value : reward.value,
               },
             },
           },
         },
-      })
-    )
+      },
+    })
   );
 };
