@@ -5,7 +5,6 @@ import { Heading } from "@/shared-components/system/heading";
 import { createForm } from "@/utils/create-form";
 import { trpc } from "@/utils/trpc";
 import { Dialog } from "@headlessui/react";
-import { AttributeModifierAction } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
@@ -42,7 +41,7 @@ export const NewAttributeLink: React.FC = () => {
     defaultValues: {
       name: "",
       value: "0",
-      action: AttributeModifierAction.INCREMENT,
+      action: "INCREMENT",
     },
   });
 
@@ -82,7 +81,11 @@ export const NewAttributeLink: React.FC = () => {
               <form.InputField fieldName="value" type="number" />
               <form.SelectField
                 fieldName="action"
-                options={Object.keys(AttributeModifierAction)}
+                options={Object.keys({
+                  INCREMENT: "INCREMENT",
+                  DECREMENT: "DECREMENT",
+                  SET: "SET",
+                })}
               />
             </div>
             <form.SubmitButton className="mt-4">Create</form.SubmitButton>

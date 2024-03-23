@@ -6,7 +6,7 @@ import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { DeleteButton } from "@/shared-components/util/delete-button";
 import { useOrg } from "@/ui/org/org-shell";
 import { trpc } from "@/utils/trpc";
-import { AttendanceLink, AttendanceLinkAction } from "@prisma/client";
+import { AttendanceLink } from "@prisma/client";
 import { motion, useAnimationControls } from "framer-motion";
 import { useRouter } from "next/router";
 import { FaChevronLeft, FaTrash } from "react-icons/fa";
@@ -155,9 +155,7 @@ const MemberView: React.FC<{ link: AttendanceLink }> = (props) => {
   );
 };
 
-export const LinkRedeemView: React.FC<{ action: AttendanceLinkAction }> = (
-  props
-) => {
+export const LinkRedeemView: React.FC<{ action: string }> = (props) => {
   const org = useOrg();
   const meeting = useMeeting();
   const router = useRouter();

@@ -1,4 +1,3 @@
-import { AttributeModifierAction } from "@prisma/client";
 import { z } from "zod";
 
 // Generic
@@ -13,5 +12,5 @@ export const createAttributeLinkShema = z.object({
   attributeName: z.string(),
   value: z.string().transform((v) => parseInt(v)),
   name: z.string(),
-  action: z.nativeEnum(AttributeModifierAction),
+  action: z.string(),
 });

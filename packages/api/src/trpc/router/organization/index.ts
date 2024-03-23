@@ -1,5 +1,4 @@
 import { createOrgSchema } from "@meetxl/shared/schemas/org-schemas";
-import { MemberRole } from "@prisma/client";
 import { Context } from "../../context";
 import { authedProcedure } from "../../procedures/authed-procedure";
 import {
@@ -37,7 +36,7 @@ export const organizationRouter = t.router({
           members: {
             create: {
               userId: ctx.session.user.id,
-              role: MemberRole.ADMIN,
+              role: "ADMIN",
             },
           },
         },

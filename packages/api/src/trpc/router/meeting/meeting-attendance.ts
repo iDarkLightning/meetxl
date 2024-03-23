@@ -1,5 +1,4 @@
 import { grantRewards } from "../../../common/grant-rewards";
-import { AttendanceLinkAction } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { meetingAdminProcedure } from "../../procedures/meeting-procedures";
@@ -8,7 +7,7 @@ import { meetingAttendanceLinkRouter } from "./meeting-attendance-link";
 
 export const meetingAttendanceRouter = t.router({
   toggleChecking: meetingAdminProcedure
-    .input(z.object({ action: z.nativeEnum(AttendanceLinkAction) }))
+    .input(z.object({ action: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.meeting.update({
         where: {

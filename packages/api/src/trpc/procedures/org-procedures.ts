@@ -1,4 +1,3 @@
-import { MemberRole } from "@prisma/client";
 import { z } from "zod";
 import { authedProcedure } from "./authed-procedure";
 
@@ -36,7 +35,7 @@ export const orgAdminProcedure = authedProcedure
             members: {
               some: {
                 userId: ctx.session.user.id,
-                role: MemberRole.ADMIN,
+                role: "ADMIN",
               },
             },
           },

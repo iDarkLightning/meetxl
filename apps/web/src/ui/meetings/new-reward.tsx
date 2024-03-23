@@ -6,7 +6,6 @@ import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { createForm } from "@/utils/create-form";
 import { trpc } from "@/utils/trpc";
 import { Dialog } from "@headlessui/react";
-import { AttributeModifierAction } from "@prisma/client";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useOrg } from "../org/org-shell";
@@ -24,7 +23,7 @@ export const NewReward: React.FC = () => {
     defaultValues: {
       key: "",
       value: "0",
-      action: AttributeModifierAction.INCREMENT,
+      action: "INCREMENT",
     },
   });
   const attributes = trpc.organization.attribute.list.useQuery({
@@ -78,7 +77,11 @@ export const NewReward: React.FC = () => {
                       <form.InputField fieldName="value" type="number" />
                       <form.SelectField
                         fieldName="action"
-                        options={Object.keys(AttributeModifierAction)}
+                        options={Object.keys({
+                          INCREMENT: "INCREMENT",
+                          DECREMENT: "DECREMENT",
+                          SET: "SET",
+                        })}
                       />
                     </div>
                     <form.SubmitButton
