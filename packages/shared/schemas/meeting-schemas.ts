@@ -1,4 +1,3 @@
-import { AttributeModifierAction } from "@prisma/client";
 import { z } from "zod";
 
 export const updateMeetingSchema = z.object({
@@ -21,5 +20,5 @@ export const updateParticipantLimitSchema = z.object({
 export const createMeetingRewardSchema = z.object({
   key: z.string(),
   value: z.string().transform((v) => parseInt(v)),
-  action: z.nativeEnum(AttributeModifierAction),
+  action: z.string(),
 });

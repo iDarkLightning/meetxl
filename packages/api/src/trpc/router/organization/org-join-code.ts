@@ -1,4 +1,3 @@
-import { MemberRole } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { randomBytes } from "crypto";
 import { z } from "zod";
@@ -24,7 +23,7 @@ export const orgJoinCodeRouter = t.router({
           },
         },
         code: randomBytes(3).toString("hex"),
-        role: MemberRole.MEMBER,
+        role: "MEMBER",
       },
     });
   }),
@@ -45,7 +44,7 @@ export const orgJoinCodeRouter = t.router({
   }),
 
   changeRole: orgAdminProcedure
-    .input(z.object({ id: z.string().cuid(), role: z.nativeEnum(MemberRole) }))
+    .input(z.object({ id: z.string().cuid(), role: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.joinCode.update({
         where: {
@@ -111,6 +110,7 @@ export const orgJoinCodeRouter = t.router({
         },
         select: {
           id: true,
+          slug: true,
           joinCodes: {
             where: {
               code: input.code,
@@ -131,38 +131,32 @@ export const orgJoinCodeRouter = t.router({
         });
       }
 
-      return ctx.prisma.organization.update({
-        where: { id: organization.id },
-        data: {
-          members: {
-            create: {
-              role: organization.joinCodes[0].role,
-              user: {
-                connect: {
-                  id: ctx.session.user.id,
-                },
-              },
-              attributes: {
-                createMany: {
-                  data: organization.attributes.map((attribute) => ({
-                    organizationAttributeName: attribute.name,
-                    value: 0,
-                  })),
-                },
-              },
-            },
+      await ctx.prisma.$transaction([
+        ctx.prisma.joinCode.update({
+          where: { code: input.code },
+          data: { uses: { increment: 1 } },
+        }),
+
+        ctx.prisma.organizationMember.create({
+          data: {
+            organizationId: organization.id,
+            userId: ctx.session.user.id,
+            role: organization.joinCodes[0].role,
           },
-          joinCodes: {
-            update: {
-              where: { code: input.code },
-              data: {
-                uses: {
-                  increment: 1,
-                },
-              },
+        }),
+
+        ...organization.attributes.map((attribute) =>
+          ctx.prisma.memberAttribute.create({
+            data: {
+              orgId: organization.id,
+              userId: ctx.session.user.id,
+              organizationAttributeName: attribute.name,
+              value: 0,
             },
-          },
-        },
-      });
+          })
+        ),
+      ]);
+
+      return { slug: organization.slug };
     }),
 });

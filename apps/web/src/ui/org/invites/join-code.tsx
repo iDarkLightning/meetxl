@@ -7,7 +7,6 @@ import { AnimateWrapper } from "@/shared-components/util/animate-wrapper";
 import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { getAvatarFallback } from "@/utils/get-avatar-fallback";
 import { trpc } from "@/utils/trpc";
-import { MemberRole } from "@prisma/client";
 import { FaCopy, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useOrg } from "../org-shell";
@@ -56,7 +55,7 @@ export const JoinCodeInvite = () => {
                 data.map((code) => (
                   <div
                     key={code.id}
-                    className="flex flex-col justify-between gap-4 border-b-[0.025rem] border-accent-stroke pb-2 md:flex-row md:items-center"
+                    className="border-accent-stroke flex flex-col justify-between gap-4 border-b-[0.025rem] pb-2 md:flex-row md:items-center"
                   >
                     <div className="flex items-center gap-4">
                       <Avatar
@@ -88,12 +87,15 @@ export const JoinCodeInvite = () => {
                           changeCodeRole
                             .mutateAsync({
                               id: code.id,
-                              role: evt.target.value as MemberRole,
+                              role: evt.target.value,
                               orgId: org.id,
                             })
                             .catch(() => 0);
                         }}
-                        options={Object.keys(MemberRole)}
+                        options={Object.keys({
+                          MEMBER: "MEMBER",
+                          ADMIN: "ADMIN",
+                        })}
                       />
                       <Button
                         icon={<FaCopy />}

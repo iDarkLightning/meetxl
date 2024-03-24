@@ -2,14 +2,12 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["referentialIntegrity"]
+    provider = "prisma-client-js"
 }
 
 datasource db {
-    provider             = "mysql"
-    url                  = env("DATABASE_URL")
-    referentialIntegrity = "prisma"
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
 }
 
 // Necessary for Next auth
@@ -19,12 +17,12 @@ model Account {
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? @db.Text
-    access_token      String? @db.Text
+    refresh_token     String?
+    access_token      String?
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? @db.Text
+    id_token          String?
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -63,7 +61,7 @@ model OrganizationMember {
     userId                 String
     organization           Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
     user                   User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-    role                   MemberRole
+    role                   String
     createdJoinCodes       JoinCode[]
     meetings               MeetingParticipant[]
     attributes             MemberAttribute[]
@@ -80,7 +78,7 @@ model JoinCode {
     code   String             @unique
     issuer OrganizationMember @relation(fields: [organizationMemberOrganizationId, organizationMemberUserId], references: [organizationId, userId])
     uses   Int                @default(0)
-    role   MemberRole
+    role   String
 
     organization                     Organization @relation(fields: [organizationId], references: [id])
     organizationId                   String
@@ -91,7 +89,7 @@ model JoinCode {
 model AttendanceLink {
     id                               String                 @id @default(cuid())
     code                             String
-    action                           AttendanceLinkAction
+    action                           String
     meeting                          Meeting                @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     meetingId                        String
     issuer                           OrganizationMember     @relation(fields: [organizationMemberOrganizationId, organizationMemberUserId], references: [organizationId, userId])
@@ -139,18 +137,18 @@ model MemberAttribute {
 }
 
 model AttributeLink {
-    id                        String                  @id @default(cuid())
-    organizationAttribute     OrganizationAttribute   @relation(fields: [organizationAttributeName, orgId], references: [name, organizationId], onDelete: Cascade, onUpdate: Cascade)
+    id                        String                @id @default(cuid())
+    organizationAttribute     OrganizationAttribute @relation(fields: [organizationAttributeName, orgId], references: [name, organizationId], onDelete: Cascade, onUpdate: Cascade)
     organizationAttributeName String
     orgId                     String
     code                      String
     value                     Int
     name                      String
-    action                    AttributeModifierAction
-    issuer                    OrganizationMember      @relation(fields: [orgId, organizationMemberUserId], references: [organizationId, userId])
+    action                    String
+    issuer                    OrganizationMember    @relation(fields: [orgId, organizationMemberUserId], references: [organizationId, userId])
     organizationMemberUserId  String
     redeemedBy                AttributeLinkRedeem[]
-    enabled                   Boolean                 @default(true)
+    enabled                   Boolean               @default(true)
 
     @@unique([organizationAttributeName, orgId, code])
 }
@@ -168,13 +166,13 @@ model AttributeLinkRedeem {
 }
 
 model MeetingParticipant {
-    status               MeetingParticipantStatus
+    status               String
     code                 String
     meetingId            String
     memberOrganizationId String
     memberUserId         String
-    member               OrganizationMember       @relation(fields: [memberOrganizationId, memberUserId], references: [organizationId, userId], onDelete: Cascade, onUpdate: Cascade)
-    meeting              Meeting                  @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    member               OrganizationMember @relation(fields: [memberOrganizationId, memberUserId], references: [organizationId, userId], onDelete: Cascade, onUpdate: Cascade)
+    meeting              Meeting            @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     checkedIn     Boolean                @default(false)
     checkedOut    Boolean                @default(false)
@@ -187,12 +185,12 @@ model MeetingParticipant {
 }
 
 model MeetingReward {
-    id             String                  @id @default(cuid())
+    id             String                @id @default(cuid())
     value          Float
-    action         AttributeModifierAction
-    meeting        Meeting                 @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    action         String
+    meeting        Meeting               @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     meetingId      String
-    attribute      OrganizationAttribute   @relation(fields: [attributeName, attributeOrgId], references: [name, organizationId], onDelete: Cascade, onUpdate: Cascade)
+    attribute      OrganizationAttribute @relation(fields: [attributeName, attributeOrgId], references: [name, organizationId], onDelete: Cascade, onUpdate: Cascade)
     attributeName  String
     attributeOrgId String
 }
@@ -231,25 +229,4 @@ model Organization {
     joinCodes  JoinCode[]
     meetings   Meeting[]
     attributes OrganizationAttribute[]
-}
-
-enum MeetingParticipantStatus {
-    REGISTERED
-    ATTENDED
-}
-
-enum AttributeModifierAction {
-    INCREMENT
-    DECREMENT
-    SET
-}
-
-enum MemberRole {
-    ADMIN
-    MEMBER
-}
-
-enum AttendanceLinkAction {
-    CHECKIN
-    CHECKOUT
 }

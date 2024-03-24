@@ -7,7 +7,6 @@ import { BaseQueryCell } from "@/shared-components/util/base-query-cell";
 import { useMeeting } from "@/ui/meetings/meeting-shell";
 import { createForm } from "@/utils/create-form";
 import { trpc } from "@/utils/trpc";
-import { AttendanceLinkAction } from "@prisma/client";
 import clsx from "clsx";
 import Link from "next/link";
 import { FaExternalLinkAlt, FaPlus } from "react-icons/fa";
@@ -16,9 +15,7 @@ import { useOrg } from "@/ui/org/org-shell";
 
 const form = createForm(applyLinkSchema);
 
-export const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (
-  props
-) => {
+export const CheckingForm: React.FC<{ action: string }> = (props) => {
   const meeting = useMeeting();
   const checkIn = trpc.meeting.attendance.checkIn.useMutation();
   const checkOut = trpc.meeting.attendance.checkOut.useMutation();
@@ -67,9 +64,7 @@ export const CheckingForm: React.FC<{ action: AttendanceLinkAction }> = (
   );
 };
 
-export const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (
-  props
-) => {
+export const CheckingLinks: React.FC<{ action: string }> = (props) => {
   const org = useOrg();
   const meeting = useMeeting();
   const checkingLinks = trpc.meeting.attendance.links.list.useQuery({
@@ -159,9 +154,7 @@ export const CheckingLinks: React.FC<{ action: AttendanceLinkAction }> = (
   );
 };
 
-export const AttendanceChecking: React.FC<{ action: AttendanceLinkAction }> = (
-  props
-) => {
+export const AttendanceChecking: React.FC<{ action: string }> = (props) => {
   const ctx = trpc.useContext();
   const meeting = useMeeting();
   const toggleChecking = trpc.meeting.attendance.toggleChecking.useMutation();

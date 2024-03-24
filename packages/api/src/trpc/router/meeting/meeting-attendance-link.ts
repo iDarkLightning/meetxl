@@ -1,6 +1,5 @@
 import { applyLinkSchema } from "@meetxl/shared/schemas/link-schemas";
 import { grantRewards } from "../../../common/grant-rewards";
-import { AttendanceLinkAction } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { randomBytes } from "crypto";
 import { z } from "zod";
@@ -13,7 +12,7 @@ import { PrismaPromise } from "@meetxl/db";
 
 export const meetingAttendanceLinkRouter = t.router({
   list: meetingAdminProcedure
-    .input(z.object({ action: z.nativeEnum(AttendanceLinkAction) }))
+    .input(z.object({ action: z.string() }))
     .query(async ({ ctx, input }) => {
       return ctx.prisma.attendanceLink.findMany({
         where: {
@@ -24,15 +23,11 @@ export const meetingAttendanceLinkRouter = t.router({
     }),
 
   get: meetingMemberProcedure
-    .input(
-      z.object({ type: z.nativeEnum(AttendanceLinkAction), code: z.string() })
-    )
+    .input(z.object({ type: z.string(), code: z.string() }))
     .query(async ({ ctx, input }) => {
       if (
-        (input.type === AttendanceLinkAction.CHECKIN &&
-          !ctx.meeting.requireCheckIn) ||
-        (input.type === AttendanceLinkAction.CHECKOUT &&
-          !ctx.meeting.requireCheckOut)
+        (input.type === "CHECKIN" && !ctx.meeting.requireCheckIn) ||
+        (input.type === "CHECKOUT" && !ctx.meeting.requireCheckOut)
       ) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -72,7 +67,7 @@ export const meetingAttendanceLinkRouter = t.router({
     }),
 
   create: meetingAdminProcedure
-    .input(z.object({ action: z.nativeEnum(AttendanceLinkAction) }))
+    .input(z.object({ action: z.string() }))
     .mutation(async ({ ctx, input }) => {
       if (input.action === "CHECKIN" && !ctx.meeting.requireCheckIn) {
         throw new TRPCError({
